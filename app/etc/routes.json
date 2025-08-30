@@ -1,0 +1,8 @@
+{
+	"home" : { 
+		"path" : "app/views/home.php",
+		"sessionKey": [{"idUsuario": false}], 
+		"sanitize"  : {"requestVars" : true, "code" : true, "sql" : true},
+		"errorPath" : "app/views/public_home.php"
+	}
+}
