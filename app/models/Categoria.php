@@ -1,9 +1,9 @@
 <?php
 namespace app\models;
 
-class estoque {
+class Categoria {
 
-    private $categoria_id;
+  private $categoria_id;
 	private $nome;
 	private $descricao;
 

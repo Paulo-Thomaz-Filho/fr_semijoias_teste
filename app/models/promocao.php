@@ -1,7 +1,7 @@
 <?php
 namespace app\models;
 
-class promocao {
+class Promocao {
 
     private $promocao_idpromocao_id;
     private $descricaodescricao;

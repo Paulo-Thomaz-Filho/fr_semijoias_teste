@@ -1,34 +1,34 @@
 <?php
 namespace app\models;
 
-class estoque {
+class Estoque {
 
-    private $stoque_id;
+  private $estoque_id;
 	private $produto_id;
 	private $quantidade;
 
     // Getters
-	public function getstoque_id  () { return $this->stoque_id; }
+	public function getestoque_id  () { return $this->estoque_id; }
 	public function getproduto_id () { return $this->produto_id; }
 	public function quantidade    () { return $this->quantidade; }
 
     // Setters
-	public function setstoque_id  ($stoque_id)  { $this->stoque_id = $stoque_id; }
+	public function setestoque_id  ($estoque_id)  { $this->estoque_id = $estoque_id; }
 	public function setproduto_id ($produto_id) { $this->produto_id = $produto_id; }
 	public function setquantidade ($quantidade) { $this->quantidade = $quantidade; }
 
     // Construtor
 	public function __construct() {}
 
-    public function load($stoque_id, $produto_id, $quantidade) {
-		$this->setstoque_id($stoque_id),
+    public function load($estoque_id, $produto_id, $quantidade) {
+		$this->setestoque_id($estoque_id),
 		$this->setproduto_id($produto_id),
 		$this->setquantidade($quantidade),
     }
 
     public function toArray() {
         return array(
-            'stoque_id'  => $this->getstoque_id(),
+            'estoque_id'  => $this->getestoque_id(),
             'produto_id' => $this->getproduto_id(),
             'quantidade' => $this->getquantidade(),
         );

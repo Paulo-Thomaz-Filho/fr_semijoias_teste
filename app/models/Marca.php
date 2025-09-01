@@ -1,7 +1,7 @@
 <?php 
 namespace app\models;
 
-class marca {
+class Marca {
 
     private $marca_id;
 	private $nome;
@@ -33,5 +33,6 @@ class marca {
             'descrição' => $this->getdescrição(),
         );
     }
+    
 }
 ?>

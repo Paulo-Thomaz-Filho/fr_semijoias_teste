@@ -3,7 +3,7 @@ namespace app\models;
 
 class ItemPedido {
 
-    private $itempedido_id;
+  private $itempedido_id;
 	private $pedido;
 	private $produto_id;
 	private $quantidade;

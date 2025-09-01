@@ -1,7 +1,7 @@
 <?php
 namespace app\models;
 
-class pedido {
+class Pedido {
 
 	private $pedido_id;
 	private $usuario_id;

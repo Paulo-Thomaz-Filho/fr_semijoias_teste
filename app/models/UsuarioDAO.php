@@ -9,9 +9,9 @@ include_once '../core/database/DBConnection.php';
 include_once '../core/database/DBQuery.php';
 include_once '../core/database/Where.php';
 
-include_once '../models/Usuarios.php';
+include_once '../models/Usuario.php';
 
-class UsuariosDAO {
+class UsuarioDAO {
 	
 	private $dbQuery;
 	
