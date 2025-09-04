@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 // Rotas aceitas
 $routes = [
-    "login"      => "app/views/admin_login.html",
+    ""           => "app/views/admin_login.html",
     "inicio"     => "app/views/admin_inicio.html",
     "pedidos"    => "app/views/admin_pedidos.html",
     "produtos"   => "app/views/admin_produtos.html",
