@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Pedidos</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 2rem;
+        }
+        .card {
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center mb-5 fw-bold text-primary">Sistema de Gerenciamento de Pedidos</h1>
+
+    <!-- Modal de Mensagem -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Mensagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="messageModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção de Cadastro de Pedidos -->
+    <div class="card bg-light">
+        <div class="card-header bg-primary text-white fw-bold">Cadastro de Pedido</div>
+        <div class="card-body">
+            <form id="form-cadastro">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome do Produto</label>
+                    <input type="text" class="form-control" id="nome_cadastro" required>
+                </div>
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">Quantidade</label>
+                    <input type="number" class="form-control" id="quantidade_cadastro" required>
+                </div>
+                <div class="mb-3">
+                    <label for="valor" class="form-label">Valor</label>
+                    <input type="number" class="form-control" id="valor_cadastro" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cliente" class="form-label">Cliente</label>
+                    <input type="text" class="form-control" id="cliente_cadastro" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea class="form-control" id="descricao_cadastro"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="data" class="form-label">Data</label>
+                    <input type="date" class="form-control" id="data_cadastro" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Cadastrar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Seção de Atualizar Pedido -->
+    <div class="card">
+        <div class="card-header bg-success text-white fw-bold">Atualizar Pedido</div>
+        <div class="card-body">
+            <form id="form-update">
+                <div class="mb-3">
+                    <label for="id_update" class="form-label">ID do Pedido</label>
+                    <input type="number" class="form-control" id="id_update" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome do Produto</label>
+                    <input type="text" class="form-control" id="nome_update" required>
+                </div>
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">Quantidade</label>
+                    <input type="number" class="form-control" id="quantidade_update" required>
+                </div>
+                <div class="mb-3">
+                    <label for="valor" class="form-label">Valor</label>
+                    <input type="number" class="form-control" id="valor_update" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cliente" class="form-label">Cliente</label>
+                    <input type="text" class="form-control" id="cliente_update" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea class="form-control" id="descricao_update"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="data" class="form-label">Data</label>
+                    <input type="date" class="form-control" id="data_update" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Atualizar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Seção de Concluir Pedido -->
+    <div class="card">
+        <div class="card-header bg-warning text-white fw-bold">Concluir Pedido</div>
+        <div class="card-body">
+            <form id="form-concluir-pedido">
+                <div class="mb-3">
+                    <label for="id_concluir" class="form-label">ID do Pedido</label>
+                    <input type="number" class="form-control" id="id_concluir" required>
+                </div>
+                <button type="submit" class="btn btn-warning text-white w-100">Concluir Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Seção de Cancelar Pedido -->
+    <div class="card">
+        <div class="card-header bg-danger text-white fw-bold">Cancelar Pedido</div>
+        <div class="card-body">
+            <form id="form-cancelar-pedido">
+                <div class="mb-3">
+                    <label for="id_cancelar" class="form-label">ID do Pedido</label>
+                    <input type="number" class="form-control" id="id_cancelar" required>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Cancelar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Seção de Visualização de Pedidos -->
+    <div class="card">
+        <div class="card-header bg-info text-white fw-bold">Lista de Pedidos</div>
+        <div class="card-body">
+            <div id="pedidos-container" class="table-responsive">
+                <!-- A tabela será inserida aqui via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" xintegrity="sha384-I7E8Vp9/3r1nL+WdD6+26S22Vf0+Q12/x2vJ8Vl0y3gL3d5y6y3r7p1S2l0y2f3p1W4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" xintegrity="sha384-oBqDVmMv1N0Xj8L/z+f5rXz/z+Q12/X0y3d5y6y3r7p1W4p1S2l0y2f3p1W4" crossorigin="anonymous"></script>
+<script src="public/settings/js/script_pedido_cad.js"></script>
+<script src="public/settings/js/script_pedido_del.js"></script>
+<script src="public/settings/js/script_pedido_finsh.js"></script>
+<script src="public/settings/js/script_pedido_read.js"></script>
+<script src="public/settings/js/script_pedido_update.js"></script>
+</body>
+</html>

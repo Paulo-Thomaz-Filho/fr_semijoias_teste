@@ -1,82 +1,69 @@
 <?php
+declare(strict_types=1);
+session_start();
+header("Content-Type: application/json; charset=utf-8");
 
-// 1. Conexão com o banco de dados e sessão
-require_once "../etc/config.php"; 
-
-try {
-    $dsn = "mysql:host=" . $_SESSION['database']['host'] .
-           ";dbname=" . $_SESSION['database']['schema'] .
-           ";port=" . $_SESSION['database']['port'];
-
-    $pdo = new PDO($dsn, $_SESSION['database']['user'], $_SESSION['database']['pass']);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e) {
-    echo json_encode(["success" => false, "error" => "Erro interno de conexão."]);
-    exit;
-}
-
-// 2. Verificação de login
+// Verificação de login
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
-    header("Location: " . $_SESSION['url']['root'] . "login.html");
+    http_response_code(401);
+    echo json_encode(["success" => false, "error" => "Não autenticado."]);
     exit;
 }
 
-// 3. Verificação do método HTTP
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Conexão com banco
+try {
+    require_once "../etc/config.php";
+    $dsn = "mysql:host=".$_SESSION['database']['host'].
+           ";dbname=".$_SESSION['database']['schema'].
+           ";port=".$_SESSION['database']['port'];
+    $pdo = new PDO($dsn, $_SESSION['database']['user'], $_SESSION['database']['pass'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    $pdo->exec("SET NAMES utf8mb4");
+} catch(Throwable $e) {
+    http_response_code(500);
+    echo json_encode(["success" => false, "error" => "Erro ao conectar ao banco."]);
+    exit;
+}
 
-    // 4. Sanitização automática
-    require_once "../core/utils/Sanitize.php";
-    $sanitizer = new \core\utils\Sanitize(true, true, true); // requestVars, code, sql
-    $data = $sanitizer->getCleanRequestVars();
+// Aceitar apenas POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["success"=>false,"error"=>"Método inválido. Use POST."]);
+    exit;
+}
 
-    // 5. Recebendo dados já sanitizados
-    $usuario_id       = $data['usuario_id'] ?? null;
-    $data_pedido      = $data['data_pedido'] ?? null;
-    $status           = $data['status'] ?? null;
-    $valor_total      = $data['valor_total'] ?? null;
-    $endereco_entrega = $data['endereco_entrega'] ?? null;
+// Receber JSON
+$inputJSON = file_get_contents('php://input');
+$data = json_decode($inputJSON, true);
 
-    $statusPermitidos = ['pendente', 'pago', 'cancelado'];
+// Sanitização simples
+$nome = $data['nome'] ?? null;
+$quantidade = (int)($data['quantidade'] ?? 0);
+$valor = (float)($data['valor'] ?? 0);
+$cliente = $data['cliente'] ?? null;
+$descricao = $data['descricao'] ?? null;
+$data_pedido = $data['data'] ?? date('Y-m-d H:i:s');
 
-    // 6. Validações
-    if (!$usuario_id || !$data_pedido || !$status || !$valor_total || !$endereco_entrega) {
-        echo json_encode(["success" => false, "error" => "Todos os campos são obrigatórios."]);
-        exit;
-    }
-    if (!in_array($status, $statusPermitidos)) {
-        echo json_encode(["success" => false, "error" => "Status inválido."]);
-        exit;
-    }
-    if (!DateTime::createFromFormat('Y-m-d', $data_pedido)) {
-        echo json_encode(["success" => false, "error" => "Data inválida."]);
-        exit;
-    }
+if (!$nome || !$quantidade || !$valor || !$cliente) {
+    echo json_encode(["success"=>false,"error"=>"Campos obrigatórios faltando."]);
+    exit;
+}
 
-    // 7. Inserção no banco de dados
-    try {
-        $sql = "INSERT INTO pedido 
-                   (usuario_id, data_pedido, status, valor_total, endereco_entrega) 
-                VALUES 
-                   (:usuario_id, :data_pedido, :status, :valor_total, :endereco_entrega)";
-
-        $stmt = $pdo->prepare($sql);
-
-        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-        $stmt->bindParam(':data_pedido', $data_pedido);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':valor_total', $valor_total);
-        $stmt->bindParam(':endereco_entrega', $endereco_entrega);
-
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "Pedido cadastrado com sucesso."]);
-        } else {
-            echo json_encode(["success" => false, "error" => "Erro ao cadastrar pedido."]);
-        }
-    } catch (PDOException $e) {
-        echo json_encode(["success" => false, "error" => "Erro interno no banco de dados."]);
-    }
-
-} else {
-    echo json_encode(["success" => false, "error" => "Método inválido. Use POST."]);
+// Inserção
+try {
+    $sql = "INSERT INTO pedido (usuario_id, data_pedido, status, valor_total, endereco_entrega)
+            VALUES (:usuario_id, :data_pedido, 'pendente', :valor_total, :endereco_entrega)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':usuario_id' => $_SESSION['usuario_id'],
+        ':data_pedido' => $data_pedido,
+        ':valor_total' => $valor,
+        ':endereco_entrega' => $descricao ?? ''
+    ]);
+    echo json_encode(["success"=>true, "message"=>"Pedido cadastrado com sucesso."]);
+} catch(Throwable $e) {
+    http_response_code(500);
+    echo json_encode(["success"=>false,"error"=>"Erro interno no banco de dados."]);
 }

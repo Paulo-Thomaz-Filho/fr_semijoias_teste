@@ -1,80 +1,94 @@
 <?php
+declare(strict_types=1);
 
-// 1. Conexão com o banco de dados e sessão
-require_once "../etc/config.php"; 
+session_start();
+header("Content-Type: application/json; charset=utf-8");
 
+// 1. Verificação de login
+if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+    http_response_code(401);
+    echo json_encode(["success" => false, "error" => "Não autenticado."]);
+    exit;
+}
+
+// 2. Conexão com o banco de dados
 try {
-    // Monta o DSN 
+    require_once "../etc/config.php";
+
     $dsn = "mysql:host=" . $_SESSION['database']['host'] .
            ";dbname=" . $_SESSION['database']['schema'] .
            ";port=" . $_SESSION['database']['port'];
 
-    // Cria a conexão PDO
-    $pdo = new PDO($dsn, $_SESSION['database']['user'], $_SESSION['database']['pass']);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e) {
-    echo json_encode(["success" => false, "error" => "Erro interno de conexão."]);
+    $pdo = new PDO($dsn, $_SESSION['database']['user'], $_SESSION['database']['pass'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    $pdo->exec("SET NAMES utf8mb4");
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(["success" => false, "error" => "Falha na conexão com o banco de dados."]);
     exit;
 }
 
-// 2. Verificação de login
-if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
-    // Se não estiver logado, redireciona para a página de login
-    header("Location: " . $_SESSION['url']['root'] . "login.html");
-    exit;
-}
-
-// 3. Verificação do método HTTP
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // 4. Recebendo e validando os dados enviados pelo formulário
-    $usuario_id       = filter_input(INPUT_POST, 'usuario_id', FILTER_VALIDATE_INT); 
-    $data_pedido      = $_POST['data_pedido'] ?? null; 
-    $status           = $_POST['status'] ?? null; 
-    $valor_total      = filter_input(INPUT_POST, 'valor_total', FILTER_VALIDATE_FLOAT); 
-    $endereco_entrega = htmlspecialchars(trim($_POST['endereco_entrega'] ?? ''), ENT_QUOTES, 'UTF-8'); 
-
-    $statusPermitidos = ['pendente', 'pago', 'cancelado'];
-
-    if (!$usuario_id || !$data_pedido || !$status || !$valor_total || !$endereco_entrega) {
-        echo json_encode(["success" => false, "error" => "Todos os campos são obrigatórios."]);
-        exit;
-    }
-    if (!in_array($status, $statusPermitidos)) {
-        echo json_encode(["success" => false, "error" => "Status inválido."]);
-        exit;
-    }
-    if (!DateTime::createFromFormat('Y-m-d', $data_pedido)) {
-        echo json_encode(["success" => false, "error" => "Data inválida."]);
-        exit;
-    }
-
-    // 5. Inserção no banco de dados
-    try {
-        $sql = "INSERT INTO pedido (usuario_id, data_pedido, status, valor_total, endereco_entrega) 
-                VALUES (:usuario_id, :data_pedido, :status, :valor_total, :endereco_entrega)";
-        
-        $stmt = $pdo->prepare($sql);
-
-        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
-        $stmt->bindParam(':data_pedido', $data_pedido);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':valor_total', $valor_total);
-        $stmt->bindParam(':endereco_entrega', $endereco_entrega);
-
-        if ($stmt->execute()) {
-            // Sucesso
-            echo json_encode(["success" => true, "message" => "Pedido cadastrado com sucesso."]);
-        } else {
-            // falha da execução
-            echo json_encode(["success" => false, "error" => "Erro ao cadastrar pedido."]);
-        }
-    } catch (PDOException $e) {
-        // erro do banco
-        echo json_encode(["success" => false, "error" => "Erro interno no banco de dados."]);
-    }
-
-} else {
+// 3. Aceitar somente requisição POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
     echo json_encode(["success" => false, "error" => "Método inválido. Use POST."]);
+    exit;
+}
+
+// 4. Receber JSON do front-end
+$inputJSON = file_get_contents('php://input');
+$data = json_decode($inputJSON, true);
+
+// 5. Sanitização e validação dos campos
+$nome_produto  = trim($data['nome'] ?? '');
+$quantidade    = (int)($data['quantidade'] ?? 0);
+$valor_total   = (float)($data['valor'] ?? 0);
+$cliente       = trim($data['cliente'] ?? '');
+$descricao     = trim($data['descricao'] ?? '');
+$descricao     = $descricao ?: 'Não informado'; // default se vazio
+$data_pedido   = $data['data'] ?? date('Y-m-d H:i:s');
+
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+if (!$usuario_id) {
+    echo json_encode(["success" => false, "error" => "Usuário não identificado."]);
+    exit;
+}
+
+// Valida obrigatórios
+if (!$nome_produto || !$quantidade || !$valor_total || !$cliente) {
+    echo json_encode(["success" => false, "error" => "Todos os campos obrigatórios devem ser preenchidos."]);
+    exit;
+}
+
+// Valida data
+if (!DateTime::createFromFormat('Y-m-d', substr($data_pedido,0,10))) {
+    echo json_encode(["success" => false, "error" => "Data inválida."]);
+    exit;
+}
+
+// 6. Inserção no banco de dados
+try {
+    $sql = "INSERT INTO pedido (usuario_id, data_pedido, status, valor_total, endereco_entrega)
+            VALUES (:usuario_id, :data_pedido, :status, :valor_total, :endereco_entrega)";
+    $stmt = $pdo->prepare($sql);
+
+    $status = 'pendente';
+
+    $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+    $stmt->bindParam(':data_pedido', $data_pedido);
+    $stmt->bindParam(':status', $status);
+    $stmt->bindParam(':valor_total', $valor_total);
+    $stmt->bindParam(':endereco_entrega', $descricao);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Pedido cadastrado com sucesso."]);
+    } else {
+        echo json_encode(["success" => false, "error" => "Erro ao cadastrar pedido."]);
+    }
+
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(["success" => false, "error" => "Erro interno no banco de dados: " . $e->getMessage()]);
 }

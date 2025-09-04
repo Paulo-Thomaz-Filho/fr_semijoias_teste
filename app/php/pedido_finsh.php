@@ -49,16 +49,16 @@ if (!$pedido_id) {
     exit;
 }
 
-// 6. Atualiza o status do pedido para 'cancelado'
+// 6. Atualiza o status do pedido para 'Concluido'
 try {
-    $sql = "UPDATE pedido SET status = 'cancelado' WHERE pedido_id = :pedido_id";
+    $sql = "UPDATE pedido SET status = 'Concluido' WHERE pedido_id = :pedido_id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Pedido cancelado com sucesso."]);
+        echo json_encode(["success" => true, "message" => "Pedido Concluido com sucesso."]);
     } else {
-        echo json_encode(["success" => false, "error" => "Não foi possível cancelar o pedido."]);
+        echo json_encode(["success" => false, "error" => "Não foi possível Concluido o pedido."]);
     }
 } catch (Throwable $e) {
     http_response_code(500);

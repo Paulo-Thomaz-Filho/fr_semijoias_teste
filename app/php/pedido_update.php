@@ -12,25 +12,35 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 } catch (PDOException $e) {
+    // Retorna um erro JSON em caso de falha na conexão
     echo json_encode(["success" => false, "error" => "Erro interno de conexão."]);
     exit;
 }
 
 // 2. Verificação de login
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+    // Redireciona o usuário para a página de login
     header("Location: " . $_SESSION['url']['root'] . "login.html");
     exit;
 }
 
+// Define o cabeçalho para responder com JSON
+header('Content-Type: application/json');
+
 // 3. Atualização (somente POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // 4. Sanitização automática
-    require_once "../core/utils/Sanitize.php";
-    $sanitizer = new \core\utils\Sanitize(true, true, true); // requestVars, code, sql
-    $data = $sanitizer->getCleanRequestVars();
+    // 4. Receber e decodificar os dados JSON
+    $json_data = file_get_contents('php://input');
+    $data = json_decode($json_data, true);
 
-    // 5. Receber dados já sanitizados
+    // Verifica se a decodificação foi bem-sucedida e se os dados são um array
+    if ($data === null || !is_array($data)) {
+        echo json_encode(["success" => false, "error" => "Formato de dados inválido."]);
+        exit;
+    }
+
+    // 5. Receber dados
     $pedido_id        = $data['pedido_id'] ?? null;
     $usuario_id       = $data['usuario_id'] ?? null;
     $data_pedido      = $data['data_pedido'] ?? null;
@@ -41,14 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $statusPermitidos = ['pendente', 'pago', 'cancelado'];
 
     // 6. Validações
+    // Verifica se todos os campos necessários estão presentes
     if (!$pedido_id || !$usuario_id || !$data_pedido || !$status || !$valor_total || !$endereco_entrega) {
         echo json_encode(["success" => false, "error" => "Todos os campos são obrigatórios."]);
         exit;
     }
+    // Valida o status
     if (!in_array($status, $statusPermitidos)) {
         echo json_encode(["success" => false, "error" => "Status inválido."]);
         exit;
     }
+    // Valida o formato da data
     if (!DateTime::createFromFormat('Y-m-d', $data_pedido)) {
         echo json_encode(["success" => false, "error" => "Data inválida."]);
         exit;
@@ -62,10 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        status = :status, 
                        valor_total = :valor_total, 
                        endereco_entrega = :endereco_entrega
-                 WHERE id = :pedido_id";
+                 WHERE pedido_id = :pedido_id";
 
         $stmt = $pdo->prepare($sql);
 
+        // Bind dos parâmetros para evitar injeção de SQL
         $stmt->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
         $stmt->bindParam(':data_pedido', $data_pedido);
@@ -83,5 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 } else {
+    // Retorna um erro se o método não for POST
     echo json_encode(["success" => false, "error" => "Método inválido. Use POST."]);
 }
+?>
