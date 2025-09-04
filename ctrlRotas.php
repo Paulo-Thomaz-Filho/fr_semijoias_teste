@@ -5,7 +5,11 @@ ini_set('display_errors', 1);
 
 // Rotas aceitas
 $routes = [
-    ""          => "app/views/index.html",
+    "login"      => "app/views/admin_login.html",
+    "inicio"     => "app/views/admin_inicio.html",
+    "pedidos"    => "app/views/admin_pedidos.html",
+    "produtos"   => "app/views/admin_produtos.html",
+    "usuarios"   => "app/views/admin_usuarios.html",
 ];
 
 // Captura a URI
@@ -57,7 +61,7 @@ if (str_starts_with($uri, "public/")) {
 //verifica se a rota existe
 if (!array_key_exists($uri, $routes)) {
     http_response_code(404);
-    echo "404 - Página não encontrada.";
+    echo "404 - Página não encontrada a.";
     exit;
 }
 
@@ -71,7 +75,7 @@ if (str_starts_with($uri, "app/")) {
 // Verifica se a rota existe
 if (!isset($routes[$uri])) {
     http_response_code(404);
-    echo "404 - Página não encontrada.";
+    echo "404 - Página não encontrada b.";
     exit;
 }
 
@@ -82,7 +86,7 @@ if (file_exists($filePath)) {
     readfile($filePath);
 } else {
     http_response_code(404);
-    echo "404 - Arquivo não encontrado.";
+    echo "404 - Arquivo não encontrado c.";
 }
 
 function headerMimeTypes($extension) {

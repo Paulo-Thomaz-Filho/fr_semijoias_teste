@@ -3,7 +3,7 @@ namespace app\models;
 
 class Categoria {
 
-  private $categoria_id;
+  	private $categoria_id;
 	private $nome;
 	private $descricao;
 
@@ -21,9 +21,9 @@ class Categoria {
 	public function __construct() {}
 
     public function load($categoria_id, $nome, $descricao) {
-		$this->setcategoria_id($categoria_id),
-		$this->setnome($nome),
-		$this->setdescricao($descricao),
+		$this->setcategoria_id($categoria_id);
+		$this->setnome($nome);
+		$this->setdescricao($descricao);
     }
 
     public function toArray() {

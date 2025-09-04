@@ -3,7 +3,7 @@ namespace app\models;
 
 class ItemPedido {
 
-  private $itempedido_id;
+    private $itempedido_id;
 	private $pedido;
 	private $produto_id;
 	private $quantidade;
@@ -27,11 +27,11 @@ class ItemPedido {
 	public function __construct() {}
 
     public function load($itempedido_id, $pedido, $produto_id, $quantidade, $valor_unitario) {
-		$this->setitempedido_id($itempedido_id),
-		$this->setpedido($pedido),
-		$this->setproduto_id($produto_id),
-		$this->setquantidade($quantidade),
-		$this->setvalor_unitario($valor_unitario),
+		$this->setitempedido_id($itempedido_id);
+		$this->setpedido($pedido);
+		$this->setproduto_id($produto_id);
+		$this->setquantidade($quantidade);
+		$this->setvalor_unitario($valor_unitario);
     }
 
     public function toArray() {

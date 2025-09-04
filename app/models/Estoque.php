@@ -3,7 +3,7 @@ namespace app\models;
 
 class Estoque {
 
-  private $estoque_id;
+  	private $estoque_id;
 	private $produto_id;
 	private $quantidade;
 
@@ -21,9 +21,9 @@ class Estoque {
 	public function __construct() {}
 
     public function load($estoque_id, $produto_id, $quantidade) {
-		$this->setestoque_id($estoque_id),
-		$this->setproduto_id($produto_id),
-		$this->setquantidade($quantidade),
+		$this->setestoque_id($estoque_id);
+		$this->setproduto_id($produto_id);
+		$this->setquantidade($quantidade);
     }
 
     public function toArray() {

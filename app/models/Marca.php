@@ -21,9 +21,9 @@ class Marca {
 	public function __construct() {}
 
     public function load($marca_id, $nome, $descrição) {
-		$this->setmarca_id($marca_id),
-		$this->setnome($nome),
-		$this->setdescrição($descrição),
+		$this->setmarca_id($marca_id);
+		$this->setnome($nome);
+		$this->setdescrição($descrição);
     }
 
     public function toArray() {

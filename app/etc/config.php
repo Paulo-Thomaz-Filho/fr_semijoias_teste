@@ -62,9 +62,9 @@ if ($showErrors){
 }
 
 $config['database']['host']		= 'localhost';
-$config['database']['schema']	= 'root';
-$config['database']['user']		= '';
-$config['database']['pass']		= 'loja';
+$config['database']['schema']	= 'fr_semijoias';
+$config['database']['user']		= 'root';
+$config['database']['pass']		= '';
 $config['database']['port']		= '3306';
 
 $config['email']['host']	    = 'smtp.mydomain.com';

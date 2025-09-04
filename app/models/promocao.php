@@ -19,23 +19,23 @@ class Promocao {
     public function gedata_fim     () { return $this->data_fim; }
 
     // Setters
-    public function setpromocao_id ($promocao_id) { $this->promocao_id = $promocao_id }
-    public function setdescricao   ($descricao)    { $this->descricao = $descricao }
-    public function settipo        ($tipo)         { $this->tipo = $tipo }
-    public function setvalor       ($valor)        { $this->valor = $valor }
-    public function setdata_inicio ($data_inicio)  { $this->data_inicio = $data_inicio }
-    public function setdata_fim    ($data_fim)     { $this->data_fim = $data_fim }
+    public function setpromocao_id ($promocao_id) { $this->promocao_id = $promocao_id; }
+    public function setdescricao   ($descricao)    { $this->descricao = $descricao; }
+    public function settipo        ($tipo)         { $this->tipo = $tipo; }
+    public function setvalor       ($valor)        { $this->valor = $valor; }
+    public function setdata_inicio ($data_inicio)  { $this->data_inicio = $data_inicio; }
+    public function setdata_fim    ($data_fim)     { $this->data_fim = $data_fim; }
 
     // Construtor
 	public function __construct() {}
 
     public function load($promocao_id, $descricao, $tipo, $valor, $data_inicio, $data_fim) {
-        $this->setpromocao_id ($promocao_id),
-        $this->setdescricao   ($descricao),
-        $this->settipo        ($tipo),
-        $this->setvalor       ($valor),
-        $this->setdata_inicio ($data_inicio),
-        $this->setdata_fim    ($data_fim),
+        $this->setpromocao_id ($promocao_id);
+        $this->setdescricao   ($descricao);
+        $this->settipo        ($tipo);
+        $this->setvalor       ($valor);
+        $this->setdata_inicio ($data_inicio);
+        $this->setdata_fim    ($data_fim);
     }
 
     public function toArray() {

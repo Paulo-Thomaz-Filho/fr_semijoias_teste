@@ -3,7 +3,7 @@ namespace app\models;
 
 class Usuario {
 
-	private $idUsuario;
+	private $usuario_id;
 	private $email;
 	private $senha;
 	private $idNivelUsuario;

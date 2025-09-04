@@ -6,37 +6,37 @@ class Produto {
 	private $produto_id;
 	private $nome;
 	private $valor;
-	private $avaliacao;
 	private $marca_id;
 	private $categoria_id;
 	private $disponivel;
 	private $imagem_url;
 	private $unidade_estoque;
 	private $promocao_id;
+	private $descricao;
 
 	// Getters
 	public function getproduto_id      () { return $this->produto_id; }
 	public function getnome            () { return $this->nome; }
 	public function getvalor           () { return $this->valor; }
-	public function getavaliacao       () { return $this->avaliacao; }
 	public function getmarca_id        () { return $this->marca_id; }
 	public function getcategoria_id    () { return $this->categoria_id; }
 	public function getdisponivel      () { return $this->disponivel; }
 	public function getimagem_url      () { return $this->imagem_url; }
 	public function getunidade_estoque () { return $this->unidade_estoque; }
 	public function getpromocao_id     () { return $this->promocao_id; }
+	public function getdescricao       () { return $this->descricao; }
 
 	// Setters
 	public function setproduto_id      ($produto_id)      { $this->produto_id = $produto_id; }
 	public function setnome            ($nome)            { $this->nome = $nome; }
 	public function setvalor           ($valor)           { $this->valor = $valor; }
-	public function setavaliacao       ($avaliacao)       { $this->avaliacao = $avaliacao; }
 	public function setmarca_id        ($marca_id)        { $this->marca_id = $marca_id; }
 	public function setcategoria_id    ($categoria_id)    { $this->categoria_id = $categoria_id; }
 	public function setdisponivel      ($disponivel)      { $this->disponivel = $disponivel; }
 	public function setimagem_url      ($imagem_url)      { $this->imagem_url = $imagem_url; }
 	public function setunidade_estoque ($unidade_estoque) { $this->unidade_estoque = $unidade_estoque; }
-	public function getpromocao_id     ($promocao_id)     { $this->promocao_id = $promocao_id; }
+	public function setpromocao_id     ($promocao_id)     { $this->promocao_id = $promocao_id; }
+	public function setdescricao       ($descricao)       { $this->descricao = $descricao; }
 
 	// Construtor
 	public function __construct() {}
@@ -46,14 +46,14 @@ class Produto {
 		$this->setproduto_id($produto_id);
 		$this->setnome($nome);
 		$this->setvalor($valor);
-		$this->setavaliacao($avaliacao);
 		$this->setmarca_id($marca_id);
 		$this->setcategoria_id($categoria_id);
 		$this->setdisponivel($disponivel);
 		$this->setimagem_url($imagem_url);
 		$this->setunidade_estoque($unidade_estoque);
 		$this->setpromocao_id($promocao_id);
-	}
+		$this->setdescricao($descricao);
+	}	
 
 	// Retorna como array
 	public function toArray() {
@@ -61,13 +61,13 @@ class Produto {
 			'produto_id'      => $this->getproduto_id(),
 			'nome'            => $this->getnome(),
 			'valor'           => $this->getvalor(),
-			'avaliacao'       => $this->getavaliacao(),
 			'marca_id'        => $this->getmarca_id(),
 			'categoria_id'    => $this->getcategoria_id(),
 			'disponivel'      => $this->getdisponivel(),
 			'imagem_url'      => $this->getimagem_url(),
-			'unidade_estoque' => $this->getunidade_estoque()
-			'promocao_id' => $this->getpromocao_id()
+			'unidade_estoque' => $this->getunidade_estoque(),
+			'promocao_id'     => $this->getpromocao_id(),
+			'descricao'       => $this->getdescricao()
 		);
 	}
 
