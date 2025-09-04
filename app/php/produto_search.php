@@ -21,7 +21,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
     exit;
 }
 
-// 3. Recebe o ID do produto via GET ou POST
+// 3. Recebe o nome do produto via GET ou POST
 require_once "../core/utils/Sanitize.php";
 $sanitizer = new \core\utils\Sanitize(true, true, true);
 $data = $sanitizer->getCleanRequestVars();
@@ -29,7 +29,7 @@ $data = $sanitizer->getCleanRequestVars();
 $nome = isset($data['nome']) ? (int)$data['nome'] : null;
 
 if (!$nome) {
-    echo json_encode(["success" => false, "error" => "ID do produto inválido."]);
+    echo json_encode(["success" => false, "error" => "nome do produto inválido."]);
     exit;
 }
 
