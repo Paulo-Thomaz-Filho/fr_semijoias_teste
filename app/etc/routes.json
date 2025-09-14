@@ -1,15 +1,217 @@
 {
-	"" : { 
-		"path" : "app/views/login.html",
-		"sessionKey": [{"idUsuario": false}], 
-		"sanitize"  : {"requestVars" : true, "code" : true, "sql" : true},
-		"errorPath" : "app/views/login.html"
-	},
-	"inicio" : { 
-		"path" : "app/views/admin.html",
-		"sessionKey": [{"idUsuario": false}], 
-		"sanitize"  : {"requestVars" : true, "code" : true, "sql" : true},
-		"errorPath" : "app/views/login.html"
-	}
+    "api/usuario/registrar": {
+        "dao": "App\\Models\\UsuarioDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Usuario",
+        "sessionKey": null
+    },
+    "api/usuario/atualizar": {
+        "dao": "App\\Models\\UsuarioDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Usuario",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/usuario/buscar": {
+        "dao": "App\\Models\\UsuarioDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
+    "api/usuarios/listar": {
+        "dao": "App\\Models\\UsuarioDAO",
+        "method": "findAll",
+        "paramSource": null,
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
+    "api/usuario/deletar": {
+        "dao": "App\\Models\\UsuarioDAO",
+        "method": "delete",
+        "paramSource": "POST",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
 
+    "api/promocoes/listar": {
+        "dao": "App\\Models\\PromocaoDAO",
+        "method": "findAll",
+        "paramSource": null,
+        "sessionKey": null
+    },
+    "api/promocao/buscar": {
+        "dao": "App\\Models\\PromocaoDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": null
+    },
+    "api/promocao/salvar": {
+        "dao": "App\\Models\\PromocaoDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Promocao",
+        "sessionKey": [
+            { "user_tipo": ["admin", "gerente"] }
+        ]
+    },
+    "api/promocao/deletar": {
+        "dao": "App\\Models\\PromocaoDAO",
+        "method": "delete",
+        "paramSource": "POST",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
+
+    "api/produtos/listar": {
+        "dao": "App\\Models\\ProdutoDAO",
+        "method": "findAll",
+        "paramSource": null,
+        "sessionKey": null
+    },
+    "api/produto/buscar": {
+        "dao": "App\\Models\\ProdutoDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": null
+    },
+    "api/produto/salvar": {
+        "dao": "App\\Models\\ProdutoDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Produto",
+        "sessionKey": [
+            { "user_tipo": ["admin", "gerente"] }
+        ]
+    },
+    "api/produto/deletar": {
+        "dao": "App\\Models\\ProdutoDAO",
+        "method": "delete",
+        "paramSource": "POST",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
+
+    "api/categorias/listar": {
+        "dao": "App\\Models\\CategoriaDAO",
+        "method": "findAll",
+        "paramSource": null,
+        "sessionKey": null
+    },
+    "api/categoria/buscar": {
+        "dao": "App\\Models\\CategoriaDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": null
+    },
+    "api/categoria/salvar": {
+        "dao": "App\\Models\\CategoriaDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Categoria",
+        "sessionKey": [
+            { "user_tipo": ["admin", "gerente"] }
+        ]
+    },
+    "api/categoria/deletar": {
+        "dao": "App\\Models\\CategoriaDAO",
+        "method": "delete",
+        "paramSource": "POST",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
+
+    "api/enderecos/listarPorUsuario": {
+        "dao": "App\\Models\\EnderecoDAO",
+        "method": "findAllByUserId",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/endereco/buscar": {
+        "dao": "App\\Models\\EnderecoDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/endereco/salvar": {
+        "dao": "App\\Models\\EnderecoDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Endereco",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/endereco/deletar": {
+        "dao": "App\\Models\\EnderecoDAO",
+        "method": "delete",
+        "paramSource": "POST",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+
+    "api/pedidos/listarPorUsuario": {
+        "dao": "App\\Models\\PedidoDAO",
+        "method": "findAllByUserId",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/pedido/buscar": {
+        "dao": "App\\Models\\PedidoDAO",
+        "method": "findById",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/pedido/criar": {
+        "dao": "App\\Models\\PedidoDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\Pedido",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+
+    "api/itemPedido/listarPorPedido": {
+        "dao": "App\\Models\\ItemPedidoDAO",
+        "method": "findAllByPedidoId",
+        "paramSource": "GET",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    "api/itemPedido/adicionar": {
+        "dao": "App\\Models\\ItemPedidoDAO",
+        "method": "save",
+        "paramSource": "POST",
+        "model": "App\\Models\\ItemPedido",
+        "sessionKey": [
+            { "user_logged_in": true }
+        ]
+    },
+    
+    "login": {
+        "path": "app/pages/login.php"
+    },
+    "404": {
+        "path": "app/pages/404.php"
+    }
 }

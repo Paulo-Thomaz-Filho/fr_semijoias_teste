@@ -1,126 +1,96 @@
 <?php
-namespace app\models;
 
-class Usuario {
+namespace App\Models;
 
-	private $usuario_id;
-	private $email;
-	private $senha;
-	private $idNivelUsuario;
-	private $nome;
-	private $cpf;
-	private $endereco;
-	private $bairro;
-	private $cidade;
-	private $uf;
-	private $cep;
-	private $telefone;
-	private $foto;
-	private $ativo;
+/**
+ * Classe Modelo (POPO - Plain Old PHP Object).
+ *
+ * Sua única responsabilidade é REPRESENTAR os dados de um usuário.
+ * Ela não sabe como se conectar ou salvar no banco de dados.
+ */
+class Usuario
+{
+    // Propriedades
+    private ?int $id_usuario = null;
+    private ?string $nome = null;
+    private ?string $email = null;
+    private ?string $senha_hash = null;
+    private ?string $tipo_acesso = 'cliente';
 
-	// Getters
-	public function getIdUsuario      () { return $this->idUsuario; }
-	public function getEmail          () { return $this->email; }
-	public function getSenha          () { return $this->senha; }
-	public function getIdNivelUsuario () { return $this->idNivelUsuario; }
-	public function getNome           () { return $this->nome; }
-	public function getCpf            () { return $this->cpf; }
-	public function getEndereco       () { return $this->endereco; }
-	public function getBairro         () { return $this->bairro; }
-	public function getCidade         () { return $this->cidade; }
-	public function getUf             () { return $this->uf; }
-	public function getCep            () { return $this->cep; }
-	public function getTelefone       () { return $this->telefone; }
-	public function getFoto           () { return $this->foto; }
-	public function getAtivo          () { return $this->ativo; }
+    // --- Getters (para ler os dados) ---
+    public function getId(): ?int
+    {
+        return $this->id_usuario;
+    }
 
-	// Setters
-	public function setIdUsuario      ($idUsuario)      { $this->idUsuario = $idUsuario; }
-	public function setEmail          ($email)          { $this->email = $email; }
-	public function setSenha          ($senha)          { $this->senha = $senha; }
-	public function setIdNivelUsuario ($idNivelUsuario) { $this->idNivelUsuario = $idNivelUsuario; }
-	public function setNome           ($nome)           { $this->nome = $nome; }
-	public function setCpf            ($cpf)            { $this->cpf = $cpf; }
-	public function setEndereco       ($endereco)       { $this->endereco = $endereco; }
-	public function setBairro         ($bairro)         { $this->bairro = $bairro; }
-	public function setCidade         ($cidade)         { $this->cidade = $cidade; }
-	public function setUf             ($uf)             { $this->uf = $uf; }
-	public function setCep            ($cep)            { $this->cep = $cep; }
-	public function setTelefone       ($telefone)       { $this->telefone = $telefone; }
-	public function setFoto           ($foto)           { $this->foto = $foto; }
-	public function setAtivo          ($ativo)          { $this->ativo = $ativo; }
+    public function getNome(): ?string
+    {
+        return $this->nome;
+    }
 
-	// Construtor
-	public function __construct() {}
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-	// Carrega os dados de usuário
-	public function load($idUsuario, $email, $senha, $idNivelUsuario, $nome, $cpf, $endereco, $bairro, $cidade, $uf, $cep, $telefone, $foto, $ativo) {
-		$this->setIdUsuario($idUsuario);
-		$this->setEmail($email);
-		$this->setSenha($senha);
-		$this->setIdNivelUsuario($idNivelUsuario);
-		$this->setNome($nome);
-		$this->setCpf($cpf);
-		$this->setEndereco($endereco);
-		$this->setBairro($bairro);
-		$this->setCidade($cidade);
-		$this->setUf($uf);
-		$this->setCep($cep);
-		$this->setTelefone($telefone);
-		$this->setFoto($foto);
-		$this->setAtivo($ativo);
-	}
+    public function getSenhaHash(): ?string
+    {
+        return $this->senha_hash;
+    }
 
-	// Retorna como array
-	public function toArray() {
-		return array(
-			'idUsuario'      => $this->getIdUsuario(),
-			'email'          => $this->getEmail(),
-			'senha'          => $this->getSenha(),
-			'idNivelUsuario' => $this->getIdNivelUsuario(),
-			'nome'           => $this->getNome(),
-			'cpf'            => $this->getCpf(),
-			'endereco'       => $this->getEndereco(),
-			'bairro'         => $this->getBairro(),
-			'cidade'         => $this->getCidade(),
-			'uf'             => $this->getUf(),
-			'cep'            => $this->getCep(),
-			'telefone'       => $this->getTelefone(),
-			'foto'           => $this->getFoto(),
-			'ativo'          => $this->getAtivo()
-		);
-	}
+    public function getTipoAcesso(): ?string
+    {
+        return $this->tipo_acesso;
+    }
+    
+    // --- Setters (para definir os dados com validação) ---
+    
+    // O ID geralmente é definido apenas internamente (pelo DAO), então o setter é privado.
+    public function setId(int $id): void
+    {
+        $this->id_usuario = $id;
+    }
 
-	// Retorna JSON
-	public function arrayToJson() {
-		return json_encode($this->toArray());
-	}
+    public function setNome(string $nome): void
+    {
+        $this->nome = trim(strip_tags($nome));
+    }
 
-	// Verifica login
-	public function checkLogin($conn) {
-		if (empty($_POST['email']) || empty($_POST['senha'])) {
-			return false;
-		}
+    public function setEmail(string $email): void
+    {
+        $this->email = trim(strip_tags($email));
+    }
 
-		$email = trim($_POST['email']);
-		$senha = $_POST['senha'];
+    /**
+     * Define a senha, aplicando o hash.
+     * Esta é uma regra de negócio, por isso permanece no modelo.
+     */
+    public function setSenha(string $senha_pura): void
+    {
+        if (!empty($senha_pura)) {
+            $this->senha_hash = password_hash($senha_pura, PASSWORD_BCRYPT);
+        }
+    }
+    
+    // O setter para o hash é útil ao carregar dados do banco.
+    public function setSenhaHash(string $hash): void
+    {
+        $this->senha_hash = $hash;
+    }
 
-		$stmt = $conn->prepare("SELECT * FROM lojinha.usuarios WHERE email = ?");
-		if (!$stmt) {
-			error_log("Erro na preparação da consulta: " . $conn->error);
-			return false;
-		}
+    public function setTipoAcesso(string $tipo): void
+    {
+        $this->tipo_acesso = $tipo;
+    }
 
-		$stmt->bind_param("s", $email);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		if ($usuario = $result->fetch_assoc()) {
-			if (password_verify($senha, $usuario['senha'])) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Verifica a senha. Também é uma regra de negócio do usuário.
+     */
+    public function verificarSenha(string $senha_pura): bool
+    {
+        if (empty($senha_pura) || empty($this->senha_hash)) {
+            return false;
+        }
+        return password_verify($senha_pura, $this->senha_hash);
+    }
 }
-?>

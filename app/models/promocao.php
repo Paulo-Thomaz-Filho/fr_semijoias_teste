@@ -1,58 +1,96 @@
 <?php
-namespace app\models;
 
-class Promocao {
+namespace App\Models;
 
-    private $promocao_idpromocao_id;
-    private $descricaodescricao;
-    private $tipotipo;
-    private $valorvalor;
-    private $data_iniciodata_inicio;
-    private $data_fimdata_fim;
+/**
+ * Modelo Puro (POPO) para a entidade Promocao.
+ * Sua única responsabilidade é representar os dados de uma promoção.
+ * Não possui conhecimento sobre o banco de dados.
+ */
+class Promocao
+{
+    // Propriedades
+    private ?int $id_promocao = null;
+    private string $nome;
+    private string $tipo_desconto;
+    private float $valor_desconto;
+    private bool $ativo = true;
+    private ?string $data_inicio = null;
+    private ?string $data_fim = null;
 
-    // Getters 
-    public function getpromocao_id () { return $this->promocao_id; }
-    public function getdescricao   () { return $this->descricao; }
-    public function gettipo        () { return $this->tipo; }
-    public function getvalor       () { return $this->valor; }
-    public function getdata_inicio () { return $this->data_inicio; }
-    public function gedata_fim     () { return $this->data_fim; }
-
-    // Setters
-    public function setpromocao_id ($promocao_id) { $this->promocao_id = $promocao_id; }
-    public function setdescricao   ($descricao)    { $this->descricao = $descricao; }
-    public function settipo        ($tipo)         { $this->tipo = $tipo; }
-    public function setvalor       ($valor)        { $this->valor = $valor; }
-    public function setdata_inicio ($data_inicio)  { $this->data_inicio = $data_inicio; }
-    public function setdata_fim    ($data_fim)     { $this->data_fim = $data_fim; }
-
-    // Construtor
-	public function __construct() {}
-
-    public function load($promocao_id, $descricao, $tipo, $valor, $data_inicio, $data_fim) {
-        $this->setpromocao_id ($promocao_id);
-        $this->setdescricao   ($descricao);
-        $this->settipo        ($tipo);
-        $this->setvalor       ($valor);
-        $this->setdata_inicio ($data_inicio);
-        $this->setdata_fim    ($data_fim);
+    // --- Getters ---
+    public function getId(): ?int
+    {
+        return $this->id_promocao;
     }
 
-    public function toArray() {
-        return array(
-            'promocao_idpromocao_id' => $this->getpromocao_idpromocao_id (),
-            'descricaodescricao'     => $this->getdescricaodescricao     (),
-            'tipotipo'               => $this->gettipotipo               (),
-            'valorvalor'             => $this->getvalorvalor             (),
-            'data_iniciodata_inicio' => $this->getdata_iniciodata_inicio (),
-            'data_fimdata_fim'       => $this->getdata_fimdata_fim       (),
-        );
+    public function getNome(): string
+    {
+        return $this->nome;
     }
 
-    // Retorna JSON
-	public function arrayToJson() {
-		return json_encode($this->toArray());
-	}
+    public function getTipoDesconto(): string
+    {
+        return $this->tipo_desconto;
+    }
 
+    public function getValorDesconto(): float
+    {
+        return $this->valor_desconto;
+    }
+
+    public function isAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function getDataInicio(): ?string
+    {
+        return $this->data_inicio;
+    }
+
+    public function getDataFim(): ?string
+    {
+        return $this->data_fim;
+    }
+
+    // --- Setters ---
+    // O ID é definido internamente pelo DAO, então não há setter público para ele.
+    public function setId(int $id): void
+    {
+        $this->id_promocao = $id;
+    }
+    
+    public function setNome(string $nome): void
+    {
+        $this->nome = trim(strip_tags($nome));
+    }
+
+    public function setTipoDesconto(string $tipo): void
+    {
+        // Validação para garantir que o tipo seja um dos valores esperados
+        if (in_array($tipo, ['percentual', 'fixo'])) {
+            $this->tipo_desconto = $tipo;
+        }
+    }
+
+    public function setValorDesconto(float $valor): void
+    {
+        $this->valor_desconto = $valor;
+    }
+
+    public function setAtivo(bool $ativo): void
+    {
+        $this->ativo = $ativo;
+    }
+
+    public function setDataInicio(?string $data): void
+    {
+        $this->data_inicio = $data;
+    }
+
+    public function setDataFim(?string $data): void
+    {
+        $this->data_fim = $data;
+    }
 }
-?>

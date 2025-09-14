@@ -1,43 +1,23 @@
 <?php
-namespace app\models;
 
-class Categoria {
+namespace App\Models;
 
-  	private $categoria_id;
-	private $nome;
-	private $descricao;
+/**
+ * Modelo Puro (POPO) para a entidade Categoria.
+ */
+class Categoria
+{
+    private ?int $id_categoria = null;
+    private string $nome;
+    private ?string $descricao = null;
 
-    // Getters
-	public function getcategoria_id  () { return $this->categoria_id; }
-	public function getnome          () { return $this->nome; }
-	public function descricao        () { return $this->descricao; }
+    // --- Getters ---
+    public function getId(): ?int { return $this->id_categoria; }
+    public function getNome(): string { return $this->nome; }
+    public function getDescricao(): ?string { return $this->descricao; }
 
-    // Setters
-	public function setcategoria_id  ($categoria_id) { $this->categoria_id = $categoria_id; }
-	public function setnome          ($nome)         { $this->nome = $nome; }
-	public function setdescricao     ($descricao)    { $this->descricao = $descricao; }
-
-    // Construtor
-	public function __construct() {}
-
-    public function load($categoria_id, $nome, $descricao) {
-		$this->setcategoria_id($categoria_id);
-		$this->setnome($nome);
-		$this->setdescricao($descricao);
-    }
-
-    public function toArray() {
-        return array(
-            'categoria_id'  => $this->getcategoria_id(),
-            'nome'          => $this->getnome(),
-            'descricao'     => $this->getdescricao(),
-        );
-    }
-    
-    // Retorna JSON
-	public function arrayToJson() {
-		return json_encode($this->toArray());
-	}
-
+    // --- Setters ---
+    public function setId(int $id): void { $this->id_categoria = $id; }
+    public function setNome(string $nome): void { $this->nome = trim(strip_tags($nome)); }
+    public function setDescricao(?string $desc): void { $this->descricao = $desc ? trim(strip_tags($desc)) : null; }
 }
-?>

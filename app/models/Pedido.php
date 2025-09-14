@@ -1,74 +1,32 @@
 <?php
-namespace app\models;
 
-class Pedido {
+namespace App\Models;
 
-	private $pedido_id;
-	private $usuario_id;
-	private $data_pedido;
-	private $status;
-	private $valor_total;
-	private $endereco_entrega;
+/**
+ * Modelo Puro (POPO) para a entidade Pedido.
+ */
+class Pedido
+{
+    private ?int $id_pedido = null;
+    private int $id_usuario;
+    private int $id_endereco_entrega;
+    private float $valor_total;
+    private string $status = 'processando';
+    private ?string $data_pedido = null;
 
-    // Getters
-	public function getpedido_id        () { return $this->pedido_id; }
-	public function getusuario_id       () { return $this->usuario_id; }
-	public function getdata_pedido      () { return $this->data_pedido; }
-	public function getstatus           () { return $this->status; }
-	public function getvalor_total      () { return $this->valor_total; }
-	public function getendereco_entrega () { return $this->endereco_entrega; }
+    // --- Getters ---
+    public function getId(): ?int { return $this->id_pedido; }
+    public function getIdUsuario(): int { return $this->id_usuario; }
+    public function getIdEnderecoEntrega(): int { return $this->id_endereco_entrega; }
+    public function getValorTotal(): float { return $this->valor_total; }
+    public function getStatus(): string { return $this->status; }
+    public function getDataPedido(): ?string { return $this->data_pedido; }
 
-    
-	// Setters
-	public function setpedido_id        ($pedido_id)        { $this->pedido_id = $pedido_id; }
-	public function setusuario_id       ($usuario_id)       { $this->usuario_id = $usuario_id; }
-	public function setdata_pedido      ($data_pedido)      { $this->data_pedido = $data_pedido; }
-	public function setstatus           ($status)           { $this->status = $status; }
-	public function setvalor_total      ($valor_total)      { $this->valor_total = $valor_total; }
-	public function setendereco_entrega ($endereco_entrega) { $this->endereco_entrega = $endereco_entrega; }
-
-    // Construtor
-	public function __construct() {}
-
-    // Carrega valores
-	public function load($pedido_id, $usuario_id, $data_pedido, $status, $valor_total, $endereco_entrega) {
-		$this->setpedido_id($pedido_id);
-		$this->setusuario_id($usuario_id);
-		$this->setdata_pedido($data_pedido);
-		$this->setstatus($status);
-		$this->setvalor_total($valor_total);
-		$this->setendereco_entrega($endereco_entrega);
-    }
-
-    public function toArray() {
-        return array(
-            'pedido_id'        => $this->getpedido_id(),
-            'usuario_id'       => $this->getusuario_id(),
-            'data_pedido'      => $this->getdata_pedido(),
-            'status'           => $this->getstatus(),
-            'valor_total'      => $this->getvalor_total(),
-            'endereco_entrega' => $this->getendereco_entrega(),
-        );
-    }
-
-    // Retorna JSON
-	public function arrayToJson() {
-		return json_encode($this->toArray());
-	}
-
-    	// Exemplo de método (precisa de implementação de banco)
-	public function checkPedido($conn) {
-		$pedido_id      = $_POST['pedido_id'] ?? '';
-		$usuario_id     = $_POST['usuario_id'] ?? '';
-		$status_entrega = $_POST['status'] ?? '';
-
-		$stmt = $conn->prepare("SELECT * FROM loja.pedido WHERE pedido_id = ? AND usuario_id = ? AND status_entrega = ?");
-		$stmt->bind_param("sss", $pedido_id, $usuario_id, $status_entrega);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		return $result->num_rows > 0;
-	}
-
+    // --- Setters ---
+    public function setId(int $id): void { $this->id_pedido = $id; }
+    public function setIdUsuario(int $id_usuario): void { $this->id_usuario = $id_usuario; }
+    public function setIdEnderecoEntrega(int $id_endereco): void { $this->id_endereco_entrega = $id_endereco; }
+    public function setValorTotal(float $valor): void { $this->valor_total = $valor; }
+    public function setStatus(string $status): void { $this->status = $status; }
+    public function setDataPedido(string $data): void { $this->data_pedido = $data; }
 }
-?>

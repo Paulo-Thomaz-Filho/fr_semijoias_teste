@@ -2,134 +2,230 @@
 
 namespace core\utils;
 
+// Não se esqueça de incluir as classes que serão usadas
+use App\Models\Usuario;
+use App\Models\UsuarioDAO;
+// Adicione outros DAOs e Models aqui conforme necessário
+
 class Router {
     
-    private $routes = [];
+    private array $routes = [];
+    private string $rootPath;
 
     public function __construct() {
         global $rootPath;
         global $config;
+        $this->rootPath = $rootPath;
+        
         $json = file_get_contents($config['path']['routes']);
         $routes = json_decode($json, true);
+        
         foreach ($routes as $path => $route) {
-            $this->addRoute($path, $rootPath . "/" . $route['path'], $route['sanitize']?? null, $route['sessionKey']?? null, $route['errorPath'] ?? null);
+            $this->addRoute($path, $route);
         }
-        //print_r(json_decode($config['path']['routes']));
     }
     
-    public function addRoute($requiredPath, $physicalPath, $sanitizeConfig, $sessionKey, $errorPath) {
-        $this->routes[$requiredPath] = [
-            'path' => $physicalPath,
-            'sanitize' => $sanitizeConfig,
-            'sessionKey' => $sessionKey,
-            'errorPath' => $errorPath
-        ];
+    public function addRoute(string $requiredPath, array $routeConfig): void {
+        // Resolve o caminho físico se ele existir
+        if (isset($routeConfig['path'])) {
+            $routeConfig['path'] = $this->rootPath . "/" . $routeConfig['path'];
+        }
+        $this->routes[$requiredPath] = $routeConfig;
     }
     
-    public function dispatch($module = null) {
-        // Inicia a sessão se ainda não foi iniciada
+    public function dispatch(string $module = null): void {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         
-        $accessGranted = false;
-        
         if (str_starts_with($module, "public/")) {
-            $fileExtension = strtolower(pathinfo($module, PATHINFO_EXTENSION));
-            switch ($fileExtension) {
-            case 'php':
-                require $module; return;
-            case 'html':
-                require $module; return;
-            default:
-                $this->headerMimeTypes($fileExtension);
-                echo \file_get_contents($module); return;
-            }
+            $this->servePublicFile($module);
+            return;
         }
         
         if (isset($this->routes[$module])) {
             $route = $this->routes[$module];
-            if (file_exists($route['path'])) {
-                $accessGranted = true;
-                if (isset($route['sessionKey'])) {
-                    foreach ($route['sessionKey'] as $sessionRequirement) {
-                        foreach ($sessionRequirement as $key => $value) {
-                            if ($value === true) {
-                                if (!isset($_SESSION[$key])) {
-                                    $accessGranted = false;
-                                    break 2;
-                                }
-                            } elseif (is_array($value)) {
-                                if (!isset($_SESSION[$key]) || !in_array($_SESSION[$key], $value)) {
-                                    $accessGranted = false;
-                                    break 2;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if ($accessGranted) {
-                    if ($route['sanitize']['requestVars'] ?? false) {
-                        (new Sanitize(true, false, false))->getCleanRequestVars();
-                    }
-                    require $route['path'];
-                } else {
-                    $this->redirectToErrorPage($route);
-                }
-            } else {
-                // Se o arquivo físico da rota não existir, redireciona para a função notFound
-                http_response_code(404);
-                header('Content-Type: application/json');
-                header('Content-Type: text/html; charset=utf-8');
-                header('HTTP/1.0 404 Not Found');
-                $response = [
-                    'error' => '404 - Rota requerida existe, mas o recurso requerido não encontrado!',
-                    'errorno' => 404,
-                ];
-                echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            
+            if (!$this->isAccessGranted($route)) {
+                $this->redirectToErrorPage($route);
+                return;
+            }
+
+            // Sanitização (opcional, mantida do seu código original)
+            if ($route['sanitize']['requestVars'] ?? false) {
+                (new Sanitize(true, false, false))->getCleanRequestVars();
+            }
+
+            // ** AQUI ESTÁ A NOVA LÓGICA **
+            // Se a rota define um DAO e um método, entra no modo API
+            if (isset($route['dao']) && isset($route['method'])) {
+                $this->handleDaoRoute($route);
+            } 
+            // Senão, usa o modo antigo de incluir o arquivo
+            elseif (isset($route['path']) && file_exists($route['path'])) {
+                require $route['path'];
+            } 
+            // Erro se a rota está mal configurada ou o arquivo não existe
+            else {
+                $this->resourceNotFound($module);
             }
         } else {
-            // Se a rota não estiver definida, redireciona para a função notFound
-            http_response_code(404);
-            header('Content-Type: application/json');
-            header('Content-Type: text/html; charset=utf-8');
-            header('HTTP/1.0 404 Route Module Not Found');
-            $response = [
-                'error' => '404 - Rota requerida não encontrada!',
-                'errorno' => 404,
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            $this->routeNotFound();
+        }
+    }
+
+    /**
+     * Verifica se o usuário tem permissão para acessar a rota com base na sessão.
+     */
+    private function isAccessGranted(array $route): bool {
+        if (!isset($route['sessionKey'])) {
+            return true; // Rota pública
+        }
+        
+        foreach ($route['sessionKey'] as $sessionRequirement) {
+            foreach ($sessionRequirement as $key => $value) {
+                if ($value === true) {
+                    if (!isset($_SESSION[$key])) return false;
+                } elseif (is_array($value)) {
+                    if (!isset($_SESSION[$key]) || !in_array($_SESSION[$key], $value)) {
+                        return false;
+                    }
+                } elseif (isset($_SESSION[$key]) && $_SESSION[$key] !== $value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Manipula a rota no modo DAO/API.
+     */
+    private function handleDaoRoute(array $route): void {
+        $daoClass = $route['dao'];
+        $methodName = $route['method'];
+
+        if (!class_exists($daoClass) || !method_exists($daoClass, $methodName)) {
+            $this->sendJsonResponse(['error' => 'Configuração de rota inválida: classe ou método não encontrado.'], 500);
+            return;
+        }
+
+        try {
+            $daoInstance = new $daoClass();
+            $reflectionMethod = new \ReflectionMethod($daoClass, $methodName);
+            $args = $this->resolveMethodArguments($reflectionMethod, $route);
+            
+            $result = $reflectionMethod->invokeArgs($daoInstance, $args);
+
+            $this->sendJsonResponse($result);
+
+        } catch (\Exception $e) {
+            $this->sendJsonResponse(['error' => 'Erro ao executar a operação.', 'details' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Usa Reflection para montar os argumentos para o método do DAO.
+     */
+    private function resolveMethodArguments(\ReflectionMethod $method, array $route): array {
+        $dataSource = [];
+        $paramSource = $route['paramSource'] ?? null;
+        if ($paramSource === 'GET') {
+            $dataSource = $_GET;
+        } elseif ($paramSource === 'POST') {
+            $dataSource = $_POST;
+        }
+
+        // Caso especial para o método 'save' que recebe um objeto Model
+        if (isset($route['model']) && $method->getNumberOfParameters() === 1) {
+            $modelClass = $route['model'];
+            $reflectionParam = $method->getParameters()[0];
+            $paramType = $reflectionParam->getType();
+
+            if ($paramType && !$paramType->isBuiltin() && $paramType->getName() === $modelClass) {
+                $modelInstance = new $modelClass();
+                // Preenche o modelo com os dados do POST/PUT
+                foreach ($dataSource as $key => $value) {
+                    $setter = 'set' . ucfirst(str_replace('_', '', ucwords($key, '_')));
+                    if (method_exists($modelInstance, $setter)) {
+                        $modelInstance->$setter($value);
+                    }
+                }
+                // Se o ID estiver no GET (para updates), define também
+                if (isset($_GET['id_usuario'])) {
+                    $modelInstance->setId((int)$_GET['id_usuario']);
+                }
+
+                return [&$modelInstance]; // Passa por referência
+            }
+        }
+
+        // Lógica geral para outros métodos
+        $args = [];
+        foreach ($method->getParameters() as $param) {
+            $paramName = $param->getName();
+            if (isset($dataSource[$paramName])) {
+                $args[] = $dataSource[$paramName];
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $param->getDefaultValue();
+            } else {
+                throw new \Exception("Parâmetro obrigatório '{$paramName}' não encontrado na requisição.");
+            }
+        }
+        return $args;
+    }
+
+    /**
+     * Envia uma resposta em formato JSON.
+     */
+    private function sendJsonResponse($data, int $httpCode = 200): void {
+        http_response_code($httpCode);
+        header('Content-Type: application/json; charset=utf-8');
+        // Para DAOs que retornam booleano (update, delete), retorna um status
+        if (is_bool($data)) {
+            echo json_encode(['success' => $data]);
+        } 
+        // Para DAOs que retornam objetos ou arrays, serializa eles
+        else {
+            echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
     }
     
-    private function redirectToErrorPage($route) {
+    private function servePublicFile(string $module): void {
+        $fileExtension = strtolower(pathinfo($module, PATHINFO_EXTENSION));
+        if (in_array($fileExtension, ['php', 'html'])) {
+            require $module;
+            return;
+        }
+        $this->headerMimeTypes($fileExtension);
+        if (file_exists($module)) {
+            echo file_get_contents($module);
+        } else {
+            http_response_code(404);
+        }
+    }
+
+    private function redirectToErrorPage(array $route): void {
         if (isset($route['errorPath']) && file_exists($route['errorPath'])) {
             require $route['errorPath'];
         } else {
-            $this->notFound();
+            $this->routeNotFound();
         }
     }
     
-    public function notFound() {
-        if (isset($this->routes['404']) && file_exists($this->routes['404']['path'])) {
-            require $this->routes['404']['path'];
-        } else {
-            header('Content-Type: application/json'); 
-            header('Content-Type: text/html; charset=utf-8');
-            header('HTTP/1.0 404 Not Found');
-            $response = [
-                'error' => '404 - Page not found.',
-                'errorno' => 404,
-                'GET' => $_GET,
-                'POST' => $_POST,
-                'REQUEST' => $_REQUEST
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        }
+    public function routeNotFound(): void {
+        http_response_code(404);
+        $this->sendJsonResponse(['error' => '404 - Rota requerida não encontrada!', 'details' => $_GET]);
     }
     
-    function headerMimeTypes($extension) {
+    private function resourceNotFound(string $module): void {
+        http_response_code(404);
+        $this->sendJsonResponse(['error' => "404 - Rota '{$module}' existe, mas o recurso (arquivo ou DAO) não foi encontrado ou está mal configurado!"]);
+    }
+    
+    // Seu método headerMimeTypes permanece o mesmo...
+    private function headerMimeTypes($extension) {
+        // ... (código original sem alterações)
         $jsonMimeTypes = '[
             {"extension": "jpg",  "mimetype": "image/jpeg"},
             {"extension": "jpeg", "mimetype": "image/jpeg"},
@@ -190,5 +286,4 @@ class Router {
         }
     }
 }
-
 ?>
