@@ -5,22 +5,13 @@
 }
 
 :root {
-  --color-black: #0a0a0a;
+  --color-black: #000000;
   --color-white: #f3f3f3;
   --color-hover: #282828;
-  --border-radius: 2rem;
-}
-
-.text-black {
-  color: var(--color-black);
-}
-
-.p-6 {
-  padding: 4rem !important;
 }
 
 .gap-6 {
-  gap: 7rem !important;
+  gap: 9rem !important;
 }
 
 .logo-container {
@@ -34,29 +25,46 @@
   height: auto;
 }
 
-.sidebar {
-  width: 14rem;
-  min-width: 14rem;
-  flex-shrink: 0;
-}
-
-.rounded-sidebar {
-  border-radius: var(--border-radius);
-}
-
-.button-dark {
-  background-color: var(--color-black) !important;
-  color: var(--color-white) !important;
-  letter-spacing: 1px;
+a {
   transition: all 0.3s ease;
+
+  &:hover {
+    transition: all 0.3s ease;
+  }
 }
 
-.button-dark:hover {
-  background-color: var(--color-hover) !important;
-  color: var(--color-white) !important;
+.hover-transition {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transition: all 0.3s ease;
+  }
 }
 
-aside a:hover {
-  color: var(--color-hover) !important;
-  transition: all 0.3s;
+::placeholder {
+  color: #6c757d !important;
+}
+
+.table-transparent {
+  --bs-table-bg: transparent !important;
+}
+
+.chart-container-bar {
+  height: 200px !important;
+}
+
+.chart-container-doughnut {
+  min-height: 180px !important;
+}
+
+.status-success {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.status-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.status-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
 }
