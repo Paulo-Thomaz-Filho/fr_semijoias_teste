@@ -62,7 +62,7 @@ if ($showErrors){
 }
 
 $config['database']['host']		= 'localhost';
-$config['database']['schema']	= 'fr_semijoias';
+$config['database']['schema']	= 'fr_db';
 $config['database']['user']		= 'root';
 $config['database']['pass']		= '';
 $config['database']['port']		= '3306';

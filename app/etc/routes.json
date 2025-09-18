@@ -208,8 +208,17 @@
         ]
     },
     
+
+
+
+    "admin": {
+        "path": "public/views/admin_dashboard.html",
+        "sessionKey": [
+            { "user_tipo": ["admin"] }
+        ]
+    },
     "login": {
-        "path": "app/pages/login.php"
+        "path": "public/views/admin_login.html"
     },
     "404": {
         "path": "app/pages/404.php"

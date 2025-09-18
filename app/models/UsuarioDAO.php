@@ -1,36 +1,24 @@
 <?php
-
 namespace App\Models;
 
-// Supondo que suas classes do core estarão nesses namespaces
-use App\Core\Database\DBQuery;
-use App\Core\Database\Where;
+use PDO;
+use PDOException;
 
 /**
- * Classe DAO (Data Access Object) para a entidade Usuario.
- *
- * Sua única responsabilidade é ser a PONTE entre a aplicação
- * e a tabela 'usuarios' no banco de dados.
+ * DAO para a entidade Usuario, refatorado para o padrão moderno e seguro.
  */
 class UsuarioDAO
 {
-    private DBQuery $dbQuery;
-
-    public function __construct()
-    {
-        // Configura o DBQuery para trabalhar com a tabela 'usuarios'
-        $tableName = 'Usuarios';
-        $fields = 'id_usuario, nome, email, senha_hash, tipo_acesso';
-        $primaryKey = 'id_usuario';
-        
-        $this->dbQuery = new DBQuery($tableName, $fields, $primaryKey);
-    }
+    private PDO $conexao;
 
     /**
-     * Converte uma linha de dados do banco em um objeto Usuario.
-     * @param array $row Dados vindos do banco.
-     * @return Usuario Objeto preenchido.
+     * Recebe a conexão PDO via Injeção de Dependência.
      */
+    public function __construct(PDO $db)
+    {
+        $this->conexao = $db;
+    }
+
     private function hydrate(array $row): Usuario
     {
         $usuario = new Usuario();
@@ -42,112 +30,75 @@ class UsuarioDAO
         return $usuario;
     }
 
-    /**
-     * Busca um usuário pelo seu ID.
-     * @return Usuario|null Retorna o objeto Usuario ou null se não encontrar.
-     */
     public function findById(int $id): ?Usuario
     {
-        $where = new Where();
-        $where->add('id_usuario', '=', $id);
-        
-        $result = $this->dbQuery->selectFiltered($where);
-
-        return $result ? $this->hydrate($result[0]) : null;
+        $stmt = $this->conexao->prepare("SELECT * FROM Usuarios WHERE id_usuario = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data ? $this->hydrate($data) : null;
     }
-    
-    /**
-     * Busca um usuário pelo seu e-mail.
-     * @return Usuario|null Retorna o objeto Usuario ou null se não encontrar.
-     */
+
     public function findByEmail(string $email): ?Usuario
     {
-        $where = new Where();
-        $where->add('email', '=', $email);
-        
-        $result = $this->dbQuery->selectFiltered($where);
-
-        return $result ? $this->hydrate($result[0]) : null;
+        $stmt = $this->conexao->prepare("SELECT * FROM Usuarios WHERE email = :email");
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data ? $this->hydrate($data) : null;
     }
-    
+
     /**
-     * Busca todos os usuários.
-     * @return array Retorna um array de objetos Usuario.
+     * Renomeado de index() para findAll() para seguir o padrão do seu routes.json
      */
-    public function findAll(): array
+    public function index(): array
     {
+        $stmt = $this->conexao->query("SELECT * FROM Usuarios ORDER BY nome ASC");
         $results = [];
-        $data = $this->dbQuery->select();
-        
-        foreach ($data as $row) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $results[] = $this->hydrate($row);
         }
-        
         return $results;
     }
 
-    /**
-     * Salva um usuário no banco (decide entre inserir ou atualizar).
-     * @param Usuario $usuario O objeto a ser salvo.
-     * @return bool True se sucesso, false se falha.
-     */
     public function save(Usuario &$usuario): bool
     {
-        // Se o objeto já tem um ID, é uma atualização
         if ($usuario->getId()) {
-            return $this->update($usuario);
+            $query = "UPDATE Usuarios SET nome = :nome, email = :email, senha_hash = :hash, tipo_acesso = :tipo WHERE id_usuario = :id";
+        } else {
+            $query = "INSERT INTO Usuarios (nome, email, senha_hash, tipo_acesso) VALUES (:nome, :email, :hash, :tipo)";
         }
-        // Se não, é uma inserção
-        return $this->insert($usuario);
-    }
-    
-    /**
-     * Insere um novo usuário no banco de dados.
-     */
-    public function insert(Usuario &$usuario): bool
-    {
-        $data = [
-            'nome' => $usuario->getNome(),
-            'email' => $usuario->getEmail(),
-            'senha_hash' => $usuario->getSenhaHash(),
-            'tipo_acesso' => $usuario->getTipoAcesso()
-        ];
-        
-        $newId = $this->dbQuery->insert($data);
-        
-        if ($newId) {
-            $usuario->setId($newId); // Atualiza o objeto com o novo ID
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindValue(':nome', $usuario->getNome());
+            $stmt->bindValue(':email', $usuario->getEmail());
+            $stmt->bindValue(':hash', $usuario->getSenhaHash());
+            $stmt->bindValue(':tipo', $usuario->getTipoAcesso());
+
+            if ($usuario->getId()) {
+                $stmt->bindValue(':id', $usuario->getId(), PDO::PARAM_INT);
+            }
+            $stmt->execute();
+            if (!$usuario->getId()) {
+                $usuario->setId((int)$this->conexao->lastInsertId());
+            }
             return true;
+        } catch (PDOException $e) {
+            error_log("Erro ao salvar usuário: " . $e->getMessage());
+            return false;
         }
-        return false;
-    }
-    
-    /**
-     * Atualiza um usuário existente no banco de dados.
-     */
-    public function update(Usuario $usuario): bool
-    {
-        $data = [
-            'nome' => $usuario->getNome(),
-            'email' => $usuario->getEmail(),
-            'senha_hash' => $usuario->getSenhaHash(),
-            'tipo_acesso' => $usuario->getTipoAcesso()
-        ];
-        
-        $where = new Where();
-        $where->add('id_usuario', '=', $usuario->getId());
-
-        return $this->dbQuery->update($data, $where);
     }
 
-    /**
-     * Deleta um usuário pelo ID.
-     */
     public function delete(int $id): bool
     {
-        $where = new Where();
-        $where->add('id_usuario', '=', $id);
-
-        return $this->dbQuery->delete($where);
+        try {
+            $stmt = $this->conexao->prepare("DELETE FROM Usuarios WHERE id_usuario = :id");
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Erro ao deletar usuário: " . $e->getMessage());
+            return false;
+        }
     }
 }
