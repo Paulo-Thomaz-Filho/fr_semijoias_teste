@@ -1,13 +1,9 @@
 <?php
-
 namespace App\Models;
 
 use PDO;
 use PDOException;
 
-/**
- * DAO para a entidade Pedido.
- */
 class PedidoDAO
 {
     private PDO $conexao;
@@ -41,7 +37,7 @@ class PedidoDAO
             }
             return true;
         } catch (PDOException $e) {
-            error_log($e->getMessage());
+            error_log("Erro ao salvar pedido: " . $e->getMessage());
             return false;
         }
     }
@@ -71,6 +67,43 @@ class PedidoDAO
         return $listaPedidos;
     }
 
+    /**
+     * Busca todos os pedidos com o nome do cliente, para o painel de admin.
+     */
+    public function findAll(): array
+    {
+        $query = "SELECT 
+                    p.*, 
+                    u.nome AS nome_cliente
+                  FROM Pedidos p
+                  LEFT JOIN Usuarios u ON p.id_usuario = u.id_usuario
+                  ORDER BY p.data_pedido DESC";
+        
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+            $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Adiciona o nome do primeiro produto a cada pedido
+            foreach ($pedidos as $key => $pedido) {
+                $itemStmt = $this->conexao->prepare(
+                    "SELECT pr.nome FROM Itens_Pedido ip 
+                     JOIN Produtos pr ON ip.id_produto = pr.id_produto 
+                     WHERE ip.id_pedido = :pedido_id LIMIT 1"
+                );
+                $itemStmt->bindValue(':pedido_id', $pedido['id_pedido'], PDO::PARAM_INT);
+                $itemStmt->execute();
+                $item = $itemStmt->fetch(PDO::FETCH_ASSOC);
+                $pedidos[$key]['nome_produto'] = $item ? $item['nome'] : 'Múltiplos Itens';
+            }
+            return $pedidos;
+
+        } catch (PDOException $e) {
+            // Lança a exceção para ser capturada pelo Router
+            throw $e;
+        }
+    }
+    
     private function hydrate(array $dados): Pedido
     {
         $pedido = new Pedido();
@@ -83,3 +116,4 @@ class PedidoDAO
         return $pedido;
     }
 }
+

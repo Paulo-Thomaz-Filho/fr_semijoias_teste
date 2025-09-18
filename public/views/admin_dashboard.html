@@ -1,29 +1,14 @@
-<<<<<<< HEAD
-settings<!DOCTYPE html>
-=======
 <!DOCTYPE html>
->>>>>>> c243dfecec9d3a5de970c07a22207405f331fb8b
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon -->
     <link
       rel="shortcut icon"
-<<<<<<< HEAD
       href="settings/images/logo.svg"
       type="image/x-icon"
     />
-    <!-- CSS -->
-    <link rel="stylesheet" href="settings/css/style.css"/>
-=======
-      href="/public/settings/images/logo.svg"
-      type="image/x-icon"
-    />
-    <!-- CSS -->
-    <link rel="stylesheet" href="/public/settings/css/style.css" />
->>>>>>> c243dfecec9d3a5de970c07a22207405f331fb8b
-    <!-- Bootstrap -->
+    <link rel="stylesheet" href="settings/css/style.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -31,28 +16,19 @@ settings<!DOCTYPE html>
     <title>FR Semijoias</title>
   </head>
   <body>
-    <!-- Sidebar/Main -->
     <div class="d-flex vh-100">
-      <!-- Aside -->
       <aside
         class="d-flex flex-column align-items-center justify-content-between bg-light p-5 position-fixed h-100"
       >
-        <!-- Logo/Menu -->
         <div class="d-flex flex-column align-items-center gap-6">
-          <!-- Logo -->
           <div class="logo-container">
             <img
-<<<<<<< HEAD
               src="settings/images/logo.svg"
-=======
-              src="/public/settings/images/logo.svg"
->>>>>>> c243dfecec9d3a5de970c07a22207405f331fb8b
               alt="Logo FR Semijoias"
               class="logo-large"
             />
           </div>
 
-          <!-- Menu -->
           <nav>
             <ul
               class="d-flex flex-column gap-4 align-items-start list-unstyled"
@@ -207,39 +183,13 @@ settings<!DOCTYPE html>
                   Pedidos
                 </a>
               </li>
-              <li class="d-flex align-items-center">
-                <a
-                  href="#"
-                  class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-black fw-medium py-2 px-3 rounded-4"
-                  onmouseover="this.classList.add('bg-body-secondary');"
-                  onmouseout="this.classList.remove('bg-body-secondary');"
-                >
-                  <svg
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M7.0498 7.0498H7.0598M10.5118 3H7.8C6.11984 3 5.27976 3 4.63803 3.32698C4.07354 3.6146 3.6146 4.07354 3.32698 4.63803C3 5.27976 3 6.11984 3 7.8V10.5118C3 11.2455 3 11.6124 3.08289 11.9577C3.15638 12.2638 3.27759 12.5564 3.44208 12.8249C3.6276 13.1276 3.88703 13.387 4.40589 13.9059L9.10589 18.6059C10.2939 19.7939 10.888 20.388 11.5729 20.6105C12.1755 20.8063 12.8245 20.8063 13.4271 20.6105C14.112 20.388 14.7061 19.7939 15.8941 18.6059L18.6059 15.8941C19.7939 14.7061 20.388 14.112 20.6105 13.4271C20.8063 12.8245 20.8063 12.1755 20.6105 11.5729C20.388 10.888 19.7939 10.2939 18.6059 9.10589L13.9059 4.40589C13.387 3.88703 13.1276 3.6276 12.8249 3.44208C12.5564 3.27759 12.2638 3.15638 11.9577 3.08289C11.6124 3 11.2455 3 10.5118 3ZM7.5498 7.0498C7.5498 7.32595 7.32595 7.5498 7.0498 7.5498C6.77366 7.5498 6.5498 7.32595 6.5498 7.0498C6.5498 6.77366 6.77366 6.5498 7.0498 6.5498C7.32595 6.5498 7.5498 6.77366 7.5498 7.0498Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Promoções
-                </a>
-              </li>
             </ul>
           </nav>
         </div>
-        <!-- Button Logout -->
         <div>
           <a
             href="#"
-            class="d-flex align-items-center gap-3 text-black text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3"
+            id="logoutButton" class="d-flex align-items-center gap-3 text-black text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3"
             onmouseover="this.classList.add('bg-danger', 'text-white');"
             onmouseout="this.classList.remove('bg-danger', 'text-white');"
           >
@@ -263,21 +213,17 @@ settings<!DOCTYPE html>
         </div>
       </aside>
 
-      <!-- Main -->
       <main
         class="bg-light px-4 py-3 h-100 overflow-auto main-with-sidebar dashboard-active"
       >
-        <!-- Header -->
         <header
           class="w-100 px-5 py-3 d-flex align-items-center justify-content-between text-black"
         >
-          <!-- Bem-vindo, Usuário -->
           <div>
             <h1 class="fs-2 fw-semibold">Bem-vinda, Fernanda!</h1>
             <h2 class="small text-muted">O que você gostaria de fazer hoje?</h2>
           </div>
 
-          <!-- Button, Pesquisar, User Dropdown -->
           <div class="d-flex gap-4">
             <button
               class="border-0 bg-body-secondary rounded-pill p-2 hover-transition"
@@ -373,7 +319,7 @@ settings<!DOCTYPE html>
                 <li><hr class="dropdown-divider my-2 opacity-25" /></li>
                 <li>
                   <a
-                    class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3"
+                    id="logoutButtonDropdown" class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3"
                     href="#"
                     onmouseover="this.classList.add('bg-danger', 'text-white');"
                     onmouseout="this.classList.remove('bg-danger', 'text-white');"
@@ -401,23 +347,19 @@ settings<!DOCTYPE html>
           </div>
         </header>
 
-        <!-- Dashboard -->
         <section
           id="dashboard-section"
           class="bg-body-secondary rounded-4 px-3 py-4 is-active"
           aria-hidden="false"
         >
           <div class="container-fluid">
-            <!-- Cards e Gráfico de Barras -->
             <div class="row g-4 mb-3">
-              <!-- Cards -->
-              <div class="col-md-4">
+              <div class="col-md-12">
                 <div
                   class="bg-light rounded-4 p-3 h-100 d-flex align-items-center"
                 >
-                  <div class="row g-3">
-                    <!-- Card 1 -->
-                    <div class="col-6">
+                  <div class="row g-4 w-100">
+                    <div class="col-4">
                       <div
                         class="bg-white rounded-3 border border-light p-3 shadow-sm hover-transition user-select-none"
                         onmouseover="this.classList.remove('shadow-sm'); this.classList.add('shadow');"
@@ -445,14 +387,13 @@ settings<!DOCTYPE html>
                             <p class="text-muted mb-1 small fw-normal">
                               Total de Ganhos
                             </p>
-                            <h5 class="fw-medium text-black mb-0">R$ 60,00</h5>
+                            <h5 class="fw-medium text-black mb-0"><span id="card-total-ganhos">R$ 0,00</span></h5>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Card 2 -->
-                    <div class="col-6">
+                    <div class="col-4">
                       <div
                         class="bg-white rounded-3 border border-light p-3 shadow-sm hover-transition user-select-none"
                         onmouseover="this.classList.remove('shadow-sm'); this.classList.add('shadow');"
@@ -480,16 +421,13 @@ settings<!DOCTYPE html>
                             <p class="text-muted mb-1 small fw-normal">
                               Cadastrados
                             </p>
-                            <h5 class="fw-medium text-black mb-0">
-                              12 Usuários
-                            </h5>
+                            <h5 class="fw-medium text-black mb-0"><span id="card-total-usuarios">0</span></h5>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Card 3 -->
-                    <div class="col-6">
+                    <div class="col-4">
                       <div
                         class="bg-white rounded-3 border border-light p-3 shadow-sm hover-transition user-select-none"
                         onmouseover="this.classList.remove('shadow-sm'); this.classList.add('shadow');"
@@ -517,42 +455,7 @@ settings<!DOCTYPE html>
                             <p class="text-muted mb-1 small fw-normal">
                               Vendidos no Mês
                             </p>
-                            <h5 class="fw-medium text-black mb-0">43 Vendas</h5>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="col-6">
-                      <div
-                        class="bg-white rounded-3 border border-light p-3 shadow-sm hover-transition user-select-none"
-                        onmouseover="this.classList.remove('shadow-sm'); this.classList.add('shadow');"
-                        onmouseout="this.classList.remove('shadow'); this.classList.add('shadow-sm');"
-                      >
-                        <div class="d-flex align-items-center gap-3">
-                          <div class="text-black">
-                            <svg
-                              width="32px"
-                              height="32px"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M11.2691 4.41115C11.5006 3.89177 11.6164 3.63208 11.7776 3.55211C11.9176 3.48263 12.082 3.48263 12.222 3.55211C12.3832 3.63208 12.499 3.89177 12.7305 4.41115L14.5745 8.54808C14.643 8.70162 14.6772 8.77839 14.7302 8.83718C14.777 8.8892 14.8343 8.93081 14.8982 8.95929C14.9705 8.99149 15.0541 9.00031 15.2213 9.01795L19.7256 9.49336C20.2911 9.55304 20.5738 9.58288 20.6997 9.71147C20.809 9.82316 20.8598 9.97956 20.837 10.1342C20.8108 10.3122 20.5996 10.5025 20.1772 10.8832L16.8125 13.9154C16.6877 14.0279 16.6252 14.0842 16.5857 14.1527C16.5507 14.2134 16.5288 14.2807 16.5215 14.3503C16.5132 14.429 16.5306 14.5112 16.5655 14.6757L17.5053 19.1064C17.6233 19.6627 17.6823 19.9408 17.5989 20.1002C17.5264 20.2388 17.3934 20.3354 17.2393 20.3615C17.0619 20.3915 17.8156 20.2495 16.323 19.9654L12.3995 17.7024C12.2539 17.6184 12.1811 17.5765 12.1037 17.56C12.0352 17.5455 11.9644 17.5455 11.8959 17.56C11.8185 17.5765 11.7457 17.6184 11.6001 17.7024L7.67662 19.9654C7.18404 20.2495 6.93775 20.3915 6.76034 20.3615C6.60623 20.3354 6.47319 20.2388 6.40075 20.1002C6.31736 19.9408 6.37635 19.6627 6.49434 19.1064L7.4341 14.6757C7.46898 14.5112 7.48642 14.429 7.47814 14.3503C7.47081 14.2807 7.44894 14.2134 7.41394 14.1527C7.37439 14.0842 7.31195 14.0279 7.18708 13.9154L3.82246 10.8832C3.40005 10.5025 3.18884 10.3122 3.16258 10.1342C3.13978 9.97956 3.19059 9.82316 3.29993 9.71147C3.42581 9.58288 3.70856 9.55304 4.27406 9.49336L8.77835 9.01795C8.94553 9.00031 9.02911 8.99149 9.10139 8.95929C9.16534 8.93081 9.2226 8.8892 9.26946 8.83718C9.32241 8.77839 9.35663 8.70162 9.42508 8.54808L11.2691 4.41115Z"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <p class="text-muted mb-1 small fw-normal">
-                              Mais Favoritado
-                            </p>
-                            <h5 class="fw-medium text-black mb-0">Brinco</h5>
+                            <h5 class="fw-medium text-black mb-0"><span id="card-vendas-mes">0 Vendas</span></h5>
                           </div>
                         </div>
                       </div>
@@ -561,23 +464,8 @@ settings<!DOCTYPE html>
                 </div>
               </div>
 
-              <!-- Gráfico de Barras -->
-              <div class="col-md-8">
-                <div class="bg-light p-4 rounded-4 h-100 d-flex flex-column">
-                  <h2 class="mb-4 text-black fs-5 fw-medium">Mais Vendidos</h2>
-                  <div
-                    class="flex-grow-1 d-flex align-items-center justify-content-center chart-container-bar"
-                  >
-                    <canvas id="graficoBarras"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tabela e Gráfico de Pizza -->
             <div class="row g-4">
-              <!-- Tabela -->
-              <div class="col-md-8">
+              <div class="col-md-12">
                 <div class="bg-light p-4 rounded-4">
                   <h2 class="fw-medium fs-5 text-black mb-4">
                     Próximos Pedidos
@@ -626,121 +514,9 @@ settings<!DOCTYPE html>
                           </th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr class="border-bottom border-light">
-                          <td class="py-4 border-0 text-dark">Joia Pandora</td>
-                          <td class="py-4 border-0 text-dark">Ana Silva</td>
-                          <td class="py-4 border-0 text-dark">
-                            Rua das Flores, 123
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 150,00</td>
-                          <td class="py-4 border-0 text-dark">01/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                              >• Concluído</span
-                            >
-                          </td>
-                        </tr>
-                        <tr class="border-bottom border-light">
-                          <td class="py-4 border-0 text-dark">Brinco Vivara</td>
-                          <td class="py-4 border-0 text-dark">Maria Santos</td>
-                          <td class="py-4 border-0 text-dark">
-                            Avenida Central, 456
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 80,00</td>
-                          <td class="py-4 border-0 text-dark">02/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-warning px-2 py-1 rounded-pill fw-medium small status-warning"
-                              >• Pendente</span
-                            >
-                          </td>
-                        </tr>
-                        <tr class="border-bottom border-light">
-                          <td class="py-4 border-0 text-dark">
-                            Colar Swarovski
-                          </td>
-                          <td class="py-4 border-0 text-dark">João Costa</td>
-                          <td class="py-4 border-0 text-dark">
-                            Praça Nova, 789
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 200,00</td>
-                          <td class="py-4 border-0 text-dark">03/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-danger px-2 py-1 rounded-pill fw-medium small status-danger"
-                              >• Cancelado</span
-                            >
-                          </td>
-                        </tr>
-                        <tr class="border-bottom border-light">
-                          <td class="py-4 border-0 text-dark">
-                            Pulseira Cartier
-                          </td>
-                          <td class="py-4 border-0 text-dark">
-                            Carla Oliveira
-                          </td>
-                          <td class="py-4 border-0 text-dark">
-                            Rua das Palmeiras, 321
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 120,00</td>
-                          <td class="py-4 border-0 text-dark">04/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                              >• Concluído</span
-                            >
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="py-4 border-0 text-dark">
-                            Conjunto Saint Laurent
-                          </td>
-                          <td class="py-4 border-0 text-dark">Pedro Lima</td>
-                          <td class="py-4 border-0 text-dark">
-                            Avenida das Américas, 654
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 300,00</td>
-                          <td class="py-4 border-0 text-dark">05/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-warning px-2 py-1 rounded-pill fw-medium small status-warning"
-                              >• Pendente</span
-                            >
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="py-4 border-0 text-dark">
-                            Anel Solitário
-                          </td>
-                          <td class="py-4 border-0 text-dark">Lucas Santos</td>
-                          <td class="py-4 border-0 text-dark">
-                            Rua da Esperança, 987
-                          </td>
-                          <td class="py-4 border-0 text-dark">R$ 450,00</td>
-                          <td class="py-4 border-0 text-dark">06/09</td>
-                          <td class="py-4 border-0">
-                            <span
-                              class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                              >• Concluído</span
-                            >
-                          </td>
-                        </tr>
-                      </tbody>
+                      <tbody id="tabela-pedidos-dashboard">
+                        </tbody>
                     </table>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Gráfico de Pizza -->
-              <div class="col-md-4">
-                <div class="bg-light p-4 rounded-4 h-100 d-flex flex-column">
-                  <h2 class="mb-4 text-black fs-5 fw-medium">Em Estoque</h2>
-                  <div
-                    class="flex-grow-1 d-flex align-items-center justify-content-center chart-container-doughnut"
-                  >
-                    <canvas id="graficoPizza"></canvas>
                   </div>
                 </div>
               </div>
@@ -748,7 +524,6 @@ settings<!DOCTYPE html>
           </div>
         </section>
 
-        <!-- Produtos -->
         <section
           id="produtos-section"
           class="bg-body-secondary rounded-4 px-3 py-4"
@@ -756,7 +531,6 @@ settings<!DOCTYPE html>
           aria-hidden="true"
         >
           <div class="container-fluid">
-            <!-- Formulário de Produtos -->
             <div class="bg-light p-4 rounded-4 mb-4">
               <h2 class="fw-medium fs-5 text-black mb-4">Gerenciar Produto</h2>
               <form id="form-produto">
@@ -784,12 +558,10 @@ settings<!DOCTYPE html>
                         />
                       </svg>
                       <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                        type="hidden"
                         id="produto_id"
-                        placeholder="Auto"
-                        readonly
                       />
+                      <input type="text" id="produto_id_display" class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2" value="Automático" readonly />
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -922,11 +694,6 @@ settings<!DOCTYPE html>
                         id="marca_id"
                       >
                         <option value="">Selecione uma marca</option>
-                        <option value="1">LuxJewels</option>
-                        <option value="2">Brilho Vivo</option>
-                        <option value="3">Encanto Dourado</option>
-                        <option value="4">Estilo Urbano</option>
-                        <option value="5">Pérola Rosa</option>
                       </select>
                     </div>
                   </div>
@@ -971,11 +738,6 @@ settings<!DOCTYPE html>
                         id="categoria_id"
                       >
                         <option value="">Selecione uma categoria</option>
-                        <option value="1">Colares</option>
-                        <option value="2">Pulseiras</option>
-                        <option value="3">Brincos</option>
-                        <option value="4">Anéis</option>
-                        <option value="5">Conjuntos</option>
                       </select>
                     </div>
                   </div>
@@ -1125,28 +887,18 @@ settings<!DOCTYPE html>
                     Cadastrar
                   </button>
                   <button
-                    type="button"
-                    class="btn btn-primary px-3 py-2 fw-medium rounded-4"
-                  >
-                    Atualizar
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger px-3 py-2 fw-medium rounded-4"
-                  >
-                    Excluir
-                  </button>
-                  <button
                     type="reset"
                     class="btn btn-secondary px-3 py-2 fw-medium rounded-4"
                   >
                     Limpar
                   </button>
                 </div>
-              </form>
+                <div class="mt-3">
+    <button type="button" id="btn-excluir-produto" class="btn btn-danger btn-sm" style="display:none;">Excluir</button>
+  </div>
+</form>
             </div>
 
-            <!-- Tabela de Produtos -->
             <div class="bg-light p-4 rounded-4">
               <h2 class="fw-medium fs-5 text-black mb-4">Lista de Produtos</h2>
               <div class="rounded table-scroll">
@@ -1184,147 +936,14 @@ settings<!DOCTYPE html>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">11</td>
-                      <td class="py-4 text-dark">Colar Luxo Cristal Azul</td>
-                      <td class="py-4 text-dark">R$ 89,90</td>
-                      <td class="py-4 text-dark">LuxJewels</td>
-                      <td class="py-4 text-dark">Colares</td>
-                      <td class="py-4 text-dark">12</td>
-                      <td class="py-4 text-dark">4.80</td>
-                      <td class="py-4">
-                        <span
-                          class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                          >• Sim</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">12</td>
-                      <td class="py-4 text-dark">Pulseira Couro Preto</td>
-                      <td class="py-4 text-dark">R$ 49,90</td>
-                      <td class="py-4 text-dark">Estilo Urbano</td>
-                      <td class="py-4 text-dark">Pulseiras</td>
-                      <td class="py-4 text-dark">20</td>
-                      <td class="py-4 text-dark">4.50</td>
-                      <td class="py-4">
-                        <span
-                          class="text-danger px-2 py-1 rounded-pill fw-medium small status-danger"
-                          >• Não</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">13</td>
-                      <td class="py-4 text-dark">Brinco Argola Dourada</td>
-                      <td class="py-4 text-dark">R$ 34,50</td>
-                      <td class="py-4 text-dark">Encanto Dourado</td>
-                      <td class="py-4 text-dark">Brincos</td>
-                      <td class="py-4 text-dark">25</td>
-                      <td class="py-4 text-dark">4.60</td>
-                      <td class="py-4">
-                        <span
-                          class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                          >• Sim</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">14</td>
-                      <td class="py-4 text-dark">Pulseira Cristal Rosa</td>
-                      <td class="py-4 text-dark">R$ 67,80</td>
-                      <td class="py-4 text-dark">Pérola Rosa</td>
-                      <td class="py-4 text-dark">Pulseiras</td>
-                      <td class="py-4 text-dark">8</td>
-                      <td class="py-4 text-dark">4.40</td>
-                      <td class="py-4">
-                        <span
-                          class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                          >• Sim</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">15</td>
-                      <td class="py-4 text-dark">Conjunto Vintage Ouro</td>
-                      <td class="py-4 text-dark">R$ 189,99</td>
-                      <td class="py-4 text-dark">Brilho Vivo</td>
-                      <td class="py-4 text-dark">Conjuntos</td>
-                      <td class="py-4 text-dark">3</td>
-                      <td class="py-4 text-dark">4.90</td>
-                      <td class="py-4">
-                        <span
-                          class="text-danger px-2 py-1 rounded-pill fw-medium small status-danger"
-                          >• Não</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">16</td>
-                      <td class="py-4 text-dark">Anel Solitário Zircônia</td>
-                      <td class="py-4 text-dark">R$ 125,50</td>
-                      <td class="py-4 text-dark">LuxJewels</td>
-                      <td class="py-4 text-dark">Anéis</td>
-                      <td class="py-4 text-dark">15</td>
-                      <td class="py-4 text-dark">4.70</td>
-                      <td class="py-4">
-                        <span
-                          class="text-success px-2 py-1 rounded-pill fw-medium small status-success"
-                          >• Sim</span
-                        >
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
+                  <tbody id="tabela-produtos-corpo">
+                    </tbody>
                 </table>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Pedidos -->
         <section
           id="pedidos-section"
           class="bg-body-secondary rounded-4 px-3 py-4"
@@ -1332,10 +951,9 @@ settings<!DOCTYPE html>
           aria-hidden="true"
         >
           <div class="container-fluid">
-            <!-- Formulário de Pedidos -->
             <div class="bg-light p-4 rounded-4 mb-4">
-              <h2 class="fw-medium fs-5 text-black mb-4">Gerenciar Pedido</h2>
-              <form id="form-cadastro">
+              <h2 id="titulo-gerenciar-pedido" class="fw-medium fs-5 text-black mb-4">Gerenciar Pedido</h2>
+              <form id="form-pedidos">
                 <div class="row g-3">
                   <div class="col-md-2">
                     <label
@@ -1617,21 +1235,26 @@ settings<!DOCTYPE html>
                   <div class="col-12 d-flex gap-3">
                     <button
                       type="submit"
+                      id="btn-cadastrar-pedido"
                       class="btn btn-success px-3 py-2 fw-medium rounded-4"
                     >
                       Cadastrar
                     </button>
                     <button
-                      type="submit"
+                      type="button"
+                      id="btn-atualizar-pedido"
                       class="btn btn-primary px-3 py-2 fw-medium rounded-4"
+                      style="display:none;"
                     >
                       Atualizar
                     </button>
                     <button
-                      type="submit"
+                      type="button"
+                      id="btn-cancelar-operacao"
                       class="btn btn-danger px-3 py-2 fw-medium rounded-4"
+                      style="display:none;"
                     >
-                      Cancelar
+                      Cancelar Edição
                     </button>
                     <button
                       type="reset"
@@ -1644,7 +1267,6 @@ settings<!DOCTYPE html>
               </form>
             </div>
 
-            <!-- Tabela de Pedidos -->
             <div class="bg-light p-4 rounded-4">
               <h2 class="fw-medium fs-5 text-black mb-4">Lista de Pedidos</h2>
               <div class="rounded table-scroll">
@@ -1679,110 +1301,8 @@ settings<!DOCTYPE html>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">001</td>
-                      <td class="py-4 text-dark">Anel Dourado</td>
-                      <td class="py-4 text-dark">Beatriz Santos</td>
-                      <td class="py-4 text-dark">2</td>
-                      <td class="py-4 text-dark">R$ 90,00</td>
-                      <td class="py-4 text-dark">06/09/2024</td>
-                      <td class="py-4 text-dark">Anel folheado a ouro</td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">002</td>
-                      <td class="py-4 text-dark">Tornozeleira Prata</td>
-                      <td class="py-4 text-dark">Carlos Ferreira</td>
-                      <td class="py-4 text-dark">1</td>
-                      <td class="py-4 text-dark">R$ 65,00</td>
-                      <td class="py-4 text-dark">07/09/2024</td>
-                      <td class="py-4 text-dark">Tornozeleira com pingentes</td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">003</td>
-                      <td class="py-4 text-dark">Brinco de Pérola</td>
-                      <td class="py-4 text-dark">Diana Almeida</td>
-                      <td class="py-4 text-dark">1</td>
-                      <td class="py-4 text-dark">R$ 180,00</td>
-                      <td class="py-4 text-dark">08/09/2024</td>
-                      <td class="py-4 text-dark">Par de brincos com pérolas</td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">004</td>
-                      <td class="py-4 text-dark">Pulseira Cartier</td>
-                      <td class="py-4 text-dark">Roberto Silva</td>
-                      <td class="py-4 text-dark">2</td>
-                      <td class="py-4 text-dark">R$ 240,00</td>
-                      <td class="py-4 text-dark">09/09/2024</td>
-                      <td class="py-4 text-dark">
-                        Conjunto de pulseiras elegantes
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr class="border-bottom border-light">
-                      <td class="py-4 text-dark">005</td>
-                      <td class="py-4 text-dark">Anel Solitário</td>
-                      <td class="py-4 text-dark">Fernanda Costa</td>
-                      <td class="py-4 text-dark">1</td>
-                      <td class="py-4 text-dark">R$ 450,00</td>
-                      <td class="py-4 text-dark">10/09/2024</td>
-                      <td class="py-4 text-dark">
-                        Anel de noivado com zircônia
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="py-4 text-dark">006</td>
-                      <td class="py-4 text-dark">Conjunto Vintage</td>
-                      <td class="py-4 text-dark">Marina Santos</td>
-                      <td class="py-4 text-dark">1</td>
-                      <td class="py-4 text-dark">R$ 189,99</td>
-                      <td class="py-4 text-dark">11/09/2024</td>
-                      <td class="py-4 text-dark">
-                        Conjunto colar e brincos vintage
-                      </td>
-                      <td class="py-3">
-                        <button
-                          class="btn btn-success px-3 py-2 fw-medium rounded-4"
-                        >
-                          Selecionar
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
+                  <tbody id="tabela-pedidos-corpo">
+                        </tbody>
                 </table>
               </div>
             </div>
@@ -1791,21 +1311,14 @@ settings<!DOCTYPE html>
       </main>
     </div>
 
-    <script src="settings/js/script_pedidos.js"></script>
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js -->
-    <script src="settings/js/graphics.js"></script>
-    <!-- Gráficos do dashboard -->
-    <script src="settings/js/navigation-section.js"></script>
-    <!-- Navegação -->
-    <script src="settings/js/table-sort.js"></script>
-    <!-- Ordenação de tabelas -->
-    <script src="settings/js/dropdown-hover.js"></script>
-    <!-- Dropdown Hover -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="settings/js/script_admin.js"></script>
+    <script src="settings/js/script_pedidos.js"></script>
+    <script src="settings/js/graphics.js"></script>
+    <script src="settings/js/navigation-section.js"></script>
+    <script src="settings/js/table-sort.js"></script>
+    <script src="settings/js/dropdown-hover.js"></script>
   </body>
 </html>

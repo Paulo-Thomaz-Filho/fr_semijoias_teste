@@ -1,49 +1,60 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
-    // --- Funcionalidade para mostrar/ocultar a senha (sem alterações) ---
-    $('.toggle-password').on('click', function() {
-        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
-        const passwordInput = $(this).prev('input');
-        const currentType = passwordInput.attr('type');
-        if (currentType === 'password') {
-            passwordInput.attr('type', 'text');
-        } else {
-            passwordInput.attr('type', 'password');
-        }
+    $('#signUp').on('click', function() {
+        $('#container').addClass('right-panel-active');
     });
-  
-    // --- Lógica de envio do formulário via AJAX ---
-    $('.login-form').on('submit', function (event) {
+
+    $('#signIn').on('click', function() {
+        $('#container').removeClass('right-panel-active');
+    });
+
+    $('#loginForm').on('submit', function(event){
         event.preventDefault();
-  
-        const email = $('#email').val();
-        const password = $('#password').val();
-        const mensagemErro = $('#mensagemErro');
-        
-        // Garante que a mensagem de erro esteja oculta ao tentar fazer login novamente
-        mensagemErro.addClass('d-none');
-    
+
+        const email = $('#loginEmail').val();
+        const senha = $('#loginPassword').val();
+
+        if (!email || !senha) {
+            alert('Por favor, digite seu e-mail e senha.');
+            return;
+        }
+
+        const loginData = {
+            email: email,
+            senha: senha
+        };
+
         $.ajax({
-            url: 'app/php/login.php',
+            url: 'api/usuario/login',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({
-                email: email,
-                senha: password,
-            }),
-        })
-        .done(function (response) {
-            if (response.success) {
-                // Se o login for bem-sucedido, redireciona para a página de administração
-                window.location.href = 'inicio'; 
-            } else {
-                // Se falhar, exibe a mensagem de erro retornada pelo PHP
-                mensagemErro.text(response.error || 'Credenciais inválidas.').removeClass('d-none');
+            data: JSON.stringify(loginData),
+
+            success: function(response) {
+                console.log('Resposta do servidor:', response);
+
+                if (response.success) {
+                    if (response.isAdmin) {
+                        alert('Bem-vindo, Administrador!');
+                        window.location.href = 'admin'; 
+                    } else {
+                        alert('Login bem-sucedido!');
+                        window.location.href = 'home';
+                    }
+
+                } else {
+                    alert('Falha no login: ' + (response.error || 'Credenciais inválidas.'));
+                }
+            },
+
+            error: function(jqXHR) {
+                const errorResponse = jqXHR.responseJSON;
+                if (errorResponse && errorResponse.error) {
+                    alert('Falha no login: ' + errorResponse.error);
+                } else {
+                    alert('Ocorreu um erro de comunicação. Tente novamente.');
+                }
             }
-        })
-        .fail(function () {
-            // Em caso de falha na comunicação (ex: servidor offline)
-            mensagemErro.text('Erro de comunicação com o servidor. Tente novamente.').removeClass('d-none');
         });
     });
 });

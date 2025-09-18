@@ -5,9 +5,6 @@ namespace App\Models;
 use PDO;
 use PDOException;
 
-/**
- * DAO para a entidade Produto.
- */
 class ProdutoDAO
 {
     private PDO $conexao;
@@ -16,12 +13,13 @@ class ProdutoDAO
     {
         $this->conexao = $db;
     }
-
+    
+    // O método save já lida com INSERT e UPDATE, então não precisa de alteração.
     public function save(Produto &$produto): bool
     {
         $query = $produto->getId() ?
-            "UPDATE Produtos SET nome = :nome, descricao = :desc, preco = :preco, quantidade_estoque = :qtd, sku = :sku, id_categoria = :cat, id_promocao = :promo WHERE id_produto = :id" :
-            "INSERT INTO Produtos (nome, descricao, preco, quantidade_estoque, sku, id_categoria, id_promocao) VALUES (:nome, :desc, :preco, :qtd, :sku, :cat, :promo)";
+            "UPDATE Produtos SET nome = :nome, descricao = :desc, preco = :preco, quantidade_estoque = :qtd, id_categoria = :cat, id_marca = :marca WHERE id_produto = :id" :
+            "INSERT INTO Produtos (nome, descricao, preco, quantidade_estoque, id_categoria, id_marca) VALUES (:nome, :desc, :preco, :qtd, :cat, :marca,)";
 
         try {
             $stmt = $this->conexao->prepare($query);
@@ -29,10 +27,8 @@ class ProdutoDAO
             $stmt->bindValue(':desc', $produto->getDescricao());
             $stmt->bindValue(':preco', $produto->getPreco());
             $stmt->bindValue(':qtd', $produto->getQuantidadeEstoque(), PDO::PARAM_INT);
-            $stmt->bindValue(':sku', $produto->getSku());
             $stmt->bindValue(':cat', $produto->getIdCategoria(), PDO::PARAM_INT);
-            // Lida com o caso de não haver promoção (ID nulo)
-            $stmt->bindValue(':promo', $produto->getIdPromocao(), $produto->getIdPromocao() ? PDO::PARAM_INT : PDO::PARAM_NULL);
+            $stmt->bindValue(':marca', $produto->getIdMarca(), PDO::PARAM_INT);
 
             if ($produto->getId()) {
                 $stmt->bindValue(':id', $produto->getId(), PDO::PARAM_INT);
@@ -62,18 +58,28 @@ class ProdutoDAO
     }
 
     /**
-     * Busca todos os produtos com informações de categoria e promoção.
-     * Retorna um array associativo para facilitar a listagem, sendo mais performático.
+     * ATUALIZADO: Busca todos os produtos com JOIN para nomes de categoria e marca.
      */
     public function findAll(): array
     {
-        $query = "SELECT p.*, c.nome AS nome_categoria, pr.nome AS nome_promocao
+        $query = "SELECT 
+                    p.*, 
+                    c.nome AS nome_categoria, 
+                    m.nome AS nome_marca
                   FROM Produtos p
-                  JOIN Categorias c ON p.id_categoria = c.id_categoria
-                  LEFT JOIN Promocoes pr ON p.id_promocao = pr.id_promocao
-                  ORDER BY p.nome ASC";
-        $stmt = $this->conexao->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                  LEFT JOIN Categorias c ON p.id_categoria = c.id_categoria
+                  LEFT JOIN Marcas m ON p.id_marca = m.id_marca
+                  ORDER BY p.id_produto ASC";
+        
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Em vez de retornar um array vazio, lança a exceção para que o Router a capture
+            // e retorne uma mensagem de erro JSON clara para o front-end.
+            throw $e;
+        }
     }
 
     public function delete(int $id): bool
@@ -97,12 +103,11 @@ class ProdutoDAO
         $produto->setDescricao($dados['descricao']);
         $produto->setPreco((float)$dados['preco']);
         $produto->setQuantidadeEstoque((int)$dados['quantidade_estoque']);
-        $produto->setSku($dados['sku']);
         $produto->setIdCategoria((int)$dados['id_categoria']);
-        if (!empty($dados['id_promocao'])) {
-            $produto->setIdPromocao((int)$dados['id_promocao']);
+        if (!empty($dados['id_marca'])) {
+            $produto->setIdMarca((int)$dados['id_marca']);
         }
+
         return $produto;
     }
 }
-

@@ -4,7 +4,6 @@ namespace App\Core\Utils;
 
 use PDO;
 use Exception;
-use ReflectionMethod;
 
 class Router {
     
@@ -27,6 +26,7 @@ class Router {
      */
     private function getDbConnection(): PDO {
         if ($this->pdo === null) {
+            // Recomenda-se mover a lógica de config para fora da sessão no futuro
             $dbConfig = $_SESSION['database'];
             $dsn = "mysql:host={$dbConfig['host']};dbname={$dbConfig['schema']};charset=utf8mb4";
             $this->pdo = new PDO($dsn, $dbConfig['user'], $dbConfig['pass'], [
@@ -44,11 +44,17 @@ class Router {
         if (isset($this->routes[$module])) {
             $route = $this->routes[$module];
 
-            // A lógica de API (DAO/método) tem prioridade
+            // 1. Verifica se a rota é para um Controller
+            if (isset($route['controller']) && isset($route['method'])) {
+                $this->handleControllerRoute($route);
+                return; 
+            }
+            
+            // 2. Verifica se a rota é para um DAO
             if (isset($route['dao']) && isset($route['method'])) {
                 $this->handleDaoRoute($route);
             } 
-            // Senão, serve um arquivo de página estático
+            // 3. Senão, serve um arquivo de página estático
             elseif (isset($route['path'])) {
                 $filePath = $this->rootPath . '/' . $route['path'];
                 if (file_exists($filePath)) {
@@ -72,7 +78,33 @@ class Router {
     }
 
     /**
-     * Manipula as rotas definidas como "API" no routes.json.
+     * Manipula rotas que apontam para uma classe Controller.
+     */
+    private function handleControllerRoute(array $route): void {
+        $controllerClass = $route['controller'];
+        $methodName = $route['method'];
+
+        if (!class_exists($controllerClass) || !method_exists($controllerClass, $methodName)) {
+            $this->sendJsonResponse(['error' => 'Configuração de rota inválida: Controller ou método não encontrado.'], 500);
+            return;
+        }
+
+        try {
+            $connection = $this->getDbConnection();
+            
+            // Instancia o Controller, passando a conexão (caso ele precise)
+            $controllerInstance = new $controllerClass($connection);
+            
+            // Chama o método do controller (ex: 'checkAuthStatus')
+            $controllerInstance->$methodName();
+
+        } catch (Exception $e) {
+            $this->sendJsonResponse(['error' => 'Erro ao executar a operação.', 'details' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Manipula rotas que apontam diretamente para uma classe DAO.
      */
     private function handleDaoRoute(array $route): void {
         $daoClass = $route['dao'];
@@ -84,50 +116,69 @@ class Router {
         }
 
         try {
-            // **A CORREÇÃO PRINCIPAL ESTÁ AQUI**
-            // 1. Obtém a conexão com o banco.
             $connection = $this->getDbConnection();
-            
-            // 2. Instancia o DAO, injetando a conexão. Funciona para TODOS os seus DAOs.
             $daoInstance = new $daoClass($connection);
             
-            // Lógica para resolver os argumentos do método (simplificada para focar na correção)
-            $args = [];
-            if (($route['paramSource'] ?? null) === 'POST') {
-                $args[] = $_POST; // Assumindo que o método espera um array
-            } elseif (($route['paramSource'] ?? null) === 'GET') {
-                 $args[] = (int)($_GET['id'] ?? 0); // Exemplo para findById
-            }
-
-            // Para o método 'save', precisamos montar o objeto do Modelo
-            if (isset($route['model']) && $methodName === 'save') {
-                $modelClass = $route['model'];
-                $modelInstance = new $modelClass();
-                foreach($_POST as $key => $value) {
-                    $setter = 'set' . str_replace('_', '', ucwords($key, '_'));
-                    if(method_exists($modelInstance, $setter)) {
-                        $modelInstance->$setter($value);
+            // Lógica para cada tipo de método
+            switch ($methodName) {
+                case 'save':
+                    $modelClass = $route['model'];
+                    if (!class_exists($modelClass)) {
+                        throw new Exception("Classe de modelo '{$modelClass}' não encontrada para a rota.");
                     }
-                }
-                $result = $daoInstance->save($modelInstance);
-            } else {
-                // Para outros métodos (findById, delete, findAll)
-                $result = call_user_func_array([$daoInstance, $methodName], $args);
+                    $modelInstance = new $modelClass();
+                    $inputData = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+
+                    // Verifica se um ID foi passado no corpo dos dados para saber se é um UPDATE
+                    if (!empty($inputData['id_produto'])) { // Ajuste 'id_produto' para a chave primária genérica se necessário
+                        $modelInstance->setId((int)$inputData['id_produto']);
+                    }
+
+                    foreach ($inputData as $key => $value) {
+                        $setter = 'set' . str_replace('_', '', ucwords($key, '_'));
+                        if (method_exists($modelInstance, $setter)) {
+                            $modelInstance->$setter($value);
+                        }
+                    }
+                    $success = $daoInstance->save($modelInstance);
+                    $this->sendJsonResponse(['success' => $success]);
+                    break;
+
+                case 'login':
+                    $inputData = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                    $email = $inputData['email'] ?? '';
+                    $senha = $inputData['senha'] ?? '';
+                    $tipoAcesso = $daoInstance->login($email, $senha);
+
+                    if ($tipoAcesso) {
+                        $this->sendJsonResponse(['success' => true, 'isAdmin' => ($tipoAcesso === 'admin')]);
+                    } else {
+                        $this->sendJsonResponse(['success' => false, 'error' => 'Credenciais inválidas.']);
+                    }
+                    break;
+
+                default: // Lida com findById, findAll, delete, etc.
+                    $args = [];
+                    if (($route['paramSource'] ?? null) === 'GET' && isset($_GET['id'])) {
+                        $args[] = (int)$_GET['id'];
+                    }
+                    
+                    $result = call_user_func_array([$daoInstance, $methodName], $args);
+                    $this->sendJsonResponse($result);
+                    break;
             }
-
-            $this->sendJsonResponse($result);
-
         } catch (Exception $e) {
             $this->sendJsonResponse(['error' => 'Erro ao executar a operação.', 'details' => $e->getMessage()], 500);
         }
     }
     
-    // ... Os seus outros métodos (isAccessGranted, sendJsonResponse, etc.) podem ser colados aqui ...
-    
     private function sendJsonResponse($data, int $httpCode = 200): void {
         http_response_code($httpCode);
         header('Content-Type: application/json; charset=utf-8');
-        if (is_bool($data)) {
+        // Adicionado para lidar com o caso de $data ser nulo
+        if ($data === null) {
+            echo json_encode([]);
+        } elseif (is_bool($data)) {
             echo json_encode(['success' => $data]);
         } else {
             echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -136,15 +187,22 @@ class Router {
     }
     
     private function servePublicFile(string $filePath): void {
-        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-        // ... (Cole aqui seu método headerMimeTypes) ...
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'svg' => 'image/svg+xml',
+            'jpg' => 'image/jpeg',
+            'png' => 'image/png',
+        ];
+        $contentType = $mimeTypes[$extension] ?? 'application/octet-stream';
+        header("Content-Type: $contentType");
         readfile($filePath);
         exit();
     }
     
     public function routeNotFound(): void {
         http_response_code(404);
-        // Se houver uma rota 404 definida, mostre-a.
         if (isset($this->routes['404']['path'])) {
             require $this->rootPath . '/' . $this->routes['404']['path'];
         } else {

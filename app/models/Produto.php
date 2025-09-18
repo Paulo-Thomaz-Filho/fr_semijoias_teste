@@ -15,6 +15,7 @@ class Produto
     private int $quantidade_estoque = 0;
     private ?string $sku = null;
     private int $id_categoria;
+    private int $id_marca;
     private ?int $id_promocao = null;
 
     // --- Getters ---
@@ -25,6 +26,7 @@ class Produto
     public function getQuantidadeEstoque(): int { return $this->quantidade_estoque; }
     public function getSku(): ?string { return $this->sku; }
     public function getIdCategoria(): int { return $this->id_categoria; }
+    public function getIdMarca(): int { return $this->id_marca; }
     public function getIdPromocao(): ?int { return $this->id_promocao; }
 
     // --- Setters ---
@@ -35,5 +37,6 @@ class Produto
     public function setQuantidadeEstoque(int $qtd): void { $this->quantidade_estoque = $qtd; }
     public function setSku(?string $sku): void { $this->sku = $sku ? trim(strip_tags($sku)) : null; }
     public function setIdCategoria(int $id_categoria): void { $this->id_categoria = $id_categoria; }
+    public function setIdMarca(int $id_marca): void { $this->id_marca = $id_marca; }
     public function setIdPromocao(?int $id_promocao): void { $this->id_promocao = $id_promocao; }
 }

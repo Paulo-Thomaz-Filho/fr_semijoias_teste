@@ -90,6 +90,38 @@ class UsuarioDAO
         }
     }
 
+    public function login(string $email, string $senha): ?string // Alteramos o retorno de bool para ?string
+    {
+        // 1. Usa o método já existente para encontrar o usuário pelo e-mail
+        $usuario = $this->findByEmail($email);
+
+        // 2. Verifica se o usuário foi encontrado E se a senha está correta
+        if ($usuario && $usuario->verificarSenha($senha)) {
+            
+            // 3. SUCESSO! Inicia a sessão e armazena os dados do usuário.
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            $_SESSION['user_id'] = $usuario->getId();
+            $_SESSION['user_nome'] = $usuario->getNome();
+            $_SESSION['user_email'] = $usuario->getEmail();
+            $_SESSION['user_tipo'] = $usuario->getTipoAcesso();
+            $_SESSION['user_logged_in'] = true;
+
+            session_write_close();
+            return $usuario->getTipoAcesso();
+        }
+    return null;
+    }
+
+    public function countTotalUsuarios(): int
+    {
+        $stmt = $this->conexao->prepare("SELECT COUNT(id_usuario) FROM Usuarios");
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
+
     public function delete(int $id): bool
     {
         try {

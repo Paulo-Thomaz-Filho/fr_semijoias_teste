@@ -11,6 +11,9 @@
   --color-warning: rgba(255, 193, 7, 0.1);
   --color-danger: rgba(220, 53, 69, 0.1);
 }
+main section {
+min-width: 100vh;
+}
 
 .gap-6 {
   gap: 8rem !important;
