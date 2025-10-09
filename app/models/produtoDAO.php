@@ -1,113 +1,98 @@
 <?php
+namespace app\models;
 
-namespace App\Models;
+use core\database\DBQuery;
+use core\database\Where;
 
-use PDO;
-use PDOException;
+include_once __DIR__.'/../core/database/DBConnection.php';
+include_once __DIR__.'/../core/database/DBQuery.php';
+include_once __DIR__.'/../core/database/Where.php';
 
-class ProdutoDAO
-{
-    private PDO $conexao;
+include_once __DIR__.'/Produto.php';
 
-    public function __construct(PDO $db)
-    {
-        $this->conexao = $db;
-    }
-    
-    // O método save já lida com INSERT e UPDATE, então não precisa de alteração.
-    public function save(Produto &$produto): bool
-    {
-        $query = $produto->getId() ?
-            "UPDATE Produtos SET nome = :nome, descricao = :desc, preco = :preco, quantidade_estoque = :qtd, id_categoria = :cat, id_marca = :marca WHERE id_produto = :id" :
-            "INSERT INTO Produtos (nome, descricao, preco, quantidade_estoque, id_categoria, id_marca) VALUES (:nome, :desc, :preco, :qtd, :cat, :marca,)";
+class ProdutoDAO {
+    private $dbQuery;
 
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':nome', $produto->getNome());
-            $stmt->bindValue(':desc', $produto->getDescricao());
-            $stmt->bindValue(':preco', $produto->getPreco());
-            $stmt->bindValue(':qtd', $produto->getQuantidadeEstoque(), PDO::PARAM_INT);
-            $stmt->bindValue(':cat', $produto->getIdCategoria(), PDO::PARAM_INT);
-            $stmt->bindValue(':marca', $produto->getIdMarca(), PDO::PARAM_INT);
-
-            if ($produto->getId()) {
-                $stmt->bindValue(':id', $produto->getId(), PDO::PARAM_INT);
-            }
-            
-            $stmt->execute();
-
-            if (!$produto->getId()) {
-                $produto->setId((int)$this->conexao->lastInsertId());
-            }
-            return true;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
-
-    public function findById(int $id): ?Produto
-    {
-        $query = "SELECT * FROM Produtos WHERE id_produto = :id";
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $dados ? $this->hydrate($dados) : null;
-    }
-
-    /**
-     * ATUALIZADO: Busca todos os produtos com JOIN para nomes de categoria e marca.
-     */
-    public function findAll(): array
-    {
-        $query = "SELECT 
-                    p.*, 
-                    c.nome AS nome_categoria, 
-                    m.nome AS nome_marca
-                  FROM Produtos p
-                  LEFT JOIN Categorias c ON p.id_categoria = c.id_categoria
-                  LEFT JOIN Marcas m ON p.id_marca = m.id_marca
-                  ORDER BY p.id_produto ASC";
+    public function __construct(){
+        $colunas = 'IdProduto, nome, descricao, valor, marca, categoria, idPromocao';
         
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            // Em vez de retornar um array vazio, lança a exceção para que o Router a capture
-            // e retorne uma mensagem de erro JSON clara para o front-end.
-            throw $e;
-        }
+        $this->dbQuery = new DBQuery('produtos', $colunas, 'IdProduto');
     }
 
-    public function delete(int $id): bool
-    {
-        $query = "DELETE FROM Produtos WHERE id_produto = :id";
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
+    public function getAll(){
+        $colunas_com_id = 'IdProduto, nome, descricao, valor, marca, categoria, idPromocao, status';
+        $queryGetAll = new DBQuery('produtos', $colunas_com_id, 'IdProduto');
+        
+        $where = new Where();
+        $where->addCondition('AND', 'status', '=', 'ativo');
+        $dados = $queryGetAll->selectFiltered($where);
+
+        $produtos = [];
+        foreach($dados as $item){
+            $produtos[] = new Produto(...array_values($item));
         }
+        return $produtos;
     }
 
-    private function hydrate(array $dados): Produto
-    {
-        $produto = new Produto();
-        $produto->setId((int)$dados['id_produto']);
-        $produto->setNome($dados['nome']);
-        $produto->setDescricao($dados['descricao']);
-        $produto->setPreco((float)$dados['preco']);
-        $produto->setQuantidadeEstoque((int)$dados['quantidade_estoque']);
-        $produto->setIdCategoria((int)$dados['id_categoria']);
-        if (!empty($dados['id_marca'])) {
-            $produto->setIdMarca((int)$dados['id_marca']);
+
+    public function getById($id){
+        $where = new Where();
+        $where->addCondition('AND', 'IdProduto', '=', $id);
+        $dados = $this->dbQuery->selectFiltered($where);
+
+        if($dados){
+            return new Produto(...array_values($dados[0]));
         }
 
-        return $produto;
+        return null;
     }
+
+    public function insert(Produto $produto){
+        $dados = [
+            
+            'nome' => $produto->getNome(),
+            'descricao' => $produto->getDescricao(),
+            'valor' => $produto->getValor(),
+            'marca' => $produto->getMarca(),        
+            'categoria' => $produto->getCategoria(),  
+            'idPromocao' => $produto->getIdPromocao()  
+        ];
+        return $this->dbQuery->insert($dados);
+    }
+
+    public function update(Produto $produto){
+        // Preparamos o array de dados
+        $dados = [
+            'IdProduto'  => $produto->getIdProduto(), 
+            'nome'       => $produto->getNome(),
+            'descricao'  => $produto->getDescricao(),
+            'valor'      => $produto->getValor(),
+            'marca'      => $produto->getMarca(),
+            'categoria'  => $produto->getCategoria(),
+            'idPromocao' => $produto->getIdPromocao(),
+            'status'     => $produto->getStatus()
+        ];
+        
+        // CORREÇÃO: Chamamos o update passando apenas UM argumento ($dados),
+        // como a classe DBQuery espera.
+        return $this->dbQuery->update($dados);
+    }
+
+    public function desativar($id){
+        // CORREÇÃO: Ajustamos este método para seguir as regras da DBQuery.
+        
+        // 1. A DBQuery precisa saber quais colunas estão envolvidas: a que vamos mudar (status)
+        //    e a que vamos usar para encontrar o registro (IdProduto).
+        $queryDesativar = new DBQuery('produtos', 'IdProduto, status', 'IdProduto');
+
+        // 2. O array de dados DEVE conter o valor da chave primária.
+        $dados = [
+            'IdProduto' => $id,
+            'status' => 'inativo'
+        ];
+
+        // 3. Chamamos o update passando o único array com todos os dados necessários.
+        return $queryDesativar->update($dados);
+    }
+
 }

@@ -1,136 +1,111 @@
 <?php
-namespace App\Models;
+namespace app\models;
 
-use PDO;
-use PDOException;
+use core\database\DBQuery;
+use core\database\Where;
 
-/**
- * DAO para a entidade Usuario, refatorado para o padrão moderno e seguro.
- */
-class UsuarioDAO
-{
-    private PDO $conexao;
+include_once __DIR__.'/../core/database/DBConnection.php';
+include_once __DIR__.'/../core/database/DBQuery.php';
+include_once __DIR__.'/../core/database/Where.php';
 
-    /**
-     * Recebe a conexão PDO via Injeção de Dependência.
-     */
-    public function __construct(PDO $db)
-    {
-        $this->conexao = $db;
-    }
+include_once __DIR__.'/Usuario.php';
 
-    private function hydrate(array $row): Usuario
-    {
-        $usuario = new Usuario();
-        $usuario->setId((int)$row['id_usuario']);
-        $usuario->setNome($row['nome']);
-        $usuario->setEmail($row['email']);
-        $usuario->setSenhaHash($row['senha_hash']);
-        $usuario->setTipoAcesso($row['tipo_acesso']);
-        return $usuario;
-    }
+class UsuarioDAO {
+	private $dbQuery;
+	
+	public function __construct(){
+    	$this->dbQuery = new DBQuery('usuarios', 'id, nome, email, senha_hash, acesso, status', 'id');
+	}
 
-    public function findById(int $id): ?Usuario
-    {
-        $stmt = $this->conexao->prepare("SELECT * FROM Usuarios WHERE id_usuario = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data ? $this->hydrate($data) : null;
-    }
+	
+	public function getAll(){
+		$usuarios = [];
 
-    public function findByEmail(string $email): ?Usuario
-    {
-        $stmt = $this->conexao->prepare("SELECT * FROM Usuarios WHERE email = :email");
-        $stmt->bindValue(':email', $email);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data ? $this->hydrate($data) : null;
-    }
+		$where = new \core\database\Where();
+		$where->addCondition('AND', 'status', '=', 'ativo');
 
-    /**
-     * Renomeado de index() para findAll() para seguir o padrão do seu routes.json
-     */
-    public function index(): array
-    {
-        $stmt = $this->conexao->query("SELECT * FROM Usuarios ORDER BY nome ASC");
-        $results = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $results[] = $this->hydrate($row);
-        }
-        return $results;
-    }
+		$dados = $this->dbQuery->selectFiltered($where);
 
-    public function save(Usuario &$usuario): bool
-    {
-        if ($usuario->getId()) {
-            $query = "UPDATE Usuarios SET nome = :nome, email = :email, senha_hash = :hash, tipo_acesso = :tipo WHERE id_usuario = :id";
-        } else {
-            $query = "INSERT INTO Usuarios (nome, email, senha_hash, tipo_acesso) VALUES (:nome, :email, :hash, :tipo)";
-        }
+		foreach($dados as $dadosDoUsuario){
+			$usuario = new Usuario();
+			$usuario->load(...array_values($dadosDoUsuario));
+			$usuarios[] = $usuario;
+		}
+		return $usuarios;
+	}
+	
+	public function getById($id){
+		$where = new Where();
+		$where->addCondition('AND', 'id', '=', $id);
+		$dados = $this->dbQuery->selectFiltered($where);
 
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':nome', $usuario->getNome());
-            $stmt->bindValue(':email', $usuario->getEmail());
-            $stmt->bindValue(':hash', $usuario->getSenhaHash());
-            $stmt->bindValue(':tipo', $usuario->getTipoAcesso());
+		if($dados){
+			$usuario = new Usuario();
+			$usuario->load(...array_values($dados[0]));
+			return $usuario;
+		}
 
-            if ($usuario->getId()) {
-                $stmt->bindValue(':id', $usuario->getId(), PDO::PARAM_INT);
-            }
-            $stmt->execute();
-            if (!$usuario->getId()) {
-                $usuario->setId((int)$this->conexao->lastInsertId());
-            }
-            return true;
-        } catch (PDOException $e) {
-            error_log("Erro ao salvar usuário: " . $e->getMessage());
-            return false;
-        }
-    }
+		return null;
+	}
 
-    public function login(string $email, string $senha): ?string // Alteramos o retorno de bool para ?string
-    {
-        // 1. Usa o método já existente para encontrar o usuário pelo e-mail
-        $usuario = $this->findByEmail($email);
+	public function getTotalCadastrados() {
+		$conn = (new \core\database\DBConnection())->getConn();
+		$stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuarios");
+		$stmt->execute();
+		$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $result['total'] ?? 0;
+	}
+	
+	public function getByEmail($email){
+		$where = new Where();
+		$where->addCondition('AND', 'email', '=', $email);
+		$dados = $this->dbQuery->selectFiltered($where);
 
-        // 2. Verifica se o usuário foi encontrado E se a senha está correta
-        if ($usuario && $usuario->verificarSenha($senha)) {
-            
-            // 3. SUCESSO! Inicia a sessão e armazena os dados do usuário.
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-            
-            $_SESSION['user_id'] = $usuario->getId();
-            $_SESSION['user_nome'] = $usuario->getNome();
-            $_SESSION['user_email'] = $usuario->getEmail();
-            $_SESSION['user_tipo'] = $usuario->getTipoAcesso();
-            $_SESSION['user_logged_in'] = true;
+		if($dados){
 
-            session_write_close();
-            return $usuario->getTipoAcesso();
-        }
-    return null;
-    }
+			$usuario = new Usuario();
+			$usuario->load(...array_values($dados[0]));
+			return $usuario;
+		}
 
-    public function countTotalUsuarios(): int
-    {
-        $stmt = $this->conexao->prepare("SELECT COUNT(id_usuario) FROM Usuarios");
-        $stmt->execute();
-        return (int) $stmt->fetchColumn();
-    }
+		return null;
+	}
+	
+	public function insert(Usuario $usuario){
+		$dados = [
+				null,
+				$usuario->getNome(),
+				$usuario->getEmail(),
+				$usuario->getSenhaHash(),
+				$usuario->getAcesso(),
+				$usuario->getstatus(),
+		];
+		return $this->dbQuery->insert($dados);
+	}
+	
+	public function update(Usuario $usuario){
+		$dados = [
+			'id'          => $usuario->getId(),
+			'nome'        => $usuario->getNome(),
+			'email'       => $usuario->getEmail(),
+			'senha_hash'  => $usuario->getSenhaHash(),
+			'acesso'      => $usuario->getAcesso(),
+			'status'      => $usuario->getstatus(),
+		];
 
-    public function delete(int $id): bool
-    {
-        try {
-            $stmt = $this->conexao->prepare("DELETE FROM Usuarios WHERE id_usuario = :id");
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Erro ao deletar usuário: " . $e->getMessage());
-            return false;
-        }
-    }
+		$where = new Where();
+		$where->addCondition('AND', 'id', '=', $usuario->getId());
+
+		return $this->dbQuery->update($dados, $where);
+	}
+
+	
+	public function inativar($id) {
+		$usuario = $this->getById($id);
+		if (!$usuario) {
+			return false;
+		}
+		$usuario->setStatus('inativo');
+		return $this->update($usuario);
+	}
 }

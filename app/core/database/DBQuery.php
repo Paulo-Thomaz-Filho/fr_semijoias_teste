@@ -173,7 +173,9 @@ class DBQuery {
      * @return mixed O resultado da consulta
      */
     public function insert($values) {
-        $values = array_map('addslashes', $values);
+        $values = array_map(function($value) {
+            return is_null($value) ? null : addslashes($value);
+        }, $values);
         
         if (count($values) !== count($this->fieldsName)) {
             throw new InvalidArgumentException("O número de valores informados não é equivalente aos campos da tabela!");

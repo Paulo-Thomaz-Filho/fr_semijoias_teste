@@ -1,91 +1,66 @@
 <?php
+namespace app\models;
 
-namespace App\Models;
+use core\database\DBQuery;
+use core\database\Where;
 
-use PDO;
-use PDOException;
+include_once __DIR__.'/../core/database/DBConnection.php';
+include_once __DIR__.'/../core/database/DBQuery.php';
+include_once __DIR__.'/../core/database/Where.php';
 
-/**
- * DAO para a entidade Categoria.
- */
-class CategoriaDAO
-{
-    private PDO $conexao;
+include_once __DIR__.'/Categoria.php';
 
-    public function __construct(PDO $db)
-    {
-        $this->conexao = $db;
+class CategoriaDAO {
+    private $dbQuery;
+
+    public function __construct(){
+        $this->dbQuery = new DBQuery(
+            'categoria', 
+            'IdCategoria, Nome', 
+            'IdCategoria'
+        );
     }
 
-    public function save(Categoria &$categoria): bool
-    {
-        $query = $categoria->getId() ?
-            "UPDATE Categorias SET nome = :nome, descricao = :desc WHERE id_categoria = :id" :
-            "INSERT INTO Categorias (nome, descricao) VALUES (:nome, :desc)";
+    public function getAll(){
+        $categorias = [];
+        $dados = $this->dbQuery->select();
 
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':nome', $categoria->getNome());
-            $stmt->bindValue(':desc', $categoria->getDescricao());
-            
-            if ($categoria->getId()) {
-                $stmt->bindValue(':id', $categoria->getId(), PDO::PARAM_INT);
-            }
-
-            $stmt->execute();
-
-            if (!$categoria->getId()) {
-                $categoria->setId((int)$this->conexao->lastInsertId());
-            }
-            return true;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
+        foreach($dados as $categoria){
+            $categorias[] = new Categoria(...array_values($categoria));
         }
+
+        return $categorias;
     }
 
-    public function findById(int $id): ?Categoria
-    {
-        $query = "SELECT * FROM Categorias WHERE id_categoria = :id";
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
+    public function getById($id){
+        $where = new Where();
+        $where->addCondition('AND', 'IdCategoria', '=', $id);
+        $dados = $this->dbQuery->selectFiltered($where);
 
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $dados ? $this->hydrate($dados) : null;
-    }
-
-    public function findAll(): array
-    {
-        $query = "SELECT * FROM Categorias ORDER BY nome ASC";
-        $stmt = $this->conexao->query($query);
-        
-        $lista = [];
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $lista[] = $this->hydrate($dados);
+        if($dados){
+            return new Categoria(...array_values($dados[0]));
         }
-        return $lista;
+
+        return null;
     }
 
-    public function delete(int $id): bool
-    {
-        $query = "DELETE FROM Categorias WHERE id_categoria = :id";
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
+    public function insert(Categoria $categoria){
+        $dados = [
+            null,
+            $categoria->getNome()
+        ];
+        return $this->dbQuery->insert($dados);
     }
 
-    private function hydrate(array $dados): Categoria
-    {
-        $categoria = new Categoria();
-        $categoria->setId((int)$dados['id_categoria']);
-        $categoria->setNome($dados['nome']);
-        $categoria->setDescricao($dados['descricao']);
-        return $categoria;
+    public function update(Categoria $categoria){
+        $dados = [
+            'IdCategoria' => $categoria->getIdCategoria(),
+            'Nome'        => $categoria->getNome()
+        ];
+        return $this->dbQuery->update($dados);
+    }
+
+    public function delete($id){
+        return $this->dbQuery->delete(['IdCategoria' => $id]);
     }
 }

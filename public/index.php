@@ -1,45 +1,23 @@
 <?php
-// --- 1. CONFIGURAÇÃO INICIAL DO AMBIENTE ---
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-date_default_timezone_set('America/Sao_Paulo');
+// public/index.php
 
-// --- 2. DEFINIÇÃO DE CAMINHOS E AUTOLOADER ---
-global $rootPath;
+// 1. Define o caminho raiz do projeto.
 $rootPath = dirname(__DIR__);
 
-// Carrega o autoloader (Composer ou manual)
-$composerAutoload = $rootPath . '/vendor/autoload.php';
-$manualAutoload = $rootPath . '/autoloader.php';
-if (file_exists($composerAutoload)) {
-    require_once $composerAutoload;
-} elseif (file_exists($manualAutoload)) {
-    require_once $manualAutoload;
-} else {
-    die("<h1>Erro Crítico: Autoloader não encontrado.</h1><p>Execute 'composer install' ou crie o arquivo 'autoloader.php' na raiz do projeto.</p>");
+// 2. Inclui os arquivos essenciais do framework.
+require_once $rootPath . '/app/etc/config.php';
+require_once $rootPath . '/app/core/utils/Router.php';
+require_once $rootPath . '/app/core/utils/Sanitize.php';
+
+// 3. Pega o "módulo" da URL, que é preenchido pelo .htaccess.
+// Se o ?module= não existir (caso da raiz '/'), define 'home' como padrão.
+$module = $_GET['module'] ?? 'login/';
+
+// 4. (Opcional, mas recomendado) Remove a barra final da URL, se houver.
+if (strlen($module) > 1 && substr($module, -1) === '/') {
+    $module = substr($module, 0, -1);
 }
 
-// --- 3. CARREGAMENTO DA CONFIGURAÇÃO ---
-global $config;
-$configFile = $rootPath . '/app/etc/config.php';
-if (file_exists($configFile)) {
-    require $configFile; // O config.php irá popular a $_SESSION
-} else {
-    die("<h1>Erro Crítico: Arquivo de configuração não encontrado.</h1>");
-}
-
-// --- 4. INICIALIZAÇÃO E EXECUÇÃO DO ROTEADOR ---
-use App\Core\Utils\Router; // Namespace corrigido
-
-try {
-    // Captura a rota a partir do .htaccess
-    $module = $_GET['module'] ?? 'login'; // A rota padrão para quem acessa a raiz é 'login'
-
-    $router = new Router();
-    $router->dispatch($module);
-
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Erro interno no servidor.', 'error_details' => $e->getMessage()]);
-}
+// 5. Inicia o roteador e despacha a requisição.
+$router = new core\utils\Router();
+$router->dispatch($module);

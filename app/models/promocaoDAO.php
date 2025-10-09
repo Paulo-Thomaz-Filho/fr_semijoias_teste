@@ -1,129 +1,112 @@
 <?php
+// Em: app/models/PromocaoDAO.php
 
-namespace App\Models;
+namespace app\models;
 
-use PDO;
-use PDOException;
+use core\database\DBQuery;
+use core\database\Where;
 
-/**
- * DAO (Data Access Object) para a entidade Promocao.
- * Responsável por toda a comunicação com a tabela `Promocoes` no banco de dados.
- */
-class PromocaoDAO
-{
-    /** @var PDO A conexão com o banco de dados. */
-    private PDO $conexao;
+include_once __DIR__.'/../core/database/DBConnection.php';
+include_once __DIR__.'/../core/database/DBQuery.php';
+include_once __DIR__.'/../core/database/Where.php';
+include_once __DIR__.'/Promocao.php';
 
-    public function __construct(PDO $db)
-    {
-        $this->conexao = $db;
+class PromocaoDAO {
+    private $dbQuery;
+    
+    public function __construct(){
+        // 1. CONSTRUTOR CORRIGIDO:
+        // - Nomes das colunas correspondem ao banco de dados (ex: 'data_inicio').
+        // - Adicionada a nova coluna 'status'.
+        $this->dbQuery = new DBQuery(
+            'promocoes', 
+            'IdPromocao, nome, data_inicio, data_fim, tipo, valor_desconto, status', 
+            'IdPromocao'
+        );
     }
+    
+    public function getAll(){
+        $promocoes = [];
+        
+        // 2. GETALL CORRIGIDO:
+        // - Filtra para buscar apenas as promoções com status 'ativa'.
+        $where = new Where();
+        $where->addCondition('AND', 'status', '=', 'ativa');
 
-    /**
-     * Salva (insere ou atualiza) uma promoção no banco de dados.
-     * @param Promocao $promocao O objeto Promocao a ser salvo.
-     * @return bool Retorna true em caso de sucesso, false em caso de falha.
-     */
-    public function save(Promocao &$promocao): bool
-    {
-        if ($promocao->getId()) {
-            // Atualiza uma promoção existente
-            $query = "UPDATE Promocoes SET nome = :nome, tipo_desconto = :tipo, valor_desconto = :valor, ativo = :ativo, data_inicio = :inicio, data_fim = :fim WHERE id_promocao = :id";
-        } else {
-            // Insere uma nova promoção
-            $query = "INSERT INTO Promocoes (nome, tipo_desconto, valor_desconto, ativo, data_inicio, data_fim) VALUES (:nome, :tipo, :valor, :ativo, :inicio, :fim)";
+        $dados = $this->dbQuery->selectFiltered($where);
+
+        foreach($dados as $dadosPromocao){
+            $promocao = new Promocao();
+            // O método load() agora recebe 7 argumentos, incluindo o status.
+            $promocao->load(...array_values($dadosPromocao));
+            $promocoes[] = $promocao;
         }
 
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':nome', $promocao->getNome());
-            $stmt->bindValue(':tipo', $promocao->getTipoDesconto());
-            $stmt->bindValue(':valor', $promocao->getValorDesconto());
-            $stmt->bindValue(':ativo', $promocao->isAtivo(), PDO::PARAM_BOOL);
-            $stmt->bindValue(':inicio', $promocao->getDataInicio());
-            $stmt->bindValue(':fim', $promocao->getDataFim());
+        return $promocoes;
+    }
+    
+    public function getById($id){
+        $where = new Where();
+        $where->addCondition('AND', 'IdPromocao', '=', $id);
+        $dados = $this->dbQuery->selectFiltered($where);
 
-            if ($promocao->getId()) {
-                $stmt->bindValue(':id', $promocao->getId());
-            }
+        if($dados){
+            $promocao = new Promocao();
+            $promocao->load(...array_values($dados[0]));
+            return $promocao;
+        }
 
-            $stmt->execute();
+        return null;
+    }
+    
+    public function insert(Promocao $promocao){
+        // 3. INSERT CORRIGIDO:
+        // - Garante que uma nova promoção seja criada como 'ativa'.
+        $status = $promocao->getStatus() ?? 'ativa';
 
-            if (!$promocao->getId()) {
-                $promocao->setId((int)$this->conexao->lastInsertId());
-            }
-            return true;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
+        // O array de dados precisa ter 7 valores para corresponder aos 7 campos do construtor.
+        $dados = [
+            null, // IdPromocao
+            $promocao->getNome(),
+            $promocao->getDataInicio(),
+            $promocao->getDataFim(),
+            $promocao->getTipo(),
+            $promocao->getValor(),
+            $status
+        ];
+        return $this->dbQuery->insert($dados);
+    }
+
+    public function update(Promocao $promocao){
+        // 4. UPDATE CORRIGIDO (WORKAROUND):
+        // - Cria um array com todos os 7 campos para contornar o bug do DBQuery,
+        //   que espera receber todos os campos da tabela.
+        $dados = [
+            'IdPromocao'     => $promocao->getIdPromocao(),
+            'nome'           => $promocao->getNome(),
+            'data_inicio'    => $promocao->getDataInicio(),
+            'data_fim'       => $promocao->getDataFim(),
+            'tipo'           => $promocao->getTipo(),
+            'valor_desconto' => $promocao->getValor(),
+            'status'         => $promocao->getStatus() ?? 'ativa'
+        ];
+        
+        return $this->dbQuery->update($dados);
+    }
+    
+    // 5. MÉTODO DELETE SUBSTITUÍDO POR INATIVAR:
+    //    Este método implementa o "soft delete".
+    public function inativar($id) {
+        // Busca a promoção completa para poder passá-la ao método update.
+        $promocao = $this->getById($id);
+        if (!$promocao) {
             return false;
         }
-    }
 
-    /**
-     * Busca uma promoção pelo seu ID.
-     * @return Promocao|null Retorna o objeto Promocao ou null se não encontrar.
-     */
-    public function findById(int $id): ?Promocao
-    {
-        $query = "SELECT * FROM Promocoes WHERE id_promocao = :id";
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $dados ? $this->hydrate($dados) : null;
-    }
+        // Altera apenas o status do objeto.
+        $promocao->setStatus('inativa');
 
-    /**
-     * Busca todas as promoções.
-     * @return array Retorna um array de objetos Promocao.
-     */
-    public function findAll(): array
-    {
-        $query = "SELECT * FROM Promocoes ORDER BY nome ASC";
-        $stmt = $this->conexao->query($query);
-        
-        $listaPromocoes = [];
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $listaPromocoes[] = $this->hydrate($dados);
-        }
-        return $listaPromocoes;
-    }
-
-    /**
-     * Exclui uma promoção pelo seu ID.
-     * @param int $id O ID da promoção a ser excluída.
-     * @return bool Retorna true em caso de sucesso, false em caso de falha.
-     */
-    public function delete(int $id): bool
-    {
-        $query = "DELETE FROM Promocoes WHERE id_promocao = :id";
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Método auxiliar para "hidratar" um objeto Promocao com dados do banco.
-     * @param array $dados Os dados vindos do banco.
-     * @return Promocao Retorna um objeto Promocao preenchido.
-     */
-    private function hydrate(array $dados): Promocao
-    {
-        $promocao = new Promocao();
-        $promocao->setId((int)$dados['id_promocao']);
-        $promocao->setNome($dados['nome']);
-        $promocao->setTipoDesconto($dados['tipo_desconto']);
-        $promocao->setValorDesconto((float)$dados['valor_desconto']);
-        $promocao->setAtivo((bool)$dados['ativo']);
-        $promocao->setDataInicio($dados['data_inicio']);
-        $promocao->setDataFim($dados['data_fim']);
-        return $promocao;
+        // Chama o método update do próprio DAO, que já contém o workaround para o DBQuery.
+        return $this->update($promocao);
     }
 }
-

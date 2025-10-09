@@ -1,17 +1,32 @@
 <?php
+namespace app\models;
 
-namespace App\Models;
+class Marca {
+    private $idMarca;
+    private $nome;
 
-class Marca 
-{
-    private ?int $marca_id = null;
-    private string $nome;
+    // --- Getters ---
 
-    public function getMarcaId(): ?int {return $this->marca_id;}
+    public function getIdMarca() { return $this->idMarca; }
+    public function getNome()    { return $this->nome; }
 
-    public function getNome(): string {return $this->nome;}
+    // --- Setters ---
 
-    public function setMarcaId(int $marca_id): void {$this->marca_id = $marca_id;}
+    public function setIdMarca($idMarca) { $this->idMarca = $idMarca; }
+    public function setNome($nome)       { $this->nome = $nome; }
+    
+    // --- Métodos Especiais ---
 
-    public function setNome(string $nome): void {$this->nome = $nome;}
+    // Carrega os dados da marca
+    public function load($idMarca, $nome) {
+        $this->setIdMarca($idMarca);
+        $this->setNome($nome);
+    }
+
+    public function toArray() {
+        return [
+            'idMarca' => $this->idMarca,
+            'nome'    => $this->nome
+        ];
+    }
 }

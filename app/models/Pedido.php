@@ -1,32 +1,36 @@
 <?php
+// Em: app/models/Pedido.php
+namespace app\models;
 
-namespace App\Models;
+class Pedido {
+    private $idPedido;
+    private $usuario_id;
+    private $endereco_id;
+    private $valor_total;
+    private $status;
+    private $data_pedido;
+    
+    // Propriedade extra para guardar o nome do cliente (vindo do JOIN)
+    private $nome_cliente;
 
-/**
- * Modelo Puro (POPO) para a entidade Pedido.
- */
-class Pedido
-{
-    private ?int $id_pedido = null;
-    private int $id_usuario;
-    private int $id_endereco_entrega;
-    private float $valor_total;
-    private string $status = 'processando';
-    private ?string $data_pedido = null;
+    // Setters são úteis para preencher o objeto
+    public function setIdPedido($id) { $this->idPedido = $id; }
+    public function setUsuarioId($id) { $this->usuario_id = $id; }
+    public function setEnderecoId($id) { $this->endereco_id = $id; }
+    public function setValorTotal($valor) { $this->valor_total = $valor; }
+    public function setStatus($status) { $this->status = $status; }
+    public function setDataPedido($data) { $this->data_pedido = $data; }
+    public function setNomeCliente($nome) { $this->nome_cliente = $nome; }
 
-    // --- Getters ---
-    public function getId(): ?int { return $this->id_pedido; }
-    public function getIdUsuario(): int { return $this->id_usuario; }
-    public function getIdEnderecoEntrega(): int { return $this->id_endereco_entrega; }
-    public function getValorTotal(): float { return $this->valor_total; }
-    public function getStatus(): string { return $this->status; }
-    public function getDataPedido(): ?string { return $this->data_pedido; }
-
-    // --- Setters ---
-    public function setId(int $id): void { $this->id_pedido = $id; }
-    public function setIdUsuario(int $id_usuario): void { $this->id_usuario = $id_usuario; }
-    public function setIdEnderecoEntrega(int $id_endereco): void { $this->id_endereco_entrega = $id_endereco; }
-    public function setValorTotal(float $valor): void { $this->valor_total = $valor; }
-    public function setStatus(string $status): void { $this->status = $status; }
-    public function setDataPedido(string $data): void { $this->data_pedido = $data; }
+    public function toArray() {
+        return [
+            'idPedido'     => $this->idPedido,
+            'usuario_id'   => $this->usuario_id,
+            'endereco_id'  => $this->endereco_id,
+            'valor_total'  => $this->valor_total,
+            'status'       => $this->status,
+            'data_pedido'  => $this->data_pedido,
+            'nome_cliente' => $this->nome_cliente // Garante que o nome do cliente seja enviado no JSON
+        ];
+    }
 }

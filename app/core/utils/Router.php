@@ -1,219 +1,194 @@
 <?php
-// O namespace precisa corresponder à estrutura de pastas para o autoloader funcionar.
-namespace App\Core\Utils; 
 
-use PDO;
-use Exception;
+namespace  core\utils;
 
 class Router {
     
-    private array $routes = [];
-    private string $rootPath;
-    private ?PDO $pdo = null; // Propriedade para armazenar a conexão e reutilizá-la
+    private $routes = [];
 
     public function __construct() {
         global $rootPath;
         global $config;
-        $this->rootPath = $rootPath;
-        
         $json = file_get_contents($config['path']['routes']);
-        $this->routes = json_decode($json, true);
-    }
-
-    /**
-     * Cria a conexão com o banco de dados de forma "preguiçosa" (só quando for usada).
-     * @return PDO A instância da conexão.
-     */
-    private function getDbConnection(): PDO {
-        if ($this->pdo === null) {
-            // Recomenda-se mover a lógica de config para fora da sessão no futuro
-            $dbConfig = $_SESSION['database'];
-            $dsn = "mysql:host={$dbConfig['host']};dbname={$dbConfig['schema']};charset=utf8mb4";
-            $this->pdo = new PDO($dsn, $dbConfig['user'], $dbConfig['pass'], [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
+        $routes = json_decode($json, true);
+        foreach ($routes as $path => $route) {
+            $this->addRoute($path, $rootPath . "/" . $route['path'], $route['sanitize']?? null, $route['sessionKey']?? null, $route['errorPath'] ?? null);
         }
-        return $this->pdo;
+        //print_r(json_decode($config['path']['routes']));
     }
     
-    /**
-     * O método principal que direciona a requisição.
-     */
-    public function dispatch(string $module = null): void {
+    public function addRoute($requiredPath, $physicalPath, $sanitizeConfig, $sessionKey, $errorPath) {
+        $this->routes[$requiredPath] = [
+            'path' => $physicalPath,
+            'sanitize' => $sanitizeConfig,
+            'sessionKey' => $sessionKey,
+            'errorPath' => $errorPath
+        ];
+    }
+    
+    public function dispatch($module = null) {
+        // Inicia a sessão se ainda não foi iniciada
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $accessGranted = false;
+        
+        if (str_starts_with($module, "public/")) {
+            $fileExtension = strtolower(pathinfo($module, PATHINFO_EXTENSION));
+            switch ($fileExtension) {
+            case 'php':
+                require $module; return;
+            case 'html':
+                require $module; return;
+            default:
+                $this->headerMimeTypes($fileExtension);
+                echo \file_get_contents($module); return;
+            }
+        }
+        
         if (isset($this->routes[$module])) {
             $route = $this->routes[$module];
-
-            // 1. Verifica se a rota é para um Controller
-            if (isset($route['controller']) && isset($route['method'])) {
-                $this->handleControllerRoute($route);
-                return; 
-            }
-            
-            // 2. Verifica se a rota é para um DAO
-            if (isset($route['dao']) && isset($route['method'])) {
-                $this->handleDaoRoute($route);
-            } 
-            // 3. Senão, serve um arquivo de página estático
-            elseif (isset($route['path'])) {
-                $filePath = $this->rootPath . '/' . $route['path'];
-                if (file_exists($filePath)) {
-                    require $filePath;
-                } else {
-                    $this->resourceNotFound($module);
-                }
-            }
-            else {
-                $this->routeNotFound();
-            }
-        } else {
-            // Se a rota não está no JSON, verifica se é um arquivo público (CSS, JS)
-            $publicFilePath = $this->rootPath . '/public/' . $module;
-            if(file_exists($publicFilePath) && !is_dir($publicFilePath)) {
-                 $this->servePublicFile($publicFilePath);
-            } else {
-                 $this->routeNotFound();
-            }
-        }
-    }
-
-    /**
-     * Manipula rotas que apontam para uma classe Controller.
-     */
-    private function handleControllerRoute(array $route): void {
-        $controllerClass = $route['controller'];
-        $methodName = $route['method'];
-
-        if (!class_exists($controllerClass) || !method_exists($controllerClass, $methodName)) {
-            $this->sendJsonResponse(['error' => 'Configuração de rota inválida: Controller ou método não encontrado.'], 500);
-            return;
-        }
-
-        try {
-            $connection = $this->getDbConnection();
-            
-            // Instancia o Controller, passando a conexão (caso ele precise)
-            $controllerInstance = new $controllerClass($connection);
-            
-            // Chama o método do controller (ex: 'checkAuthStatus')
-            $controllerInstance->$methodName();
-
-        } catch (Exception $e) {
-            $this->sendJsonResponse(['error' => 'Erro ao executar a operação.', 'details' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Manipula rotas que apontam diretamente para uma classe DAO.
-     */
-    private function handleDaoRoute(array $route): void {
-        $daoClass = $route['dao'];
-        $methodName = $route['method'];
-
-        if (!class_exists($daoClass) || !method_exists($daoClass, $methodName)) {
-            $this->sendJsonResponse(['error' => 'Configuração de rota inválida: DAO ou método não encontrado.'], 500);
-            return;
-        }
-
-        try {
-            $connection = $this->getDbConnection();
-            $daoInstance = new $daoClass($connection);
-            
-            // Lógica para cada tipo de método
-            switch ($methodName) {
-                case 'save':
-                    $modelClass = $route['model'];
-                    if (!class_exists($modelClass)) {
-                        throw new Exception("Classe de modelo '{$modelClass}' não encontrada para a rota.");
-                    }
-                    $modelInstance = new $modelClass();
-                    $inputData = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-
-                    // Verifica se um ID foi passado no corpo dos dados para saber se é um UPDATE
-                    if (!empty($inputData['id_produto'])) { // Ajuste 'id_produto' para a chave primária genérica se necessário
-                        $modelInstance->setId((int)$inputData['id_produto']);
-                    }
-
-                    foreach ($inputData as $key => $value) {
-                        $setter = 'set' . str_replace('_', '', ucwords($key, '_'));
-                        if (method_exists($modelInstance, $setter)) {
-                            $modelInstance->$setter($value);
+            if (file_exists($route['path'])) {
+                $accessGranted = true;
+                if (isset($route['sessionKey'])) {
+                    foreach ($route['sessionKey'] as $sessionRequirement) {
+                        foreach ($sessionRequirement as $key => $value) {
+                            if ($value === true) {
+                                if (!isset($_SESSION[$key])) {
+                                    $accessGranted = false;
+                                    break 2;
+                                }
+                            } elseif (is_array($value)) {
+                                if (!isset($_SESSION[$key]) || !in_array($_SESSION[$key], $value)) {
+                                    $accessGranted = false;
+                                    break 2;
+                                }
+                            }
                         }
                     }
-                    $success = $daoInstance->save($modelInstance);
-                    $this->sendJsonResponse(['success' => $success]);
-                    break;
-
-                case 'login':
-                    $inputData = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-                    $email = $inputData['email'] ?? '';
-                    $senha = $inputData['senha'] ?? '';
-                    $tipoAcesso = $daoInstance->login($email, $senha);
-
-                    if ($tipoAcesso) {
-                        $this->sendJsonResponse(['success' => true, 'isAdmin' => ($tipoAcesso === 'admin')]);
-                    } else {
-                        $this->sendJsonResponse(['success' => false, 'error' => 'Credenciais inválidas.']);
+                }
+                
+                if ($accessGranted) {
+                    if ($route['sanitize']['requestVars'] ?? false) {
+                        (new Sanitize(true, false, false))->getCleanRequestVars();
                     }
-                    break;
-
-                default: // Lida com findById, findAll, delete, etc.
-                    $args = [];
-                    if (($route['paramSource'] ?? null) === 'GET' && isset($_GET['id'])) {
-                        $args[] = (int)$_GET['id'];
-                    }
-                    
-                    $result = call_user_func_array([$daoInstance, $methodName], $args);
-                    $this->sendJsonResponse($result);
-                    break;
+                    require $route['path'];
+                } else {
+                    $this->redirectToErrorPage($route);
+                }
+            } else {
+                // Se o arquivo físico da rota não existir, redireciona para a função notFound
+                http_response_code(404);
+                header('Content-Type: application/json');
+                header('Content-Type: text/html; charset=utf-8');
+                header('HTTP/1.0 404 Not Found');
+                $response = [
+                    'error' => '404 - Rota requerida existe, mas o recurso requerido não encontrado!',
+                    'errorno' => 404,
+                ];
+                echo json_encode($response, JSON_UNESCAPED_UNICODE);
             }
-        } catch (Exception $e) {
-            $this->sendJsonResponse(['error' => 'Erro ao executar a operação.', 'details' => $e->getMessage()], 500);
-        }
-    }
-    
-    private function sendJsonResponse($data, int $httpCode = 200): void {
-        http_response_code($httpCode);
-        header('Content-Type: application/json; charset=utf-8');
-        // Adicionado para lidar com o caso de $data ser nulo
-        if ($data === null) {
-            echo json_encode([]);
-        } elseif (is_bool($data)) {
-            echo json_encode(['success' => $data]);
         } else {
-            echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            // Se a rota não estiver definida, redireciona para a função notFound
+            http_response_code(404);
+            header('Content-Type: application/json');
+            header('Content-Type: text/html; charset=utf-8');
+            header('HTTP/1.0 404 Route Module Not Found');
+            $response = [
+                'error' => '404 - Rota requerida não encontrada!',
+                'errorno' => 404,
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
         }
-        exit();
     }
     
-    private function servePublicFile(string $filePath): void {
-        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-        $mimeTypes = [
-            'css' => 'text/css',
-            'js' => 'application/javascript',
-            'svg' => 'image/svg+xml',
-            'jpg' => 'image/jpeg',
-            'png' => 'image/png',
-        ];
-        $contentType = $mimeTypes[$extension] ?? 'application/octet-stream';
-        header("Content-Type: $contentType");
-        readfile($filePath);
-        exit();
-    }
-    
-    public function routeNotFound(): void {
-        http_response_code(404);
-        if (isset($this->routes['404']['path'])) {
-            require $this->rootPath . '/' . $this->routes['404']['path'];
+    private function redirectToErrorPage($route) {
+        if (isset($route['errorPath']) && file_exists($route['errorPath'])) {
+            require $route['errorPath'];
         } else {
-            $this->sendJsonResponse(['error' => '404 - Rota não encontrada!']);
+            $this->notFound();
         }
-        exit();
     }
     
-    private function resourceNotFound(string $module): void {
-        http_response_code(404);
-        $this->sendJsonResponse(['error' => "404 - Recurso para a rota '{$module}' não foi encontrado!"]);
-        exit();
+    public function notFound() {
+        if (isset($this->routes['404']) && file_exists($this->routes['404']['path'])) {
+            require $this->routes['404']['path'];
+        } else {
+            header('Content-Type: application/json'); 
+            header('Content-Type: text/html; charset=utf-8');
+            header('HTTP/1.0 404 Not Found');
+            $response = [
+                'error' => '404 - Page not found.',
+                'errorno' => 404,
+                'GET' => $_GET,
+                'POST' => $_POST,
+                'REQUEST' => $_REQUEST
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+    
+    function headerMimeTypes($extension) {
+        $jsonMimeTypes = '[
+            {"extension": "jpg",  "mimetype": "image/jpeg"},
+            {"extension": "jpeg", "mimetype": "image/jpeg"},
+            {"extension": "png",  "mimetype": "image/png"},
+            {"extension": "gif",  "mimetype": "image/gif"},
+            {"extension": "svg",  "mimetype": "image/svg+xml"},
+            {"extension": "wav",  "mimetype": "audio/wav"},
+            {"extension": "mp3",  "mimetype": "audio/mpeg"},
+            {"extension": "pdf",  "mimetype": "application/pdf"},
+            {"extension": "css",  "mimetype": "text/css"},
+            {"extension": "js",   "mimetype": "text/javascript"},
+            {"extension": "json", "mimetype": "application/json"},
+            {"extension": "html", "mimetype": "text/html"},
+            {"extension": "txt",  "mimetype": "text/plain"},
+            {"extension": "xml",  "mimetype": "application/xml"},
+            {"extension": "doc",  "mimetype": "application/msword"},
+            {"extension": "docx", "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            {"extension": "xls",  "mimetype": "application/vnd.ms-excel"},
+            {"extension": "xlsx", "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            {"extension": "ppt",  "mimetype": "application/vnd.ms-powerpoint"},
+            {"extension": "pptx", "mimetype": "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+            {"extension": "mp4",  "mimetype": "video/mp4"},
+            {"extension": "avi",  "mimetype": "video/x-msvideo"},
+            {"extension": "mov",  "mimetype": "video/quicktime"},
+            {"extension": "flv",  "mimetype": "video/x-flv"},
+            {"extension": "webm", "mimetype": "video/webm"},
+            {"extension": "mkv",  "mimetype": "video/x-matroska"},
+            {"extension": "zip",  "mimetype": "application/zip"},
+            {"extension": "rar",  "mimetype": "application/x-rar-compressed"},
+            {"extension": "tar",  "mimetype": "application/x-tar"},
+            {"extension": "gz",   "mimetype": "application/gzip"},
+            {"extension": "bz2",  "mimetype": "application/x-bzip2"},
+            {"extension": "7z",   "mimetype": "application/x-7z-compressed"},
+            {"extension": "ico",  "mimetype": "image/x-icon"},
+            {"extension": "tiff", "mimetype": "image/tiff"},
+            {"extension": "bmp",  "mimetype": "image/bmp"},
+            {"extension": "psd",  "mimetype": "image/vnd.adobe.photoshop"},
+            {"extension": "eps",  "mimetype": "application/postscript"},
+            {"extension": "ai",   "mimetype": "application/postscript"},
+            {"extension": "otf",  "mimetype": "font/otf"},
+            {"extension": "ttf",  "mimetype": "font/ttf"},
+            {"extension": "woff", "mimetype": "font/woff"},
+            {"extension": "woff2","mimetype": "font/woff2"}
+        ]';
+        
+        $mimeType = 'application/octet-stream';
+        $mimeTypes = json_decode($jsonMimeTypes, true);
+        foreach ($mimeTypes as $type) {
+            if ($type['extension'] === $extension) {
+                $mimeType = $type['mimetype'];
+                break;
+            }
+        }
+        if (str_starts_with($mimeType, 'text/') || $mimeType === 'application/json' || $mimeType === 'application/javascript') {
+            header('Content-Type: ' . $mimeType . '; charset=utf-8');
+        } else {
+            header('Content-Type: ' . $mimeType);
+        }
     }
 }
+
+?>

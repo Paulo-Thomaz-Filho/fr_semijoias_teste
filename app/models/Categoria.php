@@ -1,23 +1,32 @@
 <?php
+namespace app\models;
 
-namespace App\Models;
-
-/**
- * Modelo Puro (POPO) para a entidade Categoria.
- */
-class Categoria
-{
-    private ?int $id_categoria = null;
-    private string $nome;
-    private ?string $descricao = null;
+class Categoria {
+    private $idCategoria;
+    private $nome;
 
     // --- Getters ---
-    public function getId(): ?int { return $this->id_categoria; }
-    public function getNome(): string { return $this->nome; }
-    public function getDescricao(): ?string { return $this->descricao; }
+
+    public function getIdCategoria() { return $this->idCategoria; }
+    public function getNome()        { return $this->nome; }
 
     // --- Setters ---
-    public function setId(int $id): void { $this->id_categoria = $id; }
-    public function setNome(string $nome): void { $this->nome = trim(strip_tags($nome)); }
-    public function setDescricao(?string $desc): void { $this->descricao = $desc ? trim(strip_tags($desc)) : null; }
+
+    public function setIdCategoria($idCategoria) { $this->idCategoria = $idCategoria; }
+    public function setNome($nome)               { $this->nome = $nome; }
+
+    // --- Métodos Especiais ---
+
+    // Carrega os dados da categoria
+    public function load($idCategoria, $nome) {
+        $this->setIdCategoria($idCategoria);
+        $this->setNome($nome);
+    }
+
+    public function toArray() {
+        return [
+            'idCategoria' => $this->idCategoria,
+            'nome'        => $this->nome
+        ];
+    }
 }

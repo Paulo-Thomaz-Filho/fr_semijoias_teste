@@ -1,100 +1,66 @@
 <?php
+namespace app\models;
 
-namespace App\Models;
+use core\database\DBQuery;
+use core\database\Where;
 
-use PDO;
-use PDOException;
+include_once __DIR__.'/../core/database/DBConnection.php';
+include_once __DIR__.'/../core/database/DBQuery.php';
+include_once __DIR__.'/../core/database/Where.php';
 
-class MarcaDAO 
-{
-    private PDO $conexao;
+include_once __DIR__.'/Marca.php';
 
-    public function __construct(PDO $db) 
-    {
-        $this->conexao = $db;
+class MarcaDAO {
+    private $dbQuery;
+
+    public function __construct(){
+        $this->dbQuery = new DBQuery(
+            'marcas', 
+            'IdMarca, Nome', 
+            'IdMarca'
+        );
     }
 
-    public function save(Marca &$marca): bool 
-    {
-        $query = $marca->getMarcaId() ?
-            "UPDATE marcas SET nome = :nome WHERE marca_id = :id" :
-            "INSERT INTO marcas (nome) VALUES (:nome)";
+    public function getAll(){
+        $marcas = [];
+        $dados = $this->dbQuery->select();
 
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':nome', $marca->getNome());
-
-            if ($marca->getMarcaId()) {
-                $stmt->bindValue(':id', $marca->getMarcaId(), PDO::PARAM_INT);
-            }
-            
-            $stmt->execute();
-
-            if (!$marca->getMarcaId()) {
-                $marca->setMarcaId((int)$this->conexao->lastInsertId());
-            }
-
-            return true;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
+        foreach($dados as $marca){
+            $marcas[] = new Marca(...array_values($marca));
         }
+
+        return $marcas;
     }
 
-    public function findById(int $id): ?Marca 
-    {
-        $query = "SELECT * FROM marcas WHERE marca_id = :id";
-        
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            
-            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $dados ? $this->hydrate($dados) : null;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return null;
+    public function getById($id){
+        $where = new Where();
+        $where->addCondition('AND', 'IdMarca', '=', $id);
+        $dados = $this->dbQuery->selectFiltered($where);
+
+        if($dados){
+            return new Marca(...array_values($dados[0]));
         }
+
+        return null;
     }
 
-    public function findAll(): array 
-    {
-        $query = "SELECT * FROM marcas ORDER BY nome ASC";
-        
-        try {
-            $stmt = $this->conexao->query($query);
-            $listaMarcas = [];
-            
-            while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $listaMarcas[] = $this->hydrate($dados);
-            }
-            
-            return $listaMarcas;
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return [];
-        }
+    public function insert(Marca $marca){
+        $dados = [
+            null,
+            $marca->getNome(),
+        ];
+        return $this->dbQuery->insert($dados);
     }
 
-    public function delete(int $id): bool
-    {
-        $query = "DELETE FROM marcas WHERE marca_id = :id";
-        try {
-            $stmt = $this->conexao->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
+    public function update(Marca $marca){
+        $dados = [
+            'IdMarca' => $marca->getIdMarca(),
+            'Nome'    => $marca->getNome(),
+        ];
+        return $this->dbQuery->update($dados);
     }
 
-    private function hydrate(array $dados): Marca 
-    {
-        $marca = new Marca();
-        $marca->setMarcaId((int)$dados['marca_id']);
-        $marca->setNome($dados['nome']);
-        return $marca;
+    public function delete($id){
+        return $this->dbQuery->delete(['IdMarca' => $id]);
     }
 }

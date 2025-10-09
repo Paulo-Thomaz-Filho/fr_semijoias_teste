@@ -1,0 +1,202 @@
+/* --- Definição das Variáveis Globais --- */
+:root {
+    /* Paleta de Cores */
+    --cor-primaria: #0d6efd;
+    --cor-sucesso: #198754;
+    --cor-aviso: #ffc107;
+    --cor-perigo: #dc3545;
+
+    --cor-fundo: #e9ecef;
+    --cor-fundo-sidebar: #fff;
+    --cor-fundo-hover: #f1f3f5;
+    --cor-fundo-ativo: #e9ecef;
+    
+    --cor-texto-principal: #212529;
+    --cor-texto-secundario: #6c757d;
+    --cor-texto-muted: #888;
+    --cor-borda: #e9ecef;
+    --cor-borda-foco: #ced4da;
+
+    /* Fontes */
+    --fonte-principal: 'Poppins', sans-serif;
+
+    /* Tamanhos e Espaçamentos */
+    --largura-sidebar: 260px;
+    --raio-borda-card: 12px;
+    --raio-borda-botao: 8px;
+
+    /* Sombras */
+    --sombra-suave: 0 0 15px rgba(0, 0, 0, 0.05);
+    --sombra-elevada: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* --- Estilos Gerais --- */
+body {
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: var(--largura-sidebar);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--cor-fundo-sidebar);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--sombra-suave);
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.sidebar-header h3 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 2.5rem;
+    letter-spacing: -2px;
+}
+.sidebar-header span {
+    font-size: 0.8rem;
+    color: var(--cor-texto-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.sidebar .nav-item {
+    margin-bottom: 10px;
+}
+
+.sidebar .nav-link {
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: var(--raio-borda-botao);
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar .nav-link i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--cor-fundo-ativo);
+    color: var(--cor-texto-principal);
+}
+
+.sidebar .nav-link:not(.active):hover {
+    background-color: var(--cor-fundo-hover);
+    color: var(--cor-texto-principal);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+}
+
+/* --- Conteúdo Principal --- */
+.main-content {
+    margin-left: var(--largura-sidebar);
+    padding: 30px;
+    width: calc(100% - var(--largura-sidebar));
+}
+
+header h1.h2 {
+    font-weight: 600;
+    margin: 0;
+}
+
+header .input-group {
+    width: 250px;
+}
+
+header .form-control, header .input-group-text {
+    border-color: var(--cor-borda);
+}
+
+header .form-control:focus {
+    box-shadow: none;
+    border-color: var(--cor-borda-foco);
+}
+
+/* --- Cards de Estatísticas --- */
+.stats-cards .card {
+    border-radius: var(--raio-borda-card);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stats-cards .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-elevada);
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Cores dos ícones dos cards */
+.bg-light-primary { background-color: #e7f1ff; color: var(--cor-primaria); }
+.bg-light-success { background-color: #e5f7ef; color: var(--cor-sucesso); }
+.bg-light-warning { background-color: #fff8e1; color: var(--cor-aviso); }
+
+/* --- Tabela de Pedidos --- */
+.orders-table .card {
+    border-radius: var(--raio-borda-card);
+}
+
+.orders-table th {
+    font-weight: 600;
+    color: var(--cor-texto-secundario);
+}
+
+.orders-table th i {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    color: #adb5bd; /* Mantido por ser muito específico */
+}
+
+.orders-table td, .orders-table th {
+    vertical-align: middle;
+}
+
+.error-message {
+    padding: 20px;
+    color: var(--cor-perigo);
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.form-control:read-only {
+    background-color: hsl(210, 16%, 93%);
+}
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .sidebar {
+        left: calc(-1 * var(--largura-sidebar));
+    }
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+    }
+}

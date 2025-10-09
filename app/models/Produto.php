@@ -1,42 +1,48 @@
 <?php
+// Em: app/models/Produto.php
+namespace app\models;
 
-namespace App\Models;
+class Produto {
+    private $IdProduto;
+    private $nome;
+    private $descricao;
+    private $valor;
+    private $marca;       
+    private $categoria;   
+    private $idPromocao;  
+    private $status; // ADICIONADO
 
-/**
- * Modelo Puro (POPO) para a entidade Produto.
- * Representa os dados de um produto.
- */
-class Produto
-{
-    private ?int $id_produto = null;
-    private string $nome;
-    private ?string $descricao = null;
-    private float $preco;
-    private int $quantidade_estoque = 0;
-    private ?string $sku = null;
-    private int $id_categoria;
-    private int $id_marca;
-    private ?int $id_promocao = null;
+    public function __construct($IdProduto = null, $nome = null, $descricao = null, $valor = null, $marca = null, $categoria = null, $idPromocao = null, $status = 'ativo') {
+        $this->IdProduto = $IdProduto;
+        $this->nome = $nome;
+        $this->descricao = $descricao;
+        $this->valor = $valor;
+        $this->marca = $marca;
+        $this->categoria = $categoria;
+        $this->idPromocao = $idPromocao;
+        $this->status = $status; // ADICIONADO
+    }
 
     // --- Getters ---
-    public function getId(): ?int { return $this->id_produto; }
-    public function getNome(): string { return $this->nome; }
-    public function getDescricao(): ?string { return $this->descricao; }
-    public function getPreco(): float { return $this->preco; }
-    public function getQuantidadeEstoque(): int { return $this->quantidade_estoque; }
-    public function getSku(): ?string { return $this->sku; }
-    public function getIdCategoria(): int { return $this->id_categoria; }
-    public function getIdMarca(): int { return $this->id_marca; }
-    public function getIdPromocao(): ?int { return $this->id_promocao; }
+    public function getIdProduto() { return $this->IdProduto; }
+    public function getNome() { return $this->nome; }
+    public function getDescricao() { return $this->descricao; }
+    public function getValor() { return $this->valor; }
+    public function getMarca() { return $this->marca; }           
+    public function getCategoria() { return $this->categoria; }       
+    public function getIdPromocao() { return $this->idPromocao; }    
+    public function getStatus() { return $this->status; } // ADICIONADO
 
-    // --- Setters ---
-    public function setId(int $id): void { $this->id_produto = $id; }
-    public function setNome(string $nome): void { $this->nome = trim(strip_tags($nome)); }
-    public function setDescricao(?string $descricao): void { $this->descricao = $descricao ? trim(strip_tags($descricao)) : null; }
-    public function setPreco(float $preco): void { $this->preco = $preco; }
-    public function setQuantidadeEstoque(int $qtd): void { $this->quantidade_estoque = $qtd; }
-    public function setSku(?string $sku): void { $this->sku = $sku ? trim(strip_tags($sku)) : null; }
-    public function setIdCategoria(int $id_categoria): void { $this->id_categoria = $id_categoria; }
-    public function setIdMarca(int $id_marca): void { $this->id_marca = $id_marca; }
-    public function setIdPromocao(?int $id_promocao): void { $this->id_promocao = $id_promocao; }
+    public function toArray() {
+        return [
+            'IdProduto'   => $this->IdProduto,
+            'nome'        => $this->nome,
+            'descricao'   => $this->descricao,
+            'valor'       => $this->valor,
+            'marca'       => $this->marca,      
+            'categoria'   => $this->categoria,  
+            'idPromocao'  => $this->idPromocao,
+            'status'      => $this->status // ADICIONADO
+        ];
+    }
 }

@@ -1,96 +1,57 @@
 <?php
+// Em: app/models/Promocao.php
 
-namespace App\Models;
+namespace app\models;
 
-/**
- * Modelo Puro (POPO) para a entidade Promocao.
- * Sua única responsabilidade é representar os dados de uma promoção.
- * Não possui conhecimento sobre o banco de dados.
- */
-class Promocao
-{
-    // Propriedades
-    private ?int $id_promocao = null;
-    private string $nome;
-    private string $tipo_desconto;
-    private float $valor_desconto;
-    private bool $ativo = true;
-    private ?string $data_inicio = null;
-    private ?string $data_fim = null;
+class Promocao {
+    private $idPromocao;
+    private $nome;
+    private $dataInicio;
+    private $dataFim;
+    private $tipo;
+    private $valor;
+    private $status; // Propriedade adicionada
 
     // --- Getters ---
-    public function getId(): ?int
-    {
-        return $this->id_promocao;
-    }
-
-    public function getNome(): string
-    {
-        return $this->nome;
-    }
-
-    public function getTipoDesconto(): string
-    {
-        return $this->tipo_desconto;
-    }
-
-    public function getValorDesconto(): float
-    {
-        return $this->valor_desconto;
-    }
-
-    public function isAtivo(): bool
-    {
-        return $this->ativo;
-    }
-
-    public function getDataInicio(): ?string
-    {
-        return $this->data_inicio;
-    }
-
-    public function getDataFim(): ?string
-    {
-        return $this->data_fim;
-    }
+    public function getIdPromocao() { return $this->idPromocao; }
+    public function getNome()       { return $this->nome; }
+    public function getDataInicio() { return $this->dataInicio; }
+    public function getDataFim()    { return $this->dataFim; }
+    public function getTipo()       { return $this->tipo; }
+    public function getValor()      { return $this->valor; }
+    public function getStatus()     { return $this->status; } // Método adicionado
 
     // --- Setters ---
-    // O ID é definido internamente pelo DAO, então não há setter público para ele.
-    public function setId(int $id): void
-    {
-        $this->id_promocao = $id;
-    }
-    
-    public function setNome(string $nome): void
-    {
-        $this->nome = trim(strip_tags($nome));
+    public function setIdPromocao($idPromocao) { $this->idPromocao = $idPromocao; }
+    public function setNome($nome)             { $this->nome = $nome; }
+    public function setDataInicio($dataInicio) { $this->dataInicio = $dataInicio; }
+    public function setDataFim($dataFim)       { $this->dataFim = $dataFim; }
+    public function setTipo($tipo)             { $this->tipo = $tipo; }
+    public function setValor($valor)           { $this->valor = $valor; }
+    public function setStatus($status)   { $this->status = $status; } // Método adicionado
+
+    // --- Métodos Especiais ---
+
+    // O método load PRECISA ser atualizado para receber o status do banco de dados
+    public function load($idPromocao, $nome, $dataInicio, $dataFim, $tipo, $valor, $status) {
+        $this->setIdPromocao($idPromocao);
+        $this->setNome($nome);
+        $this->setDataInicio($dataInicio);
+        $this->setDataFim($dataFim);
+        $this->setTipo($tipo);
+        $this->setValor($valor);
+        $this->setStatus($status);
     }
 
-    public function setTipoDesconto(string $tipo): void
-    {
-        // Validação para garantir que o tipo seja um dos valores esperados
-        if (in_array($tipo, ['percentual', 'fixo'])) {
-            $this->tipo_desconto = $tipo;
-        }
-    }
-
-    public function setValorDesconto(float $valor): void
-    {
-        $this->valor_desconto = $valor;
-    }
-
-    public function setAtivo(bool $ativo): void
-    {
-        $this->ativo = $ativo;
-    }
-
-    public function setDataInicio(?string $data): void
-    {
-        $this->data_inicio = $data;
-    }
-
-    public function setDataFim(?string $data): void
-    {
-        $this->data_fim = $data;
+    public function toArray() {
+        return [
+            'idPromocao' => $this->idPromocao,
+            'nome'       => $this->nome,
+            'dataInicio' => $this->dataInicio,
+            'dataFim'    => $this->dataFim,
+            'tipo'       => $this->tipo,
+            'valor'      => $this->valor,
+            'status'     => $this->status // Status adicionado ao array
+        ];
     }
 }
