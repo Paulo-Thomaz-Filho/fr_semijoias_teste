@@ -1,8 +1,6 @@
 // Em: public/assets/js/script_pedidos.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    // --- REFERÊNCIAS AOS ELEMENTOS DO DOM ---
-    // Formulário principal
     const form = document.getElementById('formPedido');
     const inputId = document.getElementById('pedidoId');
     const selectUsuario = document.getElementById('pedidoUsuario');
@@ -11,25 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectStatus = document.getElementById('pedidoStatus');
     const inputValorTotal = document.getElementById('pedidoValorTotal');
 
-    // Sub-formulário de itens
     const selectItemProduto = document.getElementById('itemProduto');
     const inputItemQuantidade = document.getElementById('itemQuantidade');
     const inputItemValorUnitario = document.getElementById('itemValorUnitario');
     const btnAdicionarItem = document.getElementById('btnAdicionarItem');
     const tabelaItensCorpo = document.querySelector('#tabelaItensPedido tbody');
 
-    // Botões de ação
     const btnSalvar = document.getElementById('btnSalvar');
     const btnAtualizar = document.getElementById('btnAtualizar');
     const btnExcluir = document.getElementById('btnExcluir');
     const btnLimpar = document.getElementById('btnLimpar');
     
-    // Tabela principal de pedidos
     const tabelaPedidosCorpo = document.querySelector('#tabelaPedidos tbody');
 
-    // --- VARIÁVEIS DE ESTADO ---
     let idPedidoSelecionado = null;
-    let itensDoPedido = []; // Array para guardar os itens do pedido atual
+    let itensDoPedido = []; 
 
     // --- FUNÇÕES AUXILIARES ---
     const formatarValorBRL = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -112,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const carregarPedidos = async () => {
         tabelaPedidosCorpo.innerHTML = `<tr><td colspan="6" class="text-center">Carregando...</td></tr>`;
         try {
-            const response = await fetch('pedidos'); // Assumindo endpoint 'pedidos' para listar
+            const response = await fetch('pedidos');
             if (!response.ok) throw new Error('Falha ao carregar pedidos.');
             const pedidos = await response.json();
             tabelaPedidosCorpo.innerHTML = '';

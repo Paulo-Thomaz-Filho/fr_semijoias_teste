@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tabelaCorpo = document.querySelector('#tabelaPedidos tbody');
 
-    // Função para carregar os pedidos pendentes na tabela
     function carregarPedidos() {
         tabelaCorpo.innerHTML = `<tr><td colspan="6" class="text-center">Carregando pedidos...</td></tr>`;
 
@@ -43,9 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // NOVA FUNÇÃO OTIMIZADA para os cards de estatísticas
     function carregarEstatisticas() {
-        fetch('dashboard/estatisticas') // Faz uma única chamada para o novo endpoint
+        fetch('dashboard/estatisticas')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Falha na rede ou erro no servidor.');
