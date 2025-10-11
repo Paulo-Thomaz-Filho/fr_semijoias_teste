@@ -38,6 +38,7 @@ try {
     // Verifica se o usuário existe e se a senha está correta
     if ($usuario && $usuario->verificarSenha($data->senha)) {
         
+        $_SESSION['user_logged_in'] = true;
         $_SESSION['usuario_id'] = $usuario->getId();
         $_SESSION['usuario_nome'] = $usuario->getNome();
         $_SESSION['usuario_acesso'] = $usuario->getAcesso();

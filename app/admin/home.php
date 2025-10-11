@@ -1,4 +1,4 @@
-<?php require_once 'verifica_login.php'; ?>
+<?php require_once __DIR__ . '/verifica_login.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

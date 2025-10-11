@@ -163,24 +163,30 @@
 
 
     
+    
+    "verifica_login": {
+        "path": "app/admin/verifica_login.php"
+    },
     "admin": {
-        "path": "app/admin/home.html"
+        "path": "app/admin/home.php"
     },
     "cliente": {
-        "path": "app/admin/cliente.html"
+        "path": "app/admin/cliente.php"
     },
     "produto": {
-        "path": "app/admin/produto.html"
+        "path": "app/admin/produto.php"
     },
     "pedido": {
-        "path": "app/admin/pedidos.html"
+        "path": "app/admin/pedidos.php"
     },
     "promocao": {
-        "path": "app/admin/promocoes.html"
+        "path": "app/admin/promocoes.php"
     },
 
 
-    
+    "": {
+        "path": "public/views/login.html"
+    },
     "login": {
         "path": "public/views/login.html"
     },
