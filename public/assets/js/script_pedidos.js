@@ -1,5 +1,3 @@
-// Em: public/assets/js/script_pedidos.js
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formPedido');
     const inputId = document.getElementById('pedidoId');
