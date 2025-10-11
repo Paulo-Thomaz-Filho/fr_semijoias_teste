@@ -84,7 +84,7 @@
                 </div>
             </section>
 
-           <section>
+           <!--<section>
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Histórico de Pedidos</h5>
@@ -106,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </section>-->
         </main>
     </div>
 
