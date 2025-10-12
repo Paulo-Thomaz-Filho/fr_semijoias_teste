@@ -32,6 +32,7 @@ try {
     $novoPedido->setEnderecoId($dadosRecebidos->endereco_id);
     $novoPedido->setValorTotal($dadosRecebidos->valor_total);
     $novoPedido->setStatus($dadosRecebidos->status ?? 'Pendente');
+    $novoPedido->setDataPedido($dadosRecebidos->data_pedido);
     // Não precisamos enviar a data, o banco de dados faz isso automaticamente.
 
     $pedidoDAO = new \app\models\PedidoDAO();

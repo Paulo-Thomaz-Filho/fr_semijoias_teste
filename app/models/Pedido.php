@@ -9,11 +9,18 @@ class Pedido {
     private $valor_total;
     private $status;
     private $data_pedido;
-    
-    // Propriedade extra para guardar o nome do cliente (vindo do JOIN)
     private $nome_cliente;
 
-    // Setters são úteis para preencher o objeto
+    // --- GETTERS ---
+    public function getIdPedido() { return $this->idPedido; }
+    public function getUsuarioId() { return $this->usuario_id; }
+    public function getEnderecoId() { return $this->endereco_id; }
+    public function getValorTotal() { return $this->valor_total; }
+    public function getStatus() { return $this->status; }
+    public function getDataPedido() { return $this->data_pedido; }
+    public function getNomeCliente() { return $this->nome_cliente; }
+
+    // --- SETTERS ---
     public function setIdPedido($id) { $this->idPedido = $id; }
     public function setUsuarioId($id) { $this->usuario_id = $id; }
     public function setEnderecoId($id) { $this->endereco_id = $id; }
@@ -30,7 +37,7 @@ class Pedido {
             'valor_total'  => $this->valor_total,
             'status'       => $this->status,
             'data_pedido'  => $this->data_pedido,
-            'nome_cliente' => $this->nome_cliente // Garante que o nome do cliente seja enviado no JSON
+            'nome_cliente' => $this->nome_cliente
         ];
     }
 }

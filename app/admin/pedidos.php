@@ -61,7 +61,7 @@
                                         <tr><th>Produto</th><th>Qtd.</th><th>Valor Unit.</th><th>Subtotal</th><th>Ação</th></tr>
                                     </thead>
                                     <tbody>
-                                        </tbody>
+                                    </tbody>
                                 </table>
                             </div>
 
@@ -84,7 +84,7 @@
                 </div>
             </section>
 
-           <!--<section>
+           <section>
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Histórico de Pedidos</h5>
@@ -106,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-            </section>-->
+            </section>
         </main>
     </div>
 

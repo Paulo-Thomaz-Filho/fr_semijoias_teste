@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 require_once __DIR__.'/../../models/ItemPedido.php';
 require_once __DIR__.'/../../models/ItemPedidoDAO.php';
 
-$pedidoId = $_GET['pedidoId'] ?? null;
+$pedidoId = $_GET['id'] ?? null;
 
 if (!$pedidoId) {
     http_response_code(400);

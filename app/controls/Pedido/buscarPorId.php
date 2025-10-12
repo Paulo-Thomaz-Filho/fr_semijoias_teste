@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-require_once '../../models/Pedido.php';
-require_once '../../models/PedidoDAO.php';
+require_once __DIR__.'/../../models/Pedido.php';
+require_once __DIR__.'/../../models/PedidoDAO.php';
 
 $id = $_GET['id'] ?? null;
 

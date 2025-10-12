@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${pedido.nome_cliente || 'N/A'}</td>
                         <td>${formatarValorBRL(pedido.valor_total)}</td>
                         <td>${new Date(pedido.data_pedido).toLocaleDateString('pt-BR')}</td>
-                        <td><span class="badge bg-warning">${pedido.status}</span></td>
+                        <td><span class="badge bg-warning text text-black">${pedido.status}</span></td>
                         <td class="text-center"><button class="btn btn-sm btn-outline-secondary btn-selecionar">Ver Detalhes</button></td>
                     </tr>`;
                 tabelaPedidosCorpo.insertAdjacentHTML('beforeend', linha);
@@ -126,8 +126,71 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Preenche o formulário com os dados de um pedido selecionado da lista
+    const selecionarPedido = async (id) => {
+        // Reseta o formulário antes de preencher
+        resetarFormulario();
+
+        try {
+            // 1. Busca os dados principais do pedido
+            const responsePedido = await fetch(`pedidos/buscar?id=${id}`);
+            if (!responsePedido.ok) throw new Error('Pedido não encontrado.');
+            const pedido = await responsePedido.json();
+
+            // 2. Busca os itens associados a esse pedido
+            const responseItens = await fetch(`itens-pedido/buscarPorPedido?id=${id}`);
+            if (!responseItens.ok) throw new Error('Itens do pedido não encontrados.');
+            const itens = await responseItens.json();
+
+            // 3. Preenche o formulário com os dados do pedido
+            inputId.value = pedido.idPedido;
+            inputData.value = pedido.data_pedido.split(' ')[0]; // Pega apenas a data (YYYY-MM-DD)
+            selectStatus.value = pedido.status;
+            selectUsuario.value = pedido.usuario_id;
+            
+            // Carrega os endereços e depois seleciona o correto
+            await carregarEnderecosSelect(pedido.usuario_id);
+            selectEndereco.value = pedido.endereco_id;
+
+            // 4. Preenche a lista de itens do pedido (em memória) e renderiza a tabela de itens
+            itensDoPedido = itens.map(item => ({
+                produto_id: item.produto_id,
+                nome_produto: item.nome_produto, 
+                quantidade: item.quantidade,
+                valor_unitario: item.valor_unitario
+            }));
+            renderizarTabelaItens();
+
+            // 5. Ajusta o estado da página para o modo de edição
+            idPedidoSelecionado = id;
+            btnSalvar.classList.add('d-none');
+            btnAtualizar.classList.remove('d-none');
+            btnExcluir.classList.remove('d-none');
+            
+            // Destaca a linha selecionada na tabela principal
+            document.querySelectorAll('#tabelaPedidos tbody tr').forEach(row => {
+                row.classList.remove('table-active');
+                if (row.dataset.id === id) {
+                    row.classList.add('table-active');
+                }
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert('Não foi possível carregar os detalhes do pedido.');
+        }
+    };
+
     // --- EVENT LISTENERS ---
     
+    tabelaPedidosCorpo.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('btn-selecionar')) {
+            const linha = e.target.closest('tr');
+            selecionarPedido(linha.dataset.id);
+        }
+    });
+
+
     // Adiciona um item ao pedido atual (em memória)
     btnAdicionarItem.addEventListener('click', () => {
         const produtoSelecionado = selectItemProduto.options[selectItemProduto.selectedIndex];
@@ -173,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carregarEnderecosSelect(selectUsuario.value);
     });
 
-    // ** LINHA CORRIGIDA ADICIONADA AQUI **
+    // 
     btnLimpar.addEventListener('click', resetarFormulario);
 
     // Ação principal de Salvar/Atualizar do formulário
@@ -190,7 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
             usuario_id: selectUsuario.value,
             endereco_id: selectEndereco.value,
             valor_total: itensDoPedido.reduce((total, item) => total + (item.quantidade * item.valor_unitario), 0),
-            status: selectStatus.value
+            status: selectStatus.value,
+            data_pedido: inputData.value // <-- LINHA ADICIONADA
         };
 
         try {

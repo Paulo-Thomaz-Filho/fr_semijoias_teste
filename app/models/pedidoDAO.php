@@ -101,11 +101,19 @@ class PedidoDAO {
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
+            // CORRIGIDO: Usando os setters para carregar os dados no objeto
             $pedido = new Pedido();
-            $pedido->load(...array_values($dados[0]));
+            $row = $dados[0];
+
+            $pedido->setIdPedido($row['idPedido']);
+            $pedido->setUsuarioId($row['usuario_id']);
+            $pedido->setEnderecoId($row['endereco_id']);
+            $pedido->setValorTotal($row['valor_total']);
+            $pedido->setStatus($row['status']);
+            $pedido->setDataPedido($row['data_pedido']);
             return $pedido;
         }
-        return null;
+    return null;
     }
 
     public function insert(Pedido $pedido){
@@ -119,6 +127,7 @@ class PedidoDAO {
         ];
         return $this->dbQuery->insert($dados);
     }
+
 
     public function update(Pedido $pedido){
         $dados = [

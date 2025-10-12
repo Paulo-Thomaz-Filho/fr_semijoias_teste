@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${pedido.enderecoCompleto}</td>
                             <td>${valorFormatado}</td>
                             <td>${dataFormatada}</td>
-                            <td><span class="badge bg-warning">${pedido.status}</span></td>
+                            <td><span class="badge bg-warning text text-black">${pedido.status}</span></td>
                         </tr>
                     `;
                     tabelaCorpo.insertAdjacentHTML('beforeend', linha);
