@@ -22,37 +22,26 @@ class PedidoDAO {
         
         $this->dbQuery = new DBQuery(
             'pedidos', 
-            'idPedido, usuario_id, endereco_id, valor_total, status, data_pedido', 
-            'idPedido'
+            'id_pedido, produto_nome, cliente_nome, preco, endereco, data_pedido, quantidade, status, descricao', 
+            'id_pedido'
         );
     }
 
     public function getAll() {
-        $sql = "
-            SELECT 
-                p.idPedido, p.usuario_id, p.endereco_id, p.valor_total, p.status, p.data_pedido,
-                u.nome as nome_cliente 
-            FROM 
-                pedidos p
-            JOIN 
-                usuarios u ON p.usuario_id = u.id
-            ORDER BY 
-                p.data_pedido DESC
-        ";
-
-        $stmt = $this->conn->query($sql);
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         $pedidos = [];
-        foreach ($resultados as $row) {
+        $dados = $this->dbQuery->select();
+
+        foreach($dados as $row){ 
             $pedido = new Pedido();
-            $pedido->setIdPedido($row['idPedido']);
-            $pedido->setUsuarioId($row['usuario_id']);
-            $pedido->setEnderecoId($row['endereco_id']);
-            $pedido->setValorTotal($row['valor_total']);
-            $pedido->setStatus($row['status']);
+            $pedido->setIdPedido($row['id_pedido']);
+            $pedido->setProdutoNome($row['produto_nome']);
+            $pedido->setClienteNome($row['cliente_nome']);
+            $pedido->setPreco($row['preco']);
+            $pedido->setEndereco($row['endereco']);
             $pedido->setDataPedido($row['data_pedido']);
-            $pedido->setNomeCliente($row['nome_cliente']);
+            $pedido->setQuantidade($row['quantidade']);
+            $pedido->setStatus($row['status']);
+            $pedido->setDescricao($row['descricao']);
             $pedidos[] = $pedido;
         }
 
@@ -67,12 +56,15 @@ class PedidoDAO {
 
         foreach($dados as $row){ 
             $pedido = new Pedido();
-            $pedido->setIdPedido($row['idPedido']);
-            $pedido->setUsuarioId($row['usuario_id']);
-            $pedido->setEnderecoId($row['endereco_id']);
-            $pedido->setValorTotal($row['valor_total']);
-            $pedido->setStatus($row['status']);
+            $pedido->setIdPedido($row['id_pedido']);
+            $pedido->setProdutoNome($row['produto_nome']);
+            $pedido->setClienteNome($row['cliente_nome']);
+            $pedido->setPreco($row['preco']);
+            $pedido->setEndereco($row['endereco']);
             $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setQuantidade($row['quantidade']);
+            $pedido->setStatus($row['status']);
+            $pedido->setDescricao($row['descricao']);
             $pedidos[] = $pedido;
         }
 
@@ -81,7 +73,7 @@ class PedidoDAO {
 
     public function getTotalGanhos() {
         $conn = (new \core\database\DBConnection())->getConn();
-        $stmt = $conn->prepare("SELECT SUM(valor_total) as total FROM pedidos WHERE status = 'Concluido'"); // ou o status que define um ganho
+        $stmt = $conn->prepare("SELECT SUM(preco * quantidade) as total FROM pedidos WHERE status = 'Concluído'");
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
@@ -89,28 +81,48 @@ class PedidoDAO {
 
     public function getTotalVendas() {
         $conn = (new \core\database\DBConnection())->getConn();
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE status = 'Concluido'");
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE status = 'Concluído'");
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
     }
 
+    public function getAllStatus() {
+        $conn = (new \core\database\DBConnection())->getConn();
+        $stmt = $conn->prepare("SELECT DISTINCT status FROM pedidos WHERE status IS NOT NULL AND status != '' ORDER BY status");
+        $stmt->execute();
+        
+        $status = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $status[] = $row['status'];
+        }
+        
+        // Se não houver status no banco, retornar os padrões
+        if (empty($status)) {
+            $status = ['Pendente', 'Cancelado', 'Concluído'];
+        }
+        
+        return $status;
+    }
+
     public function getById($id){
         $where = new Where();
-        $where->addCondition('AND', 'idPedido', '=', $id);
+        $where->addCondition('AND', 'id_pedido', '=', $id);
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
-            // CORRIGIDO: Usando os setters para carregar os dados no objeto
             $pedido = new Pedido();
             $row = $dados[0];
 
-            $pedido->setIdPedido($row['idPedido']);
-            $pedido->setUsuarioId($row['usuario_id']);
-            $pedido->setEnderecoId($row['endereco_id']);
-            $pedido->setValorTotal($row['valor_total']);
-            $pedido->setStatus($row['status']);
+            $pedido->setIdPedido($row['id_pedido']);
+            $pedido->setProdutoNome($row['produto_nome']);
+            $pedido->setClienteNome($row['cliente_nome']);
+            $pedido->setPreco($row['preco']);
+            $pedido->setEndereco($row['endereco']);
             $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setQuantidade($row['quantidade']);
+            $pedido->setStatus($row['status']);
+            $pedido->setDescricao($row['descricao']);
             return $pedido;
         }
     return null;
@@ -118,12 +130,15 @@ class PedidoDAO {
 
     public function insert(Pedido $pedido){
         $dados = [
-            null,
-            $pedido->getUsuarioId(),
-            $pedido->getEnderecoId(),
-            $pedido->getValorTotal(),
-            $pedido->getStatus(),
+            null,  // id_pedido (auto increment)
+            $pedido->getProdutoNome(),
+            $pedido->getClienteNome(),
+            $pedido->getPreco(),
+            $pedido->getEndereco(),
             $pedido->getDataPedido(),
+            $pedido->getQuantidade(),
+            $pedido->getStatus(),
+            $pedido->getDescricao()
         ];
         return $this->dbQuery->insert($dados);
     }
@@ -131,19 +146,29 @@ class PedidoDAO {
 
     public function update(Pedido $pedido){
         $dados = [
-            'usuario_id'   => $pedido->getUsuarioId(),
-            'endereco_id'  => $pedido->getEnderecoId(),
-            'valor_total'  => $pedido->getValorTotal(),
-            'status'      => $pedido->getStatus(),
+            'id_pedido'    => $pedido->getIdPedido(),
+            'cliente_nome' => $pedido->getClienteNome(),
+            'endereco'     => $pedido->getEndereco(),
             'data_pedido'  => $pedido->getDataPedido(),
+            'status'       => $pedido->getStatus(),
+            'produto_nome' => $pedido->getProdutoNome(),
+            'preco'        => $pedido->getPreco(),
+            'quantidade'   => $pedido->getQuantidade(),
+            'descricao'    => $pedido->getDescricao()
         ];
-        $where = new Where();
-        $where->addCondition('AND', 'idPedido', '=', $pedido->getIdPedido());
-        return $this->dbQuery->update($dados, $where);
+        return $this->dbQuery->update($dados);
     }
 
     public function delete($id){
-        return $this->dbQuery->delete(['IdPedido' => $id]);
+        try {
+            $sql = "DELETE FROM pedidos WHERE id_pedido = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            throw new \Exception('Erro ao deletar pedido: ' . $e->getMessage());
+        }
     }
 
     

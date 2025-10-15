@@ -1,23 +1,32 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__.'/../../models/Promocao.php';
-require_once __DIR__.'/../../models/PromocaoDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-$id = $_GET['id'] ?? null;
+require_once $rootPath . '/app/models/Promocao.php';
+require_once $rootPath . '/app/models/PromocaoDAO.php';
 
-if (!$id) {
+$idPromocao = $_GET['idPromocao'] ?? null;
+
+if (!$idPromocao) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O ID da promoção é obrigatório.']);
+    echo json_encode(['erro' => 'O idPromocao é obrigatório.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$promocaoDAO = new \app\models\PromocaoDAO();
-$promocao = $promocaoDAO->getById($id);
+try {
+    $promocaoDAO = new \app\models\PromocaoDAO();
+    $promocao = $promocaoDAO->getById($idPromocao);
 
-if ($promocao) {
-    echo json_encode($promocao->toArray());
-} else {
-    http_response_code(404);
-    echo json_encode(['erro' => 'Promoção não encontrada.']);
+    if ($promocao) {
+        echo json_encode($promocao->toArray(), JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(404);
+        echo json_encode(['erro' => 'Promoção não encontrada.'], JSON_UNESCAPED_UNICODE);
+    }
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

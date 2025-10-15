@@ -14,17 +14,15 @@ class UsuarioDAO {
 	private $dbQuery;
 	
 	public function __construct(){
-    	$this->dbQuery = new DBQuery('usuarios', 'id, nome, email, senha_hash, acesso, status', 'id');
+    	$this->dbQuery = new DBQuery('usuarios', 'id_usuario, nome, email, senha, telefone, cpf, data_nascimento, id_nivel', 'id_usuario');
 	}
 
 	
 	public function getAll(){
 		$usuarios = [];
 
-		$where = new \core\database\Where();
-		$where->addCondition('AND', 'status', '=', 'ativo');
-
-		$dados = $this->dbQuery->selectFiltered($where);
+		// Removido filtro de status pois a coluna não existe na tabela
+		$dados = $this->dbQuery->select();
 
 		foreach($dados as $dadosDoUsuario){
 			$usuario = new Usuario();
@@ -36,7 +34,7 @@ class UsuarioDAO {
 	
 	public function getById($id){
 		$where = new Where();
-		$where->addCondition('AND', 'id', '=', $id);
+		$where->addCondition('AND', 'id_usuario', '=', $id);
 		$dados = $this->dbQuery->selectFiltered($where);
 
 		if($dados){
@@ -85,16 +83,16 @@ class UsuarioDAO {
 	
 	public function update(Usuario $usuario){
 		$dados = [
-			'id'          => $usuario->getId(),
-			'nome'        => $usuario->getNome(),
-			'email'       => $usuario->getEmail(),
-			'senha_hash'  => $usuario->getSenhaHash(),
-			'acesso'      => $usuario->getAcesso(),
-			'status'      => $usuario->getstatus(),
+			'id_usuario' => $usuario->getIdUsuario(),
+			'nome'       => $usuario->getNome(),
+			'email'      => $usuario->getEmail(),
+			'senha'      => $usuario->getSenhaHash(),
+			'acesso'     => $usuario->getAcesso(),
+			'status'     => $usuario->getstatus(),
 		];
 
 		$where = new Where();
-		$where->addCondition('AND', 'id', '=', $usuario->getId());
+		$where->addCondition('AND', 'id_usuario', '=', $usuario->getIdUsuario());
 
 		return $this->dbQuery->update($dados, $where);
 	}

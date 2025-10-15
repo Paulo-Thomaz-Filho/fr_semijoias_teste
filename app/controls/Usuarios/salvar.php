@@ -3,75 +3,62 @@
 
 define('APP_ENV', 'development');
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
+
+require_once $rootPath . '/app/models/Usuario.php';
+require_once $rootPath . '/app/models/UsuarioDAO.php';
 
 try {
-    // Usando caminhos absolutos para segurança
-    require_once dirname(__DIR__, 2) . '/models/Usuario.php';
-    require_once dirname(__DIR__, 2) . '/models/UsuarioDAO.php';
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
-        echo json_encode(['success' => false, 'error' => 'Método não permitido.']);
+        echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    $json_data = file_get_contents('php://input');
-    $data = json_decode($json_data);
+    $nome = $_POST['nome'] ?? null;
+    $email = $_POST['email'] ?? null;
+    $senha = $_POST['senha'] ?? null;
+    $acesso = $_POST['acesso'] ?? 'cliente';
     
-    if (!$data || !isset($data->nome) || !isset($data->email) || !isset($data->senha)) {
+    if (!$nome || !$email || !$senha) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Dados incompletos ou em formato inválido.']);
+        echo json_encode(['erro' => 'Dados incompletos. Nome, email e senha são obrigatórios.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     $usuarioDAO = new \app\models\UsuarioDAO();
 
-    // 1. VERIFICAÇÃO DE E-MAIL DUPLICADO
-    $usuarioExistente = $usuarioDAO->getByEmail($data->email);
+    // Verificação de e-mail duplicado
+    $usuarioExistente = $usuarioDAO->getByEmail($email);
 
     if ($usuarioExistente) {
-        http_response_code(409); // Conflict
-        echo json_encode(['success' => false, 'error' => 'Este e-mail já está cadastrado.']);
+        http_response_code(409);
+        echo json_encode(['erro' => 'Este e-mail já está cadastrado.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // Se o e-mail não existe, prossiga com a criação
     $novoUsuario = new \app\models\Usuario();
-    $novoUsuario->setNome($data->nome);
-    $novoUsuario->setEmail($data->email);
-    $novoUsuario->setSenha($data->senha);
-    $novoUsuario->setAcesso($data->acesso ?? 'cliente');
+    $novoUsuario->setNome($nome);
+    $novoUsuario->setEmail($email);
+    $novoUsuario->setSenha($senha);
+    $novoUsuario->setAcesso($acesso);
     
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {
         http_response_code(201);
-        $novoUsuario->setId($idInserido);
-        
-        // 2. RESPOSTA DE SUCESSO CORRIGIDA
-        // ANTES: echo json_encode($novoUsuario->toArray());
-        // AGORA:
-        echo json_encode([
-            'success' => true,
-            'message' => 'Cadastro realizado com sucesso!',
-            'usuario' => $novoUsuario->toArray()
-        ]);
-
+        echo json_encode(['sucesso' => 'Usuário salvo com sucesso!', 'id' => $idInserido], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Ocorreu um erro ao salvar o usuário.']);
+        echo json_encode(['erro' => 'Ocorreu um erro ao salvar o usuário.'], JSON_UNESCAPED_UNICODE);
     }
 
 } catch (\Throwable $e) {
     http_response_code(500);
-    if (defined('APP_ENV') && APP_ENV === 'development') {
-        echo json_encode([
-            'success' => false,
-            'error' => 'Erro interno do servidor',
-            'debug' => ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Ocorreu um erro interno no servidor.']);
-    }
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

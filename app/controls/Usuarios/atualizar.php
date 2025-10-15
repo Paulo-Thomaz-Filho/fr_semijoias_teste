@@ -3,56 +3,60 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__.'/../../models/Usuario.php';
-require_once __DIR__.'/../../models/UsuarioDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-// 1. MUDANÇA: Buscar o ID a partir de $_POST, não mais de $_GET.
-$id = $_POST['id'] ?? null;
+require_once $rootPath . '/app/models/Usuario.php';
+require_once $rootPath . '/app/models/UsuarioDAO.php';
 
-if (!$id) {
-    http_response_code(400);
-    echo json_encode(['erro' => 'O ID do usuário é obrigatório.']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// 2. MUDANÇA: Buscar nome e email de $_POST.
-$nome = $_POST['clienteNome'] ?? null;
-$email = $_POST['clienteEmail'] ?? null;
-$senha = $_POST['clienteSenha'] ?? null; // O nome do campo de senha no seu HTML é 'clienteSenha'
+$idUsuario = $_POST['idUsuario'] ?? null;
+$nome = $_POST['nome'] ?? null;
+$email = $_POST['email'] ?? null;
+$senha = $_POST['senha'] ?? null;
+
+if (!$idUsuario) {
+    http_response_code(400);
+    echo json_encode(['erro' => 'O idUsuario é obrigatório para atualização.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 if (!$nome || !$email) {
     http_response_code(400);
-    echo json_encode(['erro' => 'Nome e email são obrigatórios.']);
+    echo json_encode(['erro' => 'Nome e email são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
     $usuarioDAO = new \app\models\UsuarioDAO();
-    $usuario = $usuarioDAO->getById($id);
+    $usuario = $usuarioDAO->getById($idUsuario);
 
     if (!$usuario) {
         http_response_code(404);
-        echo json_encode(['erro' => 'Usuário não encontrado.']);
+        echo json_encode(['erro' => 'Usuário não encontrado.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // 3. Atualiza o objeto com os dados recebidos via $_POST
     $usuario->setNome($nome);
     $usuario->setEmail($email);
 
-    // Se uma nova senha foi enviada, o método setSenha() já faz o hash
     if (!empty($senha)) {
         $usuario->setSenha($senha);
     }
 
-    // 4. MUDANÇA no UsuarioDAO->update() para passar o objeto Usuario
     if ($usuarioDAO->update($usuario)) {
-        echo json_encode(['sucesso' => 'Usuário atualizado com sucesso.']);
+        echo json_encode(['sucesso' => 'Usuário atualizado com sucesso!'], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Erro ao atualizar o usuário.']);
+        echo json_encode(['erro' => 'Erro ao atualizar o usuário.'], JSON_UNESCAPED_UNICODE);
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.', 'details' => $e->getMessage()]);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

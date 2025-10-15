@@ -182,7 +182,14 @@ class DBQuery {
         }
         
         $sql = "INSERT INTO {$this->tableName} (" . implode(', ', $this->fieldsName) . ")";
-        $sql .= " VALUES ('" . implode("', '", $values) . "')";
+        
+        // Construir VALUES tratando NULL corretamente
+        $valuesFormatted = array_map(function($value) {
+            return is_null($value) ? 'NULL' : "'" . $value . "'";
+        }, $values);
+        
+        $sql .= " VALUES (" . implode(", ", $valuesFormatted) . ")";
+        
         try {
             // return ($this->conn->query($sql))->fetchAll(\PDO::FETCH_ASSOC);
             $this->conn->query($sql);
@@ -204,7 +211,9 @@ class DBQuery {
      * @return mixed O resultado da consulta
      */
     public function update($values) {
-        $values = array_map('addslashes', $values);
+        $values = array_map(function($value) {
+            return $value === null ? null : addslashes($value);
+        }, $values);
         
         if (count($values) !== count($this->fieldsName)) {
             throw new InvalidArgumentException("A quantidade de campos é diferente da quantidade de valores!");
@@ -216,7 +225,8 @@ class DBQuery {
             if (!array_key_exists($this->fieldsName[$i], $values)) {
                 throw new InvalidArgumentException("Chave não encontrada no array de valores: {$this->fieldsName[$i]}");
             }
-            $sql .= "{$this->fieldsName[$i]} = '{$values[$this->fieldsName[$i]]}'";
+            $value = $values[$this->fieldsName[$i]];
+            $sql .= "{$this->fieldsName[$i]} = " . (is_null($value) ? 'NULL' : "'{$value}'");
             if ($i !== count($this->fieldsName) - 1) {
                 $sql .= ", ";
             }

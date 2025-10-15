@@ -1,4 +1,4 @@
-// Em: public/assets/js/script_promocao.js
+// Em: public/assets/js/script_promocoes.js
 
 document.addEventListener('DOMContentLoaded', function() {
     // Referências aos elementos do formulário e da tabela

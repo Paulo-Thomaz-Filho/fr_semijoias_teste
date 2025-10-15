@@ -25,7 +25,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: 'api/usuario/login',
+            url: '/api/usuario/login',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(loginData),
@@ -34,14 +34,12 @@ $(document).ready(function() {
                 console.log('Resposta do servidor:', response);
 
                 if (response.success) {
-                    if (response.isAdmin) {
-                        alert('Bem-vindo, Administrador!');
-                        window.location.href = 'admin'; 
-                    } else {
-                        alert('Login bem-sucedido!');
-                        window.location.href = 'home';
+                    // Salvar o nome do usuário na sessionStorage
+                    if (response.usuario_nome) {
+                        sessionStorage.setItem('usuario_nome', response.usuario_nome);
                     }
-
+                    alert('Login bem-sucedido!');
+                    window.location.href = '/inicio'; 
                 } else {
                     alert('Falha no login: ' + (response.error || 'Credenciais inválidas.'));
                 }

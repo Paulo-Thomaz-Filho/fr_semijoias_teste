@@ -12,13 +12,15 @@ include_once __DIR__.'/Marca.php';
 
 class MarcaDAO {
     private $dbQuery;
+    private $conn;
 
     public function __construct(){
         $this->dbQuery = new DBQuery(
             'marcas', 
-            'IdMarca, Nome', 
-            'IdMarca'
+            'id_marca, nome', 
+            'id_marca'
         );
+        $this->conn = (new \core\database\DBConnection())->getConn();
     }
 
     public function getAll(){
@@ -26,7 +28,9 @@ class MarcaDAO {
         $dados = $this->dbQuery->select();
 
         foreach($dados as $marca){
-            $marcas[] = new Marca(...array_values($marca));
+            $obj = new Marca();
+            $obj->load($marca['id_marca'], $marca['nome']);
+            $marcas[] = $obj;
         }
 
         return $marcas;
@@ -34,7 +38,7 @@ class MarcaDAO {
 
     public function getById($id){
         $where = new Where();
-        $where->addCondition('AND', 'IdMarca', '=', $id);
+        $where->addCondition('AND', 'id_marca', '=', $id);
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
@@ -54,13 +58,21 @@ class MarcaDAO {
 
     public function update(Marca $marca){
         $dados = [
-            'IdMarca' => $marca->getIdMarca(),
-            'Nome'    => $marca->getNome(),
+            'id_marca' => $marca->getIdMarca(),
+            'nome'     => $marca->getNome(),
         ];
         return $this->dbQuery->update($dados);
     }
 
     public function delete($id){
-        return $this->dbQuery->delete(['IdMarca' => $id]);
+        try {
+            $sql = "DELETE FROM marcas WHERE id_marca = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            throw new \Exception('Erro ao deletar marca: ' . $e->getMessage());
+        }
     }
 }

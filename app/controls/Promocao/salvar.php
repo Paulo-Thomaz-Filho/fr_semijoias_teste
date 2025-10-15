@@ -3,26 +3,28 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__.'/../../models/Promocao.php';
-require_once __DIR__.'/../../models/PromocaoDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
+
+require_once $rootPath . '/app/models/Promocao.php';
+require_once $rootPath . '/app/models/PromocaoDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['erro' => 'Método não permitido.']);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// MUDANÇA: Lendo dados de $_POST, que é preenchido pelo FormData
 $nome = $_POST['nome'] ?? null;
 $dataInicio = $_POST['data_inicio'] ?? null;
 $dataFim = $_POST['data_fim'] ?? null;
 $tipo = $_POST['tipo'] ?? null;
 $valor = $_POST['valor_desconto'] ?? null;
 
-// A verificação agora usa as variáveis que lemos de $_POST
 if (!$nome || !$dataInicio || !$dataFim || !$tipo || !$valor) {
     http_response_code(400);
-    echo json_encode(['erro' => 'Dados incompletos. Nome, datas, tipo e valor são obrigatórios.']);
+    echo json_encode(['erro' => 'Dados incompletos. Nome, datas, tipo e valor são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -33,20 +35,18 @@ try {
     $novaPromocao->setDataFim($dataFim);
     $novaPromocao->setTipo($tipo);
     $novaPromocao->setValor($valor);
-    // $novaPromocao->setProdutoId(null); // Opcional, se você tiver essa lógica
 
     $promocaoDAO = new \app\models\PromocaoDAO();
     $idInserido = $promocaoDAO->insert($novaPromocao);
 
     if ($idInserido) {
-        http_response_code(201); // Código para "Created"
-        $novaPromocao->setIdPromocao($idInserido);
-        echo json_encode($novaPromocao->toArray());
+        http_response_code(201);
+        echo json_encode(['sucesso' => 'Promoção salva com sucesso!', 'id' => $idInserido], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Ocorreu um erro ao salvar a promoção.']);
+        echo json_encode(['erro' => 'Ocorreu um erro ao salvar a promoção.'], JSON_UNESCAPED_UNICODE);
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.', 'details' => $e->getMessage()]);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

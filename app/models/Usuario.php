@@ -4,7 +4,7 @@
 namespace app\models;
 
 class Usuario {
- 	private $id;
+	private $idUsuario;
 	private $nome;
 	private $email;
 	private $senhaHash;
@@ -13,7 +13,7 @@ class Usuario {
 
 	// --- Getters ---
 
-	public function getId()        { return $this->id; }
+	public function getIdUsuario() { return $this->idUsuario; }
 	public function getNome()      { return $this->nome; }
 	public function getEmail()     { return $this->email; }
 	public function getSenhaHash() { return $this->senhaHash; }
@@ -22,8 +22,8 @@ class Usuario {
 
 	// --- Setters ---
 
-	public function setId($id)           { $this->id = $id; }
-	public function setNome($nome)       { $this->nome = $nome; }
+	public function setIdUsuario($id) { $this->idUsuario = $id; }
+	public function setNome($nome)    { $this->nome = $nome; }
 	public function setEmail($email)     { $this->email = $email; }
 	public function setAcesso($acesso)   { $this->acesso = $acesso; }
 	public function setSenha($senhaPura) { if (!empty($senhaPura)) {$this->senhaHash = password_hash($senhaPura, PASSWORD_DEFAULT);}}
@@ -33,25 +33,27 @@ class Usuario {
 	// --- Métodos Especiais ---
 
     public function verificarSenha($senhaPura) {
-        return password_verify($senhaPura, $this->senhaHash);
+        // Usando MD5 para simplicidade (não recomendado em produção)
+        return md5($senhaPura) === $this->senhaHash;
     }
 
-	public function load($id, $nome, $email, $senhaHash, $acesso, $status) {
-		$this->setId($id);
+	public function load($id, $nome, $email, $senha, $telefone, $cpf, $dataNascimento, $idNivel) {
+		$this->setIdUsuario($id);
 		$this->setNome($nome);
 		$this->setEmail($email);
-		$this->setSenhaHash($senhaHash);
-		$this->setAcesso($acesso);
-		$this->setStatus($status);
+		$this->setSenhaHash($senha);
+		// Telefone, CPF e DataNascimento podem ser adicionados como propriedades futuras se necessário
+		$this->setAcesso($idNivel == 1 ? 'admin' : 'user');
+		$this->setStatus('ativo');
 	}
 	
 	public function toArray() {
 		return [
-			'id'     => $this->id,
-			'nome'   => $this->nome,
-			'email'  => $this->email,
-			'acesso' => $this->acesso,
-			'status' => $this->status
+			'idUsuario' => $this->idUsuario,
+			'nome'      => $this->nome,
+			'email'     => $this->email,
+			'acesso'    => $this->acesso,
+			'status'    => $this->status
 		];
 	}
 }

@@ -1,0 +1,63 @@
+services:
+  # Servidor PHP com Apache
+  php-apache:
+    image: php:8.2-apache
+    container_name: fr_semijoias_app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    command: >
+      bash -c "
+      docker-php-ext-install pdo pdo_mysql mysqli &&
+      a2enmod rewrite &&
+      echo 'ServerName localhost' >> /etc/apache2/apache2.conf &&
+      sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf &&
+      sed -i 's#<Directory /var/www/html>#<Directory /var/www/html/public>#' /etc/apache2/sites-available/000-default.conf &&
+      apache2-foreground
+      "
+    networks:
+      - fr_semijoias_network
+
+  # Banco de Dados MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: fr_semijoias_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fr_semijoias
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./setup_database.sql:/docker-entrypoint-initdb.d/setup.sql
+    networks:
+      - fr_semijoias_network
+
+  # phpMyAdmin (Opcional - para gerenciar o banco)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: fr_semijoias_phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+    networks:
+      - fr_semijoias_network
+
+networks:
+  fr_semijoias_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

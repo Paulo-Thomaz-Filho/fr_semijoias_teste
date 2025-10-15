@@ -1,8 +1,12 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../../models/Marca.php';
-require_once '../../models/MarcaDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
+
+require_once $rootPath . '/app/models/Marca.php';
+require_once $rootPath . '/app/models/MarcaDAO.php';
 
 try {
     $marcaDAO = new \app\models\MarcaDAO();
@@ -13,9 +17,9 @@ try {
         $marcasArray[] = $marca->toArray();
     }
 
-    echo json_encode($marcasArray);
+    echo json_encode($marcasArray, JSON_UNESCAPED_UNICODE);
 
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.']);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

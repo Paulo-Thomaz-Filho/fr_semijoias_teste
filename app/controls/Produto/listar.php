@@ -1,21 +1,19 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
 require_once __DIR__.'/../../models/Produto.php';
 require_once __DIR__.'/../../models/ProdutoDAO.php';
 
 try {
     $produtoDAO = new \app\models\ProdutoDAO();
-    $produtos = $produtoDAO->getAll();
+    $produtos = $produtoDAO->getAllWithDetails();
 
-    $produtosArray = [];
-    foreach ($produtos as $produto) {
-        $produtosArray[] = $produto->toArray();
-    }
-
-    echo json_encode($produtosArray);
-
-} catch (Exception $e) {
+    echo json_encode($produtos, JSON_UNESCAPED_UNICODE);
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.']);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()]);
 }

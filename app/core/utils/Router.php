@@ -35,15 +35,17 @@ class Router {
         $accessGranted = false;
         
         if (str_starts_with($module, "public/")) {
+            global $rootPath;
+            $fullPath = $rootPath . '/' . $module;
             $fileExtension = strtolower(pathinfo($module, PATHINFO_EXTENSION));
             switch ($fileExtension) {
             case 'php':
-                require $module; return;
+                require $fullPath; return;
             case 'html':
-                require $module; return;
+                require $fullPath; return;
             default:
                 $this->headerMimeTypes($fileExtension);
-                echo \file_get_contents($module); return;
+                echo \file_get_contents($fullPath); return;
             }
         }
         
@@ -104,17 +106,21 @@ class Router {
     }
     
     private function redirectToErrorPage($route) {
-        if (isset($route['errorPath']) && file_exists($route['errorPath'])) {
-            require $route['errorPath'];
+        global $rootPath;
+        $errorPath = $rootPath . '/' . $route['errorPath'];
+        if (isset($route['errorPath']) && file_exists($errorPath)) {
+            require $errorPath;
         } else {
             $this->notFound();
         }
     }
     
     public function notFound() {
-        if (isset($this->routes['404']) && file_exists($this->routes['404']['path'])) {
-            require $this->routes['404']['path'];
-        } else {
+        global $rootPath;
+        $notFoundPath = $rootPath . '/' . $this->routes['404']['path'];
+        if (isset($this->routes['404']) && file_exists($notFoundPath)) {
+            require $notFoundPath;
+        } else{
             header('Content-Type: application/json'); 
             header('Content-Type: text/html; charset=utf-8');
             header('HTTP/1.0 404 Not Found');

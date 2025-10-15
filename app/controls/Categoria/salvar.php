@@ -1,35 +1,42 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../../models/Categoria.php';
-require_once '../../models/CategoriaDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
+
+require_once $rootPath . '/app/models/Categoria.php';
+require_once $rootPath . '/app/models/CategoriaDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['erro' => 'Método não permitido.']);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$json_data = file_get_contents('php://input');
-$data = json_decode($json_data);
+$nome = $_POST['nome'] ?? null;
 
-if (!$data || !isset($data->nome)) {
+if (!$nome) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O nome da categoria é obrigatório.']);
+    echo json_encode(['erro' => 'O nome da categoria é obrigatório.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$novaCategoria = new \app\models\Categoria();
-$novaCategoria->setNome($data->nome);
+try {
+    $novaCategoria = new \app\models\Categoria();
+    $novaCategoria->setNome($nome);
 
-$categoriaDAO = new \app\models\CategoriaDAO();
-$idInserido = $categoriaDAO->insert($novaCategoria);
+    $categoriaDAO = new \app\models\CategoriaDAO();
+    $idInserido = $categoriaDAO->insert($novaCategoria);
 
-if ($idInserido) {
-    http_response_code(201);
-    $novaCategoria->setIdCategoria($idInserido);
-    echo json_encode($novaCategoria->toArray());
-} else {
+    if ($idInserido) {
+        http_response_code(201);
+        echo json_encode(['sucesso' => 'Categoria salva com sucesso!', 'id' => $idInserido], JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(500);
+        echo json_encode(['erro' => 'Ocorreu um erro ao salvar a categoria.'], JSON_UNESCAPED_UNICODE);
+    }
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro ao salvar a categoria.']);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

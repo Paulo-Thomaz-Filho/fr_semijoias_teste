@@ -1,23 +1,32 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../../models/Categoria.php';
-require_once '../../models/CategoriaDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-$id = $_GET['id'] ?? null;
+require_once $rootPath . '/app/models/Categoria.php';
+require_once $rootPath . '/app/models/CategoriaDAO.php';
 
-if (!$id) {
+$idCategoria = $_GET['idCategoria'] ?? null;
+
+if (!$idCategoria) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O ID da categoria é obrigatório.']);
+    echo json_encode(['erro' => 'O idCategoria é obrigatório.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$categoriaDAO = new \app\models\CategoriaDAO();
-$categoria = $categoriaDAO->getById($id);
+try {
+    $categoriaDAO = new \app\models\CategoriaDAO();
+    $categoria = $categoriaDAO->getById($idCategoria);
 
-if ($categoria) {
-    echo json_encode($categoria->toArray());
-} else {
-    http_response_code(404);
-    echo json_encode(['erro' => 'Categoria não encontrada.']);
+    if ($categoria) {
+        echo json_encode($categoria->toArray(), JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(404);
+        echo json_encode(['erro' => 'Categoria não encontrada.'], JSON_UNESCAPED_UNICODE);
+    }
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

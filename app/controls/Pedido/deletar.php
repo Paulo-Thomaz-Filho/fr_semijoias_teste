@@ -1,35 +1,44 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../../models/Pedido.php';
-require_once '../../models/PedidoDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+require_once $rootPath . '/app/models/Pedido.php';
+require_once $rootPath . '/app/models/PedidoDAO.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'DELETE' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['erro' => 'Método não permitido.']);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$id = $_GET['id'] ?? null;
+$idPedido = $_GET['idPedido'] ?? $_POST['idPedido'] ?? null;
 
-if (!$id) {
+if (!$idPedido) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O ID do pedido é obrigatório para exclusão.']);
+    echo json_encode(['erro' => 'O idPedido é obrigatório para exclusão.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$pedidoDAO = new \app\models\PedidoDAO();
-$pedidoExistente = $pedidoDAO->getById($id);
+try {
+    $pedidoDAO = new \app\models\PedidoDAO();
+    $pedidoExistente = $pedidoDAO->getById($idPedido);
 
-if (!$pedidoExistente) {
-    http_response_code(404);
-    echo json_encode(['erro' => 'Pedido não encontrado para exclusão.']);
-    exit;
-}
+    if (!$pedidoExistente) {
+        http_response_code(404);
+        echo json_encode(['erro' => 'Pedido não encontrado para exclusão.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
-if ($pedidoDAO->delete($id)) {
-    echo json_encode(['mensagem' => 'Pedido excluído com sucesso.']);
-} else {
+    if ($pedidoDAO->delete($idPedido)) {
+        echo json_encode(['sucesso' => 'Pedido excluído com sucesso.'], JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(500);
+        echo json_encode(['erro' => 'Erro ao excluir o pedido.'], JSON_UNESCAPED_UNICODE);
+    }
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro ao excluir o pedido.']);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

@@ -1,23 +1,32 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-require_once '../../models/Marca.php';
-require_once '../../models/MarcaDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-$id = $_GET['id'] ?? null;
+require_once $rootPath . '/app/models/Marca.php';
+require_once $rootPath . '/app/models/MarcaDAO.php';
 
-if (!$id) {
+$idMarca = $_GET['idMarca'] ?? null;
+
+if (!$idMarca) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O ID da marca é obrigatório.']);
+    echo json_encode(['erro' => 'O idMarca é obrigatório.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$marcaDAO = new \app\models\MarcaDAO();
-$marca = $marcaDAO->getById($id);
+try {
+    $marcaDAO = new \app\models\MarcaDAO();
+    $marca = $marcaDAO->getById($idMarca);
 
-if ($marca) {
-    echo json_encode($marca->toArray());
-} else {
-    http_response_code(404);
-    echo json_encode(['erro' => 'Marca não encontrada.']);
+    if ($marca) {
+        echo json_encode($marca->toArray(), JSON_UNESCAPED_UNICODE);
+    } else {
+        http_response_code(404);
+        echo json_encode(['erro' => 'Marca não encontrada.'], JSON_UNESCAPED_UNICODE);
+    }
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

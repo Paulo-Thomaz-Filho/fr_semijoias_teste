@@ -23,7 +23,7 @@ $(document).ready(function(){
         console.log('Enviando dados do cadastro via JSON') 
 
         $.ajax({
-            url: 'api/usuario/registrar',
+            url: '/api/usuario/registrar',
             type: 'POST',
             contentType: 'application/json', // INFORMA que estamos enviando JSON
             data: JSON.stringify(cadastroData), // CONVERTE o objeto para uma string JSON
@@ -33,7 +33,7 @@ $(document).ready(function(){
                 // Assumindo que o salvar.php retorna {success: true, ...}
                 if (response.success) { 
                     alert('Cadastro realizado com sucesso!');
-                    window.location.href = 'login'; 
+                    window.location.href = '/login'; 
                 } else {
                     alert('Erro ao cadastrar: ' + (response.error || 'Verifique os dados e tente novamente.'));
                 }

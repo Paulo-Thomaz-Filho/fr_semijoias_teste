@@ -1,296 +1,341 @@
+﻿// Script completo para gerenciamento de pedidos
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('formPedido');
-    const inputId = document.getElementById('pedidoId');
-    const selectUsuario = document.getElementById('pedidoUsuario');
-    const selectEndereco = document.getElementById('pedidoEndereco');
-    const inputData = document.getElementById('pedidoData');
-    const selectStatus = document.getElementById('pedidoStatus');
-    const inputValorTotal = document.getElementById('pedidoValorTotal');
-
-    const selectItemProduto = document.getElementById('itemProduto');
-    const inputItemQuantidade = document.getElementById('itemQuantidade');
-    const inputItemValorUnitario = document.getElementById('itemValorUnitario');
-    const btnAdicionarItem = document.getElementById('btnAdicionarItem');
-    const tabelaItensCorpo = document.querySelector('#tabelaItensPedido tbody');
-
-    const btnSalvar = document.getElementById('btnSalvar');
-    const btnAtualizar = document.getElementById('btnAtualizar');
-    const btnExcluir = document.getElementById('btnExcluir');
-    const btnLimpar = document.getElementById('btnLimpar');
+    // Referências aos elementos do DOM
+    const formPedido = document.getElementById('form-pedido');
+    const tabelaPedidos = document.querySelector('#pedidos-section table tbody');
+    const inputId = document.getElementById('pedido_id');
+    const selectProduto = document.getElementById('produto_pedido');
+    const inputCliente = document.getElementById('cliente_pedido');
+    const inputEndereco = document.getElementById('endereco_pedido');
+    const inputQuantidade = document.getElementById('quantidade_pedido');
+    const selectStatus = document.getElementById('status_pedido');
+    const inputValor = document.getElementById('valor_total_pedido');
+    const inputData = document.getElementById('data_pedido_pedido');
+    const inputDescricao = document.getElementById('descricao_pedido');
+    const btnCadastrar = document.getElementById('btn-cadastrar-pedido');
+    const btnAtualizar = document.getElementById('btn-atualizar-pedido');
+    const btnExcluir = document.getElementById('btn-excluir-pedido');
     
-    const tabelaPedidosCorpo = document.querySelector('#tabelaPedidos tbody');
+    let pedidoSelecionado = null;
 
-    let idPedidoSelecionado = null;
-    let itensDoPedido = []; 
-
-    // --- FUNÇÕES AUXILIARES ---
-    const formatarValorBRL = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-    // Renderiza a tabela de itens dentro do formulário
-    const renderizarTabelaItens = () => {
-        tabelaItensCorpo.innerHTML = '';
-        let valorTotal = 0;
-        itensDoPedido.forEach((item, index) => {
-            const subtotal = item.quantidade * item.valor_unitario;
-            valorTotal += subtotal;
-            const linha = `
-                <tr data-index="${index}">
-                    <td>${item.nome_produto}</td>
-                    <td>${item.quantidade}</td>
-                    <td>${formatarValorBRL(item.valor_unitario)}</td>
-                    <td>${formatarValorBRL(subtotal)}</td>
-                    <td><button type="button" class="btn btn-sm btn-outline-danger btn-remover-item">Remover</button></td>
-                </tr>`;
-            tabelaItensCorpo.insertAdjacentHTML('beforeend', linha);
-        });
-        inputValorTotal.value = formatarValorBRL(valorTotal);
-    };
-
-    // Reseta o formulário para o estado inicial
-    const resetarFormulario = () => {
-        form.reset();
-        inputId.value = 'Auto';
-        idPedidoSelecionado = null;
-        itensDoPedido = [];
-        renderizarTabelaItens();
-        btnSalvar.classList.remove('d-none');
-        btnAtualizar.classList.add('d-none');
-        btnExcluir.classList.add('d-none');
-        document.querySelectorAll('#tabelaPedidos tbody tr').forEach(row => row.classList.remove('table-active'));
-    };
-
-    // --- FUNÇÕES DE CARREGAMENTO DE DADOS (SELECTS E TABELA PRINCIPAL) ---
-
-    // Carrega clientes no select
-    const carregarClientesSelect = async () => {
-        try {
-            const response = await fetch('usuarios');
-            const clientes = await response.json();
-            clientes.forEach(cliente => {
-                selectUsuario.insertAdjacentHTML('beforeend', `<option value="${cliente.id}">${cliente.nome}</option>`);
-            });
-        } catch (error) { console.error('Erro ao carregar clientes:', error); }
-    };
-
-    // Carrega endereços de um cliente específico
-    const carregarEnderecosSelect = async (usuarioId) => {
-        selectEndereco.innerHTML = '<option selected disabled value="">Carregando...</option>';
-        try {
-            const response = await fetch(`enderecos/buscarPorUsuario?id=${usuarioId}`);
-            const enderecos = await response.json();
-            selectEndereco.innerHTML = '<option selected disabled value="">Selecione...</option>';
-            enderecos.forEach(end => {
-                const texto = `${end.logradouro}, ${end.numero} - ${end.bairro}`;
-                selectEndereco.insertAdjacentHTML('beforeend', `<option value="${end.idEnderecos}">${texto}</option>`);
-            });
-        } catch (error) { 
-            console.error('Erro ao carregar endereços:', error);
-            selectEndereco.innerHTML = '<option selected disabled value="">Cliente sem endereço</option>';
-        }
-    };
-    
-    // Carrega produtos no select de itens
-    const carregarProdutosSelect = async () => {
-        try {
-            const response = await fetch('produtos');
-            const produtos = await response.json();
-            produtos.forEach(produto => {
-                selectItemProduto.insertAdjacentHTML('beforeend', `<option value="${produto.IdProduto}" data-valor="${produto.valor}">${produto.nome}</option>`);
-            });
-        } catch (error) { console.error('Erro ao carregar produtos:', error); }
-    };
-
-    // Carrega a tabela principal com o histórico de pedidos
-    const carregarPedidos = async () => {
-        tabelaPedidosCorpo.innerHTML = `<tr><td colspan="6" class="text-center">Carregando...</td></tr>`;
-        try {
-            const response = await fetch('pedidos');
-            if (!response.ok) throw new Error('Falha ao carregar pedidos.');
-            const pedidos = await response.json();
-            tabelaPedidosCorpo.innerHTML = '';
-            pedidos.forEach(pedido => {
-                const linha = `
-                    <tr data-id="${pedido.idPedido}">
-                        <td>${pedido.idPedido}</td>
-                        <td>${pedido.nome_cliente || 'N/A'}</td>
-                        <td>${formatarValorBRL(pedido.valor_total)}</td>
-                        <td>${new Date(pedido.data_pedido).toLocaleDateString('pt-BR')}</td>
-                        <td><span class="badge bg-warning text text-black">${pedido.status}</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary btn-selecionar">Ver Detalhes</button></td>
-                    </tr>`;
-                tabelaPedidosCorpo.insertAdjacentHTML('beforeend', linha);
-            });
-        } catch (error) {
-            console.error(error);
-            tabelaPedidosCorpo.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Erro ao carregar pedidos.</td></tr>`;
-        }
-    };
-
-    // Preenche o formulário com os dados de um pedido selecionado da lista
-    const selecionarPedido = async (id) => {
-        // Reseta o formulário antes de preencher
-        resetarFormulario();
-
-        try {
-            // 1. Busca os dados principais do pedido
-            const responsePedido = await fetch(`pedidos/buscar?id=${id}`);
-            if (!responsePedido.ok) throw new Error('Pedido não encontrado.');
-            const pedido = await responsePedido.json();
-
-            // 2. Busca os itens associados a esse pedido
-            const responseItens = await fetch(`itens-pedido/buscarPorPedido?id=${id}`);
-            if (!responseItens.ok) throw new Error('Itens do pedido não encontrados.');
-            const itens = await responseItens.json();
-
-            // 3. Preenche o formulário com os dados do pedido
-            inputId.value = pedido.idPedido;
-            inputData.value = pedido.data_pedido.split(' ')[0]; // Pega apenas a data (YYYY-MM-DD)
-            selectStatus.value = pedido.status;
-            selectUsuario.value = pedido.usuario_id;
-            
-            // Carrega os endereços e depois seleciona o correto
-            await carregarEnderecosSelect(pedido.usuario_id);
-            selectEndereco.value = pedido.endereco_id;
-
-            // 4. Preenche a lista de itens do pedido (em memória) e renderiza a tabela de itens
-            itensDoPedido = itens.map(item => ({
-                produto_id: item.produto_id,
-                nome_produto: item.nome_produto, 
-                quantidade: item.quantidade,
-                valor_unitario: item.valor_unitario
-            }));
-            renderizarTabelaItens();
-
-            // 5. Ajusta o estado da página para o modo de edição
-            idPedidoSelecionado = id;
-            btnSalvar.classList.add('d-none');
-            btnAtualizar.classList.remove('d-none');
-            btnExcluir.classList.remove('d-none');
-            
-            // Destaca a linha selecionada na tabela principal
-            document.querySelectorAll('#tabelaPedidos tbody tr').forEach(row => {
-                row.classList.remove('table-active');
-                if (row.dataset.id === id) {
-                    row.classList.add('table-active');
-                }
-            });
-
-        } catch (error) {
-            console.error(error);
-            alert('Não foi possível carregar os detalhes do pedido.');
-        }
-    };
-
-    // --- EVENT LISTENERS ---
-    
-    tabelaPedidosCorpo.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('btn-selecionar')) {
-            const linha = e.target.closest('tr');
-            selecionarPedido(linha.dataset.id);
-        }
-    });
-
-
-    // Adiciona um item ao pedido atual (em memória)
-    btnAdicionarItem.addEventListener('click', () => {
-        const produtoSelecionado = selectItemProduto.options[selectItemProduto.selectedIndex];
-        const produtoId = parseInt(produtoSelecionado.value);
-        const quantidade = parseInt(inputItemQuantidade.value);
-
-        if (isNaN(produtoId) || isNaN(quantidade) || quantidade < 1) {
-            alert('Selecione um produto e informe uma quantidade válida.');
-            return;
-        }
-
-        const itemExistente = itensDoPedido.find(item => item.produto_id === produtoId);
-        if (itemExistente) {
-            itemExistente.quantidade += quantidade;
-        } else {
-            itensDoPedido.push({
-                produto_id: produtoId,
-                nome_produto: produtoSelecionado.text,
-                quantidade: quantidade,
-                valor_unitario: parseFloat(produtoSelecionado.dataset.valor)
-            });
-        }
-        renderizarTabelaItens();
-    });
-
-    // Remove um item do pedido (em memória)
-    tabelaItensCorpo.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('btn-remover-item')) {
-            const index = e.target.closest('tr').dataset.index;
-            itensDoPedido.splice(index, 1);
-            renderizarTabelaItens();
-        }
-    });
-
-    // Atualiza o valor unitário ao selecionar um produto
-    selectItemProduto.addEventListener('change', () => {
-        const valor = selectItemProduto.options[selectItemProduto.selectedIndex].dataset.valor;
-        inputItemValorUnitario.value = formatarValorBRL(valor || 0);
-    });
-
-    // Carrega endereços quando um cliente é selecionado
-    selectUsuario.addEventListener('change', () => {
-        carregarEnderecosSelect(selectUsuario.value);
-    });
-
-    // 
-    btnLimpar.addEventListener('click', resetarFormulario);
-
-    // Ação principal de Salvar/Atualizar do formulário
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // Formatar input de preço enquanto digita (padrão brasileiro com vírgula automática)
+    inputValor.addEventListener('input', function(e) {
+        let valor = e.target.value;
         
-        if (itensDoPedido.length === 0) {
-            alert('Adicione pelo menos um item ao pedido antes de salvar.');
+        // Remove tudo que não é número
+        valor = valor.replace(/\D/g, '');
+        
+        // Se não tiver nada, limpa o campo
+        if (!valor) {
+            e.target.value = '';
             return;
         }
-
-        // 1. Coleta os dados do pedido
-        const dadosPedido = {
-            usuario_id: selectUsuario.value,
-            endereco_id: selectEndereco.value,
-            valor_total: itensDoPedido.reduce((total, item) => total + (item.quantidade * item.valor_unitario), 0),
-            status: selectStatus.value,
-            data_pedido: inputData.value // <-- LINHA ADICIONADA
-        };
-
-        try {
-            // 2. Salva o pedido principal
-            const responsePedido = await fetch('pedidos/salvar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosPedido)
-            });
-            const resultadoPedido = await responsePedido.json();
-            if (!responsePedido.ok) throw new Error(resultadoPedido.erro || 'Erro ao criar pedido.');
-            
-            const novoPedidoId = resultadoPedido.id;
-
-            // 3. Salva cada item do pedido
-            for (const item of itensDoPedido) {
-                const dadosItem = { ...item, pedido_id: novoPedidoId };
-                await fetch('itens-pedido/salvar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosItem)
-                });
-                // Adicionar tratamento de erro por item se necessário
-            }
-
-            alert('Pedido salvo com sucesso!');
-            resetarFormulario();
-            carregarPedidos();
-
-        } catch (error) {
-            alert(error.message);
-        }
+        
+        // Converte para número e divide por 100 para ter 2 casas decimais
+        let numero = parseInt(valor) / 100;
+        
+        // Formata com 2 casas decimais e vírgula
+        e.target.value = numero.toFixed(2).replace('.', ',');
     });
+    
+    // Função para converter valor formatado (com vírgula) para número
+    const precoParaNumero = (valorFormatado) => {
+        if (!valorFormatado) return 0;
+        return parseFloat(valorFormatado.replace(',', '.'));
+    };
 
-    // --- INICIALIZAÇÃO ---
-    carregarPedidos();
-    carregarClientesSelect();
-    carregarProdutosSelect();
+    // Carregar produtos no select
+    const carregarProdutos = async () => {
+        try {
+            const response = await fetch('/app/controls/Produto/listar.php');
+            const produtos = await response.json();
+            selectProduto.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
+            
+            if (Array.isArray(produtos)) {
+                produtos.forEach(produto => {
+                    const option = document.createElement('option');
+                    option.value = produto.idProduto;
+                    option.textContent = produto.nome;
+                    option.dataset.preco = produto.preco;
+                    selectProduto.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao carregar produtos:', error);
+        }
+    };
+
+    // Carregar status no select
+    const carregarStatus = async () => {
+        try {
+            const response = await fetch('/app/controls/Pedido/listar.php?only_status=true');
+            const statusList = await response.json();
+            selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
+            
+            if (Array.isArray(statusList)) {
+                statusList.forEach(status => {
+                    const option = document.createElement('option');
+                    option.value = status;
+                    option.textContent = status;
+                    selectStatus.appendChild(option);
+                });
+            } else {
+                // Fallback: adicionar status padrão
+                selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option><option value="Pendente">Pendente</option><option value="Enviado">Enviado</option><option value="Cancelado">Cancelado</option>';
+            }
+        } catch (error) {
+            console.error('Erro ao carregar status:', error);
+            // Fallback: adicionar status padrão em caso de erro
+            selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option><option value="Pendente">Pendente</option><option value="Enviado">Enviado</option><option value="Cancelado">Cancelado</option>';
+        }
+    };
+
+    // Calcular valor total
+    const calcularValorTotal = () => {
+        const option = selectProduto.options[selectProduto.selectedIndex];
+        const preco = option?.dataset?.preco || 0;
+        const qtd = parseInt(inputQuantidade.value) || 0;
+        inputValor.value = (parseFloat(preco) * qtd).toFixed(2).replace('.', ',');
+    };
+
+    // Carregar pedidos na tabela
+    const carregarPedidos = async () => {
+        tabelaPedidos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Carregando pedidos...</td></tr>';
+        
+        try {
+            const response = await fetch('/app/controls/Pedido/listar.php');
+            const pedidos = await response.json();
+            if (!Array.isArray(pedidos) || pedidos.length === 0) {
+                tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">Nenhum pedido cadastrado</td></tr>';
+                return;
+            }
+            tabelaPedidos.innerHTML = pedidos.map(p => {
+                // Calcular valor total (preco * quantidade)
+                const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
+                const valor = valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+                const data = p.dataPedido ? new Date(p.dataPedido).toLocaleDateString('pt-BR') : 'Sem data';
+                const status = p.status || 'Pendente';
+                const quantidade = p.quantidade || 0;
+                
+                // Mapear status para classe CSS
+                const statusClass = status.toLowerCase().replace(/\s+/g, '-');
+                const statusBadge = '<span class="status-badge status-' + statusClass + '">' + status + '</span>';
+                
+                return '<tr class="border-bottom border-light"><td class="py-4 text-dark">' + p.idPedido + '</td><td class="py-4 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-4 text-dark">' + (p.clienteNome || 'N/A') + '</td><td class="py-4 text-dark">' + valor + '</td><td class="py-4 text-dark">' + (p.endereco || '-') + '</td><td class="py-4 text-dark">' + data + '</td><td class="py-4">' + statusBadge + '</td><td class="py-4 text-dark">' + quantidade + '</td><td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido" data-id="' + p.idPedido + '">Selecionar</button></td></tr>';
+            }).join('');
+            
+            // Adicionar evento de clique aos botões de selecionar
+            document.querySelectorAll('.btn-selecionar-pedido').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selecionarPedido(this.dataset.id);
+                });
+            });
+        } catch (error) {
+            console.error('Erro:', error);
+            tabelaPedidos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar pedidos</td></tr>';
+        }
+    };
+
+    // Cadastrar pedido
+    const cadastrarPedido = async (dados) => {
+        try {
+            console.log('Enviando dados:', dados); // Debug
+            const response = await fetch('/app/controls/Pedido/salvar.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams(dados)
+            });
+            console.log('Response status:', response.status); // Debug
+            const resultado = await response.json();
+            console.log('Resultado:', resultado); // Debug
+            if (resultado.sucesso || resultado.success || resultado.message) {
+                alert('Pedido cadastrado com sucesso!');
+                limparFormulario();
+                carregarPedidos();
+                if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+            } else {
+                alert('Erro: ' + (resultado.erro || resultado.error || JSON.stringify(resultado)));
+            }
+        } catch (error) {
+            console.error('Erro completo:', error);
+            alert('Erro ao cadastrar pedido: ' + error.message);
+        }
+    };
+
+    // Atualizar pedido
+    const atualizarPedido = async (dados) => {
+        try {
+            const response = await fetch('/app/controls/Pedido/atualizar.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams(dados)
+            });
+            const resultado = await response.json();
+            if (resultado.sucesso) {
+                alert('Pedido atualizado com sucesso!');
+                limparFormulario();
+                carregarPedidos();
+                if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+            } else {
+                alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao atualizar pedido');
+        }
+    };
+
+    // Deletar pedido
+    const deletarPedido = async (id) => {
+        if (!confirm('Tem certeza que deseja excluir este pedido?')) return;
+        try {
+            const response = await fetch('/app/controls/Pedido/deletar.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({idPedido: id})
+            });
+            const resultado = await response.json();
+            if (resultado.sucesso) {
+                alert('Pedido excluído com sucesso!');
+                limparFormulario();
+                carregarPedidos();
+                if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+            } else {
+                alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao deletar pedido');
+        }
+    };
+
+    // Selecionar pedido para edição
+    const selecionarPedido = async (id) => {
+        try {
+            const response = await fetch(`/app/controls/Pedido/buscarPorId.php?idPedido=${id}`);
+            const pedido = await response.json();
+            console.log('Pedido recebido:', pedido); // Debug
+            inputId.value = pedido.idPedido;
+            
+            // Buscar opção do select que corresponde ao produtoNome
+            if (pedido.produtoNome) {
+                const options = Array.from(selectProduto.options);
+                const optionMatch = options.find(opt => opt.text === pedido.produtoNome);
+                if (optionMatch) {
+                    selectProduto.value = optionMatch.value;
+                }
+            }
+            
+            inputCliente.value = pedido.clienteNome || '';
+            inputEndereco.value = pedido.endereco || '';
+            inputQuantidade.value = pedido.quantidade || '';
+            selectStatus.value = pedido.status || 'Pendente';
+            // Calcular valor total
+            const valorTotal = (parseFloat(pedido.preco) || 0) * (parseInt(pedido.quantidade) || 1);
+            inputValor.value = valorTotal.toFixed(2).replace('.', ',');
+            inputData.value = pedido.dataPedido ? pedido.dataPedido.split(' ')[0] : '';
+            inputDescricao.value = pedido.descricao || '';
+            pedidoSelecionado = id;
+            btnCadastrar.disabled = true;
+            btnAtualizar.disabled = false;
+            btnExcluir.disabled = false;
+            formPedido.scrollIntoView({behavior: 'smooth', block: 'start'});
+        } catch (error) {
+            console.error('Erro ao selecionar pedido:', error);
+            alert('Erro ao carregar dados do pedido');
+        }
+    };
+
+    // Limpar formulário
+    const limparFormulario = () => {
+        formPedido.reset();
+        selectStatus.value = ''; // Resetar para a opção padrão "Selecione um status"
+        pedidoSelecionado = null;
+        btnCadastrar.disabled = false;
+        btnAtualizar.disabled = true;
+        btnExcluir.disabled = true;
+    };
+
+    // Event listener para o formulário
+    if (formPedido) {
+        formPedido.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Pegar o nome do produto selecionado
+            const produtoNome = selectProduto.options[selectProduto.selectedIndex]?.text || '';
+            const dados = {
+                produto_nome: produtoNome,
+                cliente_nome: inputCliente.value.trim(),
+                endereco: inputEndereco.value.trim(),
+                quantidade: inputQuantidade.value,
+                status: selectStatus.value,
+                preco: precoParaNumero(inputValor.value),
+                data_pedido: inputData.value,
+                descricao: inputDescricao.value.trim()
+            };
+            if (pedidoSelecionado) {
+                dados.idPedido = pedidoSelecionado;
+                atualizarPedido(dados);
+            } else {
+                cadastrarPedido(dados);
+            }
+        });
+    }
+
+    // Event listeners dos botões
+    if (btnAtualizar) {
+        btnAtualizar.addEventListener('click', function() {
+            if (!pedidoSelecionado) {
+                alert('Selecione um pedido primeiro');
+                return;
+            }
+            // Pegar o nome do produto selecionado
+            const produtoNome = selectProduto.options[selectProduto.selectedIndex]?.text || '';
+            const dados = {
+                idPedido: pedidoSelecionado,
+                produto_nome: produtoNome,
+                cliente_nome: inputCliente.value.trim(),
+                endereco: inputEndereco.value.trim(),
+                quantidade: inputQuantidade.value,
+                status: selectStatus.value,
+                preco: precoParaNumero(inputValor.value),
+                data_pedido: inputData.value,
+                descricao: inputDescricao.value.trim()
+            };
+            atualizarPedido(dados);
+        });
+    }
+
+    if (btnExcluir) {
+        btnExcluir.addEventListener('click', function() {
+            if (!pedidoSelecionado) {
+                alert('Selecione um pedido primeiro');
+                return;
+            }
+            deletarPedido(pedidoSelecionado);
+        });
+    }
+
+    if (formPedido) {
+        formPedido.addEventListener('reset', function() {
+            limparFormulario();
+        });
+    }
+
+    // Event listeners para cálculo automático
+    if (selectProduto) selectProduto.addEventListener('change', calcularValorTotal);
+    if (inputQuantidade) inputQuantidade.addEventListener('input', calcularValorTotal);
+
+    // Desabilitar/Habilitar botões inicialmente
+    if (btnCadastrar) btnCadastrar.disabled = false;
+    if (btnAtualizar) btnAtualizar.disabled = true;
+    if (btnExcluir) btnExcluir.disabled = true;
+
+    // Inicializar
+    if (selectProduto) carregarProdutos();
+    if (selectStatus) carregarStatus();
+    if (tabelaPedidos) carregarPedidos();
+
+    // Exportar funções globais para os botões onclick do HTML
+    window.editarPedido = selecionarPedido;
+    window.deletarPedidoDireto = deletarPedido;
 });

@@ -3,33 +3,45 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__.'/../../models/PromocaoDAO.php';
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+require_once $rootPath . '/app/models/Promocao.php';
+require_once $rootPath . '/app/models/PromocaoDAO.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
-    echo json_encode(['erro' => 'Método não permitido.']);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$id = $_POST['id'] ?? null; // Lembre-se que o seu JS envia 'id'
+$idPromocao = $_GET['idPromocao'] ?? $_POST['idPromocao'] ?? null;
 
-if (!$id) {
+if (!$idPromocao) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O ID da promoção é obrigatório para inativar.']);
+    echo json_encode(['erro' => 'O idPromocao é obrigatório para inativar.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
     $promocaoDAO = new \app\models\PromocaoDAO();
+    
+    // Verificar se existe antes de inativar
+    $promocaoExistente = $promocaoDAO->getById($idPromocao);
+    if (!$promocaoExistente) {
+        http_response_code(404);
+        echo json_encode(['erro' => 'Promoção não encontrada.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
-    // Chama o novo método para INATIVAR
-    if ($promocaoDAO->inativar($id)) {
-        echo json_encode(['sucesso' => 'Promoção inativada com sucesso.']);
+    if ($promocaoDAO->inativar($idPromocao)) {
+        echo json_encode(['sucesso' => 'Promoção inativada com sucesso.'], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Erro ao inativar a promoção.']);
+        echo json_encode(['erro' => 'Erro ao inativar a promoção.'], JSON_UNESCAPED_UNICODE);
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.', 'details' => $e->getMessage()]);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

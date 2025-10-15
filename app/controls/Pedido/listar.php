@@ -1,29 +1,39 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
 
 require_once __DIR__.'/../../models/Pedido.php';
 require_once __DIR__.'/../../models/PedidoDAO.php';
 
 try {
     $pedidoDAO = new \app\models\PedidoDAO();
-    $pedidos = $pedidoDAO->getAll();
+    
+    // Verifica se quer apenas a lista de status
+    if (isset($_GET['only_status']) && $_GET['only_status'] === 'true') {
+        $status = $pedidoDAO->getAllStatus();
+        echo json_encode($status, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    
+    // Verifica se há filtro por status
+    $status = $_GET['status'] ?? null;
+    
+    if ($status) {
+        $pedidos = $pedidoDAO->getAllByStatus($status);
+    } else {
+        $pedidos = $pedidoDAO->getAll();
+    }
 
     $pedidosArray = [];
     foreach ($pedidos as $pedido) {
         $pedidosArray[] = $pedido->toArray();
     }
 
-    echo json_encode($pedidosArray);
-
-} catch (\Throwable $e) { 
+    echo json_encode($pedidosArray, JSON_UNESCAPED_UNICODE);
+} catch (\Throwable $e) {
     http_response_code(500);
-
-    // Força a exibição do erro detalhado para descobrirmos a causa
-    echo json_encode([
-        'success' => false,
-        'error' => 'Ocorreu um erro interno no servidor (MODO DEBUG ATIVADO)',
-        'debug_message' => $e->getMessage(), // A mensagem real do erro
-        'debug_file' => $e->getFile(),         // O arquivo onde o erro ocorreu
-        'debug_line' => $e->getLine()          // A linha exata do erro
-    ]);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 } 

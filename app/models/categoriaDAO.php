@@ -12,13 +12,15 @@ include_once __DIR__.'/Categoria.php';
 
 class CategoriaDAO {
     private $dbQuery;
+    private $conn;
 
     public function __construct(){
         $this->dbQuery = new DBQuery(
-            'categoria', 
-            'IdCategoria, Nome', 
-            'IdCategoria'
+            'categorias', 
+            'id_categoria, nome', 
+            'id_categoria'
         );
+        $this->conn = (new \core\database\DBConnection())->getConn();
     }
 
     public function getAll(){
@@ -26,7 +28,9 @@ class CategoriaDAO {
         $dados = $this->dbQuery->select();
 
         foreach($dados as $categoria){
-            $categorias[] = new Categoria(...array_values($categoria));
+            $obj = new Categoria();
+            $obj->load($categoria['id_categoria'], $categoria['nome']);
+            $categorias[] = $obj;
         }
 
         return $categorias;
@@ -34,7 +38,7 @@ class CategoriaDAO {
 
     public function getById($id){
         $where = new Where();
-        $where->addCondition('AND', 'IdCategoria', '=', $id);
+        $where->addCondition('AND', 'id_categoria', '=', $id);
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
@@ -54,13 +58,21 @@ class CategoriaDAO {
 
     public function update(Categoria $categoria){
         $dados = [
-            'IdCategoria' => $categoria->getIdCategoria(),
-            'Nome'        => $categoria->getNome()
+            'id_categoria' => $categoria->getIdCategoria(),
+            'nome'         => $categoria->getNome()
         ];
         return $this->dbQuery->update($dados);
     }
 
     public function delete($id){
-        return $this->dbQuery->delete(['IdCategoria' => $id]);
+        try {
+            $sql = "DELETE FROM categorias WHERE id_categoria = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            throw new \Exception('Erro ao deletar categoria: ' . $e->getMessage());
+        }
     }
 }

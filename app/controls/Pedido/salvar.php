@@ -1,52 +1,56 @@
 <?php
-// Em: app/controls/Pedido/salvar.php
-
 header('Content-Type: application/json; charset=utf-8');
 
-// Supondo que você criará os modelos Pedido.php e PedidoDAO.php
+// Configurar o ambiente
+$rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/app/etc/config.php';
+
 require_once __DIR__.'/../../models/Pedido.php';
 require_once __DIR__.'/../../models/PedidoDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['erro' => 'Método não permitido.']);
+    echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Lendo o JSON enviado pelo JavaScript
-$dadosRecebidos = json_decode(file_get_contents('php://input'));
+$produto_nome = $_POST['produto_nome'] ?? null;
+$cliente_nome = $_POST['cliente_nome'] ?? null;
+$preco = $_POST['preco'] ?? null;
+$endereco = $_POST['endereco'] ?? '';
+$quantidade = $_POST['quantidade'] ?? null;
+$data_pedido = $_POST['data_pedido'] ?? date('Y-m-d H:i:s');
+$descricao = $_POST['descricao'] ?? '';
+$status = $_POST['status'] ?? 'Pendente';
 
-// --- CORREÇÃO NA VALIDAÇÃO ---
-// Verificando os nomes corretos que o JavaScript envia: usuario_id, endereco_id, valor_total
-if (!$dadosRecebidos || !isset($dadosRecebidos->usuario_id) || !isset($dadosRecebidos->endereco_id) || !isset($dadosRecebidos->valor_total)) {
+if (!$produto_nome || !$cliente_nome || !$quantidade || !$preco) {
     http_response_code(400);
-    echo json_encode(['erro' => 'Dados incompletos. Cliente, Endereço e Valor Total são obrigatórios.']);
+    echo json_encode(['erro' => 'Dados incompletos. Produto, Cliente, Quantidade e Preço são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
-    // --- CORREÇÃO NA CRIAÇÃO DO OBJETO ---
-    // Instanciando um novo Pedido (supondo que a classe e os setters existam)
     $novoPedido = new \app\models\Pedido();
-    $novoPedido->setUsuarioId($dadosRecebidos->usuario_id);
-    $novoPedido->setEnderecoId($dadosRecebidos->endereco_id);
-    $novoPedido->setValorTotal($dadosRecebidos->valor_total);
-    $novoPedido->setStatus($dadosRecebidos->status ?? 'Pendente');
-    $novoPedido->setDataPedido($dadosRecebidos->data_pedido);
-    // Não precisamos enviar a data, o banco de dados faz isso automaticamente.
+    $novoPedido->setProdutoNome($produto_nome);
+    $novoPedido->setClienteNome($cliente_nome);
+    $novoPedido->setPreco($preco);
+    $novoPedido->setEndereco($endereco);
+    $novoPedido->setDataPedido($data_pedido);
+    $novoPedido->setQuantidade($quantidade);
+    $novoPedido->setStatus($status);
+    $novoPedido->setDescricao($descricao);
 
     $pedidoDAO = new \app\models\PedidoDAO();
     $idInserido = $pedidoDAO->insert($novoPedido);
 
     if ($idInserido) {
         http_response_code(201);
-        echo json_encode(['sucesso' => 'Pedido salvo com sucesso!', 'id' => $idInserido]);
+        echo json_encode(['sucesso' => 'Pedido salvo com sucesso!', 'id' => $idInserido], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Ocorreu um erro ao salvar o pedido.']);
+        echo json_encode(['erro' => 'Erro ao salvar o pedido.'], JSON_UNESCAPED_UNICODE);
     }
-
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Ocorreu um erro no servidor.', 'details' => $e->getMessage()]);
+    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

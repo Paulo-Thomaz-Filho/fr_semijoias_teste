@@ -36,9 +36,12 @@ class DBConnection {
         }
         
         try {
-            $dsn = "mysql:host={$_SESSION['database']['host']};dbname={$_SESSION['database']['schema']}";
+            $dsn = "mysql:host={$_SESSION['database']['host']};dbname={$_SESSION['database']['schema']};charset=utf8mb4";
             $this->conn = new \PDO($dsn, $_SESSION['database']['user'], $_SESSION['database']['pass']);
             $this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->conn->exec("SET NAMES utf8mb4");
+            $this->conn->exec("SET CHARACTER SET utf8mb4");
+            $this->conn->exec("SET character_set_results = utf8mb4");
         } catch( PDOException $e) {
             throw new RuntimeException("Connection failed: " . $e->getMessage());
         }

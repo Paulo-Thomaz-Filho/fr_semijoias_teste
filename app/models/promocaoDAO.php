@@ -15,30 +15,30 @@ class PromocaoDAO {
     private $dbQuery;
     
     public function __construct(){
-        // 1. CONSTRUTOR CORRIGIDO:
-        // - Nomes das colunas correspondem ao banco de dados (ex: 'data_inicio').
-        // - Adicionada a nova coluna 'status'.
         $this->dbQuery = new DBQuery(
             'promocoes', 
-            'IdPromocao, nome, data_inicio, data_fim, tipo, valor_desconto, status', 
-            'IdPromocao'
+            'id_promocao, nome, data_inicio, data_fim, desconto', 
+            'id_promocao'
         );
     }
     
     public function getAll(){
         $promocoes = [];
         
-        // 2. GETALL CORRIGIDO:
-        // - Filtra para buscar apenas as promoções com status 'ativa'.
-        $where = new Where();
-        $where->addCondition('AND', 'status', '=', 'ativa');
-
-        $dados = $this->dbQuery->selectFiltered($where);
+        $dados = $this->dbQuery->select();
 
         foreach($dados as $dadosPromocao){
             $promocao = new Promocao();
-            // O método load() agora recebe 7 argumentos, incluindo o status.
-            $promocao->load(...array_values($dadosPromocao));
+            // Mapear campos do banco (snake_case) para o Model (camelCase)
+            $promocao->load(
+                $dadosPromocao['id_promocao'],
+                $dadosPromocao['nome'],
+                $dadosPromocao['data_inicio'],
+                $dadosPromocao['data_fim'],
+                'percentual', // tipo padrão
+                $dadosPromocao['desconto'],
+                'ativa' // status padrão
+            );
             $promocoes[] = $promocao;
         }
 
@@ -47,7 +47,7 @@ class PromocaoDAO {
     
     public function getById($id){
         $where = new Where();
-        $where->addCondition('AND', 'IdPromocao', '=', $id);
+        $where->addCondition('AND', 'id_promocao', '=', $id);
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
@@ -60,13 +60,10 @@ class PromocaoDAO {
     }
     
     public function insert(Promocao $promocao){
-        // 3. INSERT CORRIGIDO:
-        // - Garante que uma nova promoção seja criada como 'ativa'.
         $status = $promocao->getStatus() ?? 'ativa';
 
-        // O array de dados precisa ter 7 valores para corresponder aos 7 campos do construtor.
         $dados = [
-            null, // IdPromocao
+            null, // id_promocao (auto increment)
             $promocao->getNome(),
             $promocao->getDataInicio(),
             $promocao->getDataFim(),
@@ -78,17 +75,12 @@ class PromocaoDAO {
     }
 
     public function update(Promocao $promocao){
-        // 4. UPDATE CORRIGIDO (WORKAROUND):
-        // - Cria um array com todos os 7 campos para contornar o bug do DBQuery,
-        //   que espera receber todos os campos da tabela.
         $dados = [
-            'IdPromocao'     => $promocao->getIdPromocao(),
+            'id_promocao'    => $promocao->getIdPromocao(),
             'nome'           => $promocao->getNome(),
             'data_inicio'    => $promocao->getDataInicio(),
             'data_fim'       => $promocao->getDataFim(),
-            'tipo'           => $promocao->getTipo(),
-            'valor_desconto' => $promocao->getValor(),
-            'status'         => $promocao->getStatus() ?? 'ativa'
+            'desconto'       => $promocao->getValor(),
         ];
         
         return $this->dbQuery->update($dados);

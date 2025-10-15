@@ -4,40 +4,48 @@ namespace app\models;
 
 class Pedido {
     private $idPedido;
-    private $usuario_id;
-    private $endereco_id;
-    private $valor_total;
+    private $produtoNome;
+    private $clienteNome;
+    private $preco;
+    private $endereco;
+    private $dataPedido;
+    private $quantidade;
     private $status;
-    private $data_pedido;
-    private $nome_cliente;
+    private $descricao;
 
     // --- GETTERS ---
     public function getIdPedido() { return $this->idPedido; }
-    public function getUsuarioId() { return $this->usuario_id; }
-    public function getEnderecoId() { return $this->endereco_id; }
-    public function getValorTotal() { return $this->valor_total; }
+    public function getProdutoNome() { return $this->produtoNome; }
+    public function getClienteNome() { return $this->clienteNome; }
+    public function getPreco() { return $this->preco; }
+    public function getEndereco() { return $this->endereco; }
+    public function getDataPedido() { return $this->dataPedido; }
+    public function getQuantidade() { return $this->quantidade; }
     public function getStatus() { return $this->status; }
-    public function getDataPedido() { return $this->data_pedido; }
-    public function getNomeCliente() { return $this->nome_cliente; }
+    public function getDescricao() { return $this->descricao; }
 
     // --- SETTERS ---
     public function setIdPedido($id) { $this->idPedido = $id; }
-    public function setUsuarioId($id) { $this->usuario_id = $id; }
-    public function setEnderecoId($id) { $this->endereco_id = $id; }
-    public function setValorTotal($valor) { $this->valor_total = $valor; }
+    public function setProdutoNome($nome) { $this->produtoNome = $nome; }
+    public function setClienteNome($nome) { $this->clienteNome = $nome; }
+    public function setPreco($preco) { $this->preco = $preco; }
+    public function setEndereco($end) { $this->endereco = $end; }
+    public function setDataPedido($data) { $this->dataPedido = $data; }
+    public function setQuantidade($qtd) { $this->quantidade = $qtd; }
     public function setStatus($status) { $this->status = $status; }
-    public function setDataPedido($data) { $this->data_pedido = $data; }
-    public function setNomeCliente($nome) { $this->nome_cliente = $nome; }
+    public function setDescricao($desc) { $this->descricao = $desc; }
 
     public function toArray() {
         return [
-            'idPedido'     => $this->idPedido,
-            'usuario_id'   => $this->usuario_id,
-            'endereco_id'  => $this->endereco_id,
-            'valor_total'  => $this->valor_total,
-            'status'       => $this->status,
-            'data_pedido'  => $this->data_pedido,
-            'nome_cliente' => $this->nome_cliente
+            'idPedido'    => $this->idPedido,
+            'produtoNome' => $this->produtoNome,
+            'clienteNome' => $this->clienteNome,
+            'preco'       => $this->preco,
+            'endereco'    => $this->endereco,
+            'dataPedido'  => $this->dataPedido,
+            'quantidade'  => $this->quantidade,
+            'status'      => $this->status,
+            'descricao'   => $this->descricao
         ];
     }
 }
