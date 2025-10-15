@@ -97,11 +97,8 @@ class PedidoDAO {
             $status[] = $row['status'];
         }
         
-        // Se não houver status no banco, retornar os padrões
-        if (empty($status)) {
-            $status = ['Pendente', 'Cancelado', 'Concluído'];
-        }
-        
+        // Retorna array vazio se não houver status no banco
+        // O frontend já está preparado para lidar com isso
         return $status;
     }
 

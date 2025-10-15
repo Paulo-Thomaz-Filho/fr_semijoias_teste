@@ -8,7 +8,7 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Promocao.php';
 require_once $rootPath . '/app/models/PromocaoDAO.php';
 
-$idPromocao = $_GET['idPromocao'] ?? null;
+$idPromocao = $_GET['id'] ?? $_GET['idPromocao'] ?? null;
 
 if (!$idPromocao) {
     http_response_code(400);

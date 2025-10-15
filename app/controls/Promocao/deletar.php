@@ -1,6 +1,4 @@
 <?php
-// Em: app/controls/Promocao/deletar.php
-
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -16,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DEL
     exit;
 }
 
-$idPromocao = $_GET['idPromocao'] ?? $_POST['idPromocao'] ?? null;
+$idPromocao = $_GET['id'] ?? $_GET['idPromocao'] ?? $_POST['id'] ?? $_POST['idPromocao'] ?? null;
 
 if (!$idPromocao) {
     http_response_code(400);

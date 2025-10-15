@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar marcas no select
     const carregarMarcas = async () => {
         try {
-            const response = await fetch('/app/controls/Marca/listar.php');
+            const response = await fetch('/marcas');
             const marcas = await response.json();
             selectMarca.innerHTML = '<option value="" disabled selected>Selecione uma marca</option>';
             marcas.forEach(marca => {
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar categorias no select
     const carregarCategorias = async () => {
         try {
-            const response = await fetch('/app/controls/Categoria/listar.php');
+            const response = await fetch('/categorias');
             const categorias = await response.json();
             selectCategoria.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
             categorias.forEach(categoria => {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar promoções no select
     const carregarPromocoes = async () => {
         try {
-            const response = await fetch('/app/controls/Promocao/listar.php');
+            const response = await fetch('/promocoes');
             const promocoes = await response.json();
             selectPromocao.innerHTML = '<option value="" disabled selected>Selecione uma promoção</option>';
             promocoes.forEach(promocao => {
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tabelaProdutos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Carregando produtos...</td></tr>';
         
         try {
-            const response = await fetch('/app/controls/Produto/listar.php');
+            const response = await fetch('/produtos');
             const produtos = await response.json();
             if (!Array.isArray(produtos) || produtos.length === 0) {
                 tabelaProdutos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Nenhum produto cadastrado</td></tr>';
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Selecionar produto para edição
     const selecionarProduto = async (id) => {
         try {
-            const response = await fetch(`/app/controls/Produto/buscarPorId.php?idProduto=${id}`);
+            const response = await fetch(`/produtos/buscar?idProduto=${id}`);
             const produto = await response.json();
             inputId.value = produto.idProduto;
             inputNome.value = produto.nome;
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cadastrar produto
     const cadastrarProduto = async (dados) => {
         try {
-            const response = await fetch('/app/controls/Produto/salvar.php', {
+            const response = await fetch('/produtos/salvar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(dados)
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Atualizar produto
     const atualizarProduto = async (dados) => {
         try {
-            const response = await fetch('/app/controls/Produto/atualizar.php', {
+            const response = await fetch('/produtos/atualizar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(dados)
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const deletarProduto = async (id) => {
         if (!confirm('Tem certeza que deseja excluir este produto?')) return;
         try {
-            const response = await fetch('/app/controls/Produto/deletar.php', {
+            const response = await fetch('/produtos/deletar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ idProduto: id })

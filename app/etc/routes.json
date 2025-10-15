@@ -21,54 +21,6 @@
         "path": "app/controls/Usuarios/salvar.php"
     },
 
-    "app/controls/Marca/listar.php": {
-        "path": "app/controls/Marca/listar.php"
-    },
-    "app/controls/Categoria/listar.php": {
-        "path": "app/controls/Categoria/listar.php"
-    },
-    "app/controls/Promocao/listar.php": {
-        "path": "app/controls/Promocao/listar.php"
-    },
-    "app/controls/Produto/listar.php": {
-        "path": "app/controls/Produto/listar.php"
-    },
-    "app/controls/Produto/buscarPorId.php": {
-        "path": "app/controls/Produto/buscarPorId.php"
-    },
-    "app/controls/Produto/salvar.php": {
-        "path": "app/controls/Produto/salvar.php"
-    },
-    "app/controls/Produto/atualizar.php": {
-        "path": "app/controls/Produto/atualizar.php"
-    },
-    "app/controls/Produto/deletar.php": {
-        "path": "app/controls/Produto/deletar.php"
-    },
-    "app/controls/Dashboard/estatisticas.php": {
-        "path": "app/controls/Dashboard/estatisticas.php"
-    },
-    "app/controls/Dashboard/maisVendidos.php": {
-        "path": "app/controls/Dashboard/maisVendidos.php"
-    },
-    "app/controls/Dashboard/estoque.php": {
-        "path": "app/controls/Dashboard/estoque.php"
-    },
-    "app/controls/Pedido/listar.php": {
-        "path": "app/controls/Pedido/listar.php"
-    },
-    "app/controls/Pedido/buscarPorId.php": {
-        "path": "app/controls/Pedido/buscarPorId.php"
-    },
-    "app/controls/Pedido/salvar.php": {
-        "path": "app/controls/Pedido/salvar.php"
-    },
-    "app/controls/Pedido/atualizar.php": {
-        "path": "app/controls/Pedido/atualizar.php"
-    },
-    "app/controls/Pedido/deletar.php": {
-        "path": "app/controls/Pedido/deletar.php"
-    },
 
 
     "promocoes": {
@@ -155,8 +107,6 @@
 
 
 
-
-
     "categorias": {
         "path": "app/controls/Categoria/listar.php"
     },
@@ -173,6 +123,7 @@
         "path": "app/controls/Categoria/deletar.php"
     },
 
+    
 
     "api/clientes/listar": {
         "path": "app/controls/Usuarios/listar.php"

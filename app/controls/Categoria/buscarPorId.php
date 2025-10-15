@@ -8,7 +8,7 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Categoria.php';
 require_once $rootPath . '/app/models/CategoriaDAO.php';
 
-$idCategoria = $_GET['idCategoria'] ?? null;
+$idCategoria = $_GET['id'] ?? $_GET['idCategoria'] ?? null;
 
 if (!$idCategoria) {
     http_response_code(400);

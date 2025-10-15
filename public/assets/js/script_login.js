@@ -33,7 +33,7 @@ $(document).ready(function() {
             success: function(response) {
                 console.log('Resposta do servidor:', response);
 
-                if (response.success) {
+                if (response.sucesso) {
                     // Salvar o nome do usuário na sessionStorage
                     if (response.usuario_nome) {
                         sessionStorage.setItem('usuario_nome', response.usuario_nome);
@@ -41,14 +41,14 @@ $(document).ready(function() {
                     alert('Login bem-sucedido!');
                     window.location.href = '/inicio'; 
                 } else {
-                    alert('Falha no login: ' + (response.error || 'Credenciais inválidas.'));
+                    alert('Falha no login: ' + (response.erro || 'Credenciais inválidas.'));
                 }
             },
 
             error: function(jqXHR) {
                 const errorResponse = jqXHR.responseJSON;
-                if (errorResponse && errorResponse.error) {
-                    alert('Falha no login: ' + errorResponse.error);
+                if (errorResponse && errorResponse.erro) {
+                    alert('Falha no login: ' + errorResponse.erro);
                 } else {
                     alert('Ocorreu um erro de comunicação. Tente novamente.');
                 }

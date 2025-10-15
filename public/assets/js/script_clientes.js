@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const carregarUsuarios = async () => {
         tabelaCorpo.innerHTML = `<tr><td colspan="4" class="text-center">Carregando...</td></tr>`;
         try {
-            const response = await fetch('usuarios');
+            const response = await fetch('/usuarios');
             if (!response.ok) throw new Error('Falha ao carregar usuários.');
             const usuarios = await response.json();
             tabelaCorpo.innerHTML = '';
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Preenche o formulário com dados de um usuário selecionado
     const selecionarUsuario = async (id, linhaSelecionada) => {
         try {
-            const response = await fetch(`usuarios/buscar?id=${id}`);
+            const response = await fetch(`/usuarios/buscar?idUsuario=${id}`);
             if (!response.ok) throw new Error('Usuário não encontrado.');
             const usuario = await response.json();
             inputId.value = usuario.id;
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const salvarUsuario = async () => {
         const dados = new FormData(form);
         try {
-            const response = await fetch('usuarios/salvar', {
+            const response = await fetch('/usuarios/salvar', {
                 method: 'POST',
                 body: dados
             });
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dados = new FormData(form);
         dados.append('id', idUsuarioSelecionado); 
         try {
-            const response = await fetch('usuarios/atualizar', {
+            const response = await fetch('/usuarios/atualizar', {
                 method: 'POST',
                 body: dados
             });
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dados = new FormData();
         dados.append('id', idUsuarioSelecionado);
         try {
-            const response = await fetch('usuarios/deletar', {
+            const response = await fetch('/usuarios/deletar', {
                 method: 'POST',
                 body: dados
             });

@@ -30,18 +30,18 @@ $(document).ready(function(){
 
             success: function(response) {
                 console.log('Resposta do servidor:', response);
-                // Assumindo que o salvar.php retorna {success: true, ...}
-                if (response.success) { 
+                // O salvar.php retorna {sucesso: "mensagem", id: ...} ou {erro: "mensagem"}
+                if (response.sucesso) { 
                     alert('Cadastro realizado com sucesso!');
                     window.location.href = '/login'; 
                 } else {
-                    alert('Erro ao cadastrar: ' + (response.error || 'Verifique os dados e tente novamente.'));
+                    alert('Erro ao cadastrar: ' + (response.erro || 'Verifique os dados e tente novamente.'));
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 const errorResponse = jqXHR.responseJSON;
-                if (errorResponse && errorResponse.error) {
-                    alert('Falha no cadastro: ' + errorResponse.error);
+                if (errorResponse && errorResponse.erro) {
+                    alert('Falha no cadastro: ' + errorResponse.erro);
                 } else {
                     alert('Ocorreu um erro de comunicação. Tente novamente.');
                 }

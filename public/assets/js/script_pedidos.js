@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar produtos no select
     const carregarProdutos = async () => {
         try {
-            const response = await fetch('/app/controls/Produto/listar.php');
+            const response = await fetch('/produtos');
             const produtos = await response.json();
             selectProduto.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
             
@@ -65,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Carregar status no select
+    // Carregar status do pedido no select
     const carregarStatus = async () => {
         try {
-            const response = await fetch('/app/controls/Pedido/listar.php?only_status=true');
+            const response = await fetch('/pedidos?only_status=true');
             const statusList = await response.json();
-            selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
             
-            if (Array.isArray(statusList)) {
+            if (Array.isArray(statusList) && statusList.length > 0) {
+                selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
                 statusList.forEach(status => {
                     const option = document.createElement('option');
                     option.value = status;
@@ -80,13 +80,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectStatus.appendChild(option);
                 });
             } else {
-                // Fallback: adicionar status padrão
-                selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option><option value="Pendente">Pendente</option><option value="Enviado">Enviado</option><option value="Cancelado">Cancelado</option>';
+                // Se não houver status no banco, mostrar mensagem informativa
+                selectStatus.innerHTML = '<option value="" disabled selected>Nenhum status disponível - cadastre pedidos primeiro</option>';
             }
         } catch (error) {
             console.error('Erro ao carregar status:', error);
-            // Fallback: adicionar status padrão em caso de erro
-            selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option><option value="Pendente">Pendente</option><option value="Enviado">Enviado</option><option value="Cancelado">Cancelado</option>';
+            // Em caso de erro, mostrar mensagem de erro
+            selectStatus.innerHTML = '<option value="" disabled selected>Erro ao carregar status - tente novamente</option>';
         }
     };
 
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carregar pedidos na tabela
     const carregarPedidos = async () => {
-        tabelaPedidos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Carregando pedidos...</td></tr>';
+        tabelaPedidos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Carregando pedidos...</td></tr>';
         
         try {
-            const response = await fetch('/app/controls/Pedido/listar.php');
+            const response = await fetch('/pedidos');
             const pedidos = await response.json();
             if (!Array.isArray(pedidos) || pedidos.length === 0) {
                 tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">Nenhum pedido cadastrado</td></tr>';
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cadastrarPedido = async (dados) => {
         try {
             console.log('Enviando dados:', dados); // Debug
-            const response = await fetch('/app/controls/Pedido/salvar.php', {
+            const response = await fetch('/pedidos/salvar', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams(dados)
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Atualizar pedido
     const atualizarPedido = async (dados) => {
         try {
-            const response = await fetch('/app/controls/Pedido/atualizar.php', {
+            const response = await fetch('/pedidos/atualizar', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams(dados)
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const deletarPedido = async (id) => {
         if (!confirm('Tem certeza que deseja excluir este pedido?')) return;
         try {
-            const response = await fetch('/app/controls/Pedido/deletar.php', {
+            const response = await fetch('/pedidos/deletar', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams({idPedido: id})
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Selecionar pedido para edição
     const selecionarPedido = async (id) => {
         try {
-            const response = await fetch(`/app/controls/Pedido/buscarPorId.php?idPedido=${id}`);
+            const response = await fetch(`/pedidos/buscar?idPedido=${id}`);
             const pedido = await response.json();
             console.log('Pedido recebido:', pedido); // Debug
             inputId.value = pedido.idPedido;

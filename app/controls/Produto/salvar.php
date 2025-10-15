@@ -5,8 +5,8 @@ header('Content-Type: application/json; charset=utf-8');
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
 
-require_once __DIR__.'/../../models/Produto.php';
-require_once __DIR__.'/../../models/ProdutoDAO.php';
+require_once $rootPath . '/app/models/Produto.php';
+require_once $rootPath . '/app/models/ProdutoDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

@@ -1,6 +1,4 @@
 <?php
-// Em: app/controls/Usuarios/deletar.php
-
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -16,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DEL
     exit;
 }
 
-$idUsuario = $_GET['idUsuario'] ?? $_POST['idUsuario'] ?? null;
+$idUsuario = $_GET['id'] ?? $_GET['idUsuario'] ?? $_POST['id'] ?? $_POST['idUsuario'] ?? null;
 
 if (!$idUsuario) {
     http_response_code(400);

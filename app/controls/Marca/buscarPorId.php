@@ -8,7 +8,7 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Marca.php';
 require_once $rootPath . '/app/models/MarcaDAO.php';
 
-$idMarca = $_GET['idMarca'] ?? null;
+$idMarca = $_GET['id'] ?? $_GET['idMarca'] ?? null;
 
 if (!$idMarca) {
     http_response_code(400);

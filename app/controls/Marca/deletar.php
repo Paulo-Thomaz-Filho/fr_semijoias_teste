@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DEL
     exit;
 }
 
-$idMarca = $_GET['idMarca'] ?? $_POST['idMarca'] ?? null;
+$idMarca = $_GET['id'] ?? $_GET['idMarca'] ?? $_POST['id'] ?? $_POST['idMarca'] ?? null;
 
 if (!$idMarca) {
     http_response_code(400);

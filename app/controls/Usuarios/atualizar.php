@@ -1,6 +1,4 @@
 <?php
-// Em: app/controls/Usuarios/atualizar.php
-
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente

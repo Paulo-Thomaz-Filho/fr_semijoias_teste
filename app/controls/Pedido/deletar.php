@@ -8,13 +8,13 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Pedido.php';
 require_once $rootPath . '/app/models/PedidoDAO.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
     echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$idPedido = $_GET['idPedido'] ?? $_POST['idPedido'] ?? null;
+$idPedido = $_GET['id'] ?? $_GET['idPedido'] ?? $_POST['id'] ?? $_POST['idPedido'] ?? null;
 
 if (!$idPedido) {
     http_response_code(400);

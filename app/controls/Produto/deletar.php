@@ -5,16 +5,16 @@ header('Content-Type: application/json; charset=utf-8');
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
 
-require_once __DIR__.'/../../models/Produto.php';
-require_once __DIR__.'/../../models/ProdutoDAO.php';
+require_once $rootPath . '/app/models/Produto.php';
+require_once $rootPath . '/app/models/ProdutoDAO.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
     echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$idProduto = $_GET['idProduto'] ?? $_POST['idProduto'] ?? null;
+$idProduto = $_GET['id'] ?? $_GET['idProduto'] ?? $_POST['id'] ?? $_POST['idProduto'] ?? null;
 
 if (!$idProduto) {
     http_response_code(400);

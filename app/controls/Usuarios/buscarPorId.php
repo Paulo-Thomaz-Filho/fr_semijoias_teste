@@ -8,7 +8,7 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
 
-$idUsuario = $_GET['idUsuario'] ?? null;
+$idUsuario = $_GET['id'] ?? $_GET['idUsuario'] ?? null;
 
 if (!$idUsuario) {
     http_response_code(400);

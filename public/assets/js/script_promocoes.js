@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const carregarPromocoes = async () => {
         tabelaCorpo.innerHTML = `<tr><td colspan="7" class="text-center">Carregando...</td></tr>`;
         try {
-            const response = await fetch('promocoes'); // Endpoint do seu routes.json
+            const response = await fetch('/promocoes'); // Endpoint do seu routes.json
             if (!response.ok) throw new Error('Falha ao carregar promoções.');
             
             const promocoes = await response.json();
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Preenche o formulário com os dados de uma promoção selecionada
     const selecionarPromocao = async (id, linhaSelecionada) => {
         try {
-            const response = await fetch(`promocoes/buscar?id=${id}`);
+            const response = await fetch(`/promocoes/buscar?idPromocao=${id}`);
             if (!response.ok) throw new Error('Promoção não encontrada.');
             
             const promocao = await response.json();
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const dados = new FormData();
             dados.append('id', idPromocaoSelecionada);
             try {
-                const response = await fetch('promocoes/deletar', { method: 'POST', body: dados });
+                const response = await fetch('/promocoes/deletar', { method: 'POST', body: dados });
                 const resultado = await response.json();
                 if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir a promoção.');
                 
