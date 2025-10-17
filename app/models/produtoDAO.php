@@ -1,13 +1,15 @@
 <?php
+
 namespace app\models;
 
+use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
+use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
 include_once __DIR__.'/../core/database/Where.php';
-
 include_once __DIR__.'/Produto.php';
 
 class ProdutoDAO {
@@ -15,18 +17,31 @@ class ProdutoDAO {
     private $conn;
 
     public function __construct(){
-        $colunas = 'id_produto, nome, descricao, preco, id_marca, id_categoria, id_promocao, imagem, unidade_estoque, disponivel';
-        
-        $this->dbQuery = new DBQuery('produtos', $colunas, 'id_produto');
-        $this->conn = (new \core\database\DBConnection())->getConn();
+        $this->conn = (new DBConnection())->getConn();
+        $this->dbQuery = new DBQuery(
+            'produtos',
+            'id_produto, nome, descricao, preco, id_marca, id_categoria, id_promocao, imagem, estoque, disponivel',
+            'id_produto'
+        );
     }
 
     public function getAll(){
         $dados = $this->dbQuery->select();
 
         $produtos = [];
-        foreach($dados as $item){
-            $produtos[] = new Produto(...array_values($item));
+        foreach($dados as $row){
+            $produto = new Produto();
+            $produto->setIdProduto($row['id_produto']);
+            $produto->setNome($row['nome']);
+            $produto->setDescricao($row['descricao']);
+            $produto->setPreco($row['preco']);
+            $produto->setMarca($row['id_marca']);
+            $produto->setCategoria($row['id_categoria']);
+            $produto->setIdPromocao($row['id_promocao']);
+            $produto->setImagem($row['imagem']);
+            $produto->setEstoque($row['estoque']);
+            $produto->setDisponivel($row['disponivel']);
+            $produtos[] = $produto;
         }
         return $produtos;
     }
@@ -46,7 +61,7 @@ class ProdutoDAO {
                 c.nome as categoria,
                 p.id_promocao as idPromocao,
                 p.imagem as imagem,
-                p.unidade_estoque as unidadeEstoque,
+                p.estoque as estoque,
                 p.disponivel as disponivel
             FROM 
                 produtos p
@@ -58,9 +73,9 @@ class ProdutoDAO {
                 p.nome
         ";
         
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById($id){
@@ -69,7 +84,19 @@ class ProdutoDAO {
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
-            return new Produto(...array_values($dados[0]));
+            $row = $dados[0];
+            $produto = new Produto();
+            $produto->setIdProduto($row['id_produto']);
+            $produto->setNome($row['nome']);
+            $produto->setDescricao($row['descricao']);
+            $produto->setPreco($row['preco']);
+            $produto->setMarca($row['id_marca']);
+            $produto->setCategoria($row['id_categoria']);
+            $produto->setIdPromocao($row['id_promocao']);
+            $produto->setImagem($row['imagem']);
+            $produto->setEstoque($row['estoque']);
+            $produto->setDisponivel($row['disponivel']);
+            return $produto;
         }
 
         return null;
@@ -84,8 +111,8 @@ class ProdutoDAO {
             $produto->getMarca(),        
             $produto->getCategoria(),  
             $produto->getIdPromocao(),
-            null, // Imagem
-            $produto->getUnidadeEstoque(),
+            null,
+            $produto->getEstoque(),
             $produto->getDisponivel()
         ];
         return $this->dbQuery->insert($dados);
@@ -101,8 +128,8 @@ class ProdutoDAO {
             'id_marca'        => $produto->getMarca(),
             'id_categoria'    => $produto->getCategoria(),
             'id_promocao'     => $produto->getIdPromocao(),
-            'imagem'          => null, // Mantém imagem atual
-            'unidade_estoque' => $produto->getUnidadeEstoque(),
+            'imagem'          => null,
+            'estoque'         => $produto->getEstoque(),
             'disponivel'      => $produto->getDisponivel()
         ];
         

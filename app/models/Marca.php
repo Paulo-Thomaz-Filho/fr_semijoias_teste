@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 class Marca {
@@ -6,12 +7,10 @@ class Marca {
     private $nome;
 
     // --- Getters ---
-
     public function getIdMarca() { return $this->idMarca; }
     public function getNome()    { return $this->nome; }
 
     // --- Setters ---
-
     public function setIdMarca($idMarca) { $this->idMarca = $idMarca; }
     public function setNome($nome)       { $this->nome = $nome; }
     

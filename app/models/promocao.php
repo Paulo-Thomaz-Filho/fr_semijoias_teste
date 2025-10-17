@@ -1,5 +1,4 @@
 <?php
-// Em: app/models/Promocao.php
 
 namespace app\models;
 
@@ -10,7 +9,7 @@ class Promocao {
     private $dataFim;
     private $tipo;
     private $valor;
-    private $status; // Propriedade adicionada
+    private $status;
 
     // --- Getters ---
     public function getIdPromocao() { return $this->idPromocao; }
@@ -19,7 +18,7 @@ class Promocao {
     public function getDataFim()    { return $this->dataFim; }
     public function getTipo()       { return $this->tipo; }
     public function getValor()      { return $this->valor; }
-    public function getStatus()     { return $this->status; } // Método adicionado
+    public function getStatus()     { return $this->status; }
 
     // --- Setters ---
     public function setIdPromocao($idPromocao) { $this->idPromocao = $idPromocao; }
@@ -28,7 +27,7 @@ class Promocao {
     public function setDataFim($dataFim)       { $this->dataFim = $dataFim; }
     public function setTipo($tipo)             { $this->tipo = $tipo; }
     public function setValor($valor)           { $this->valor = $valor; }
-    public function setStatus($status)   { $this->status = $status; } // Método adicionado
+    public function setStatus($status)         { $this->status = $status; }
 
     // --- Métodos Especiais ---
 
@@ -51,7 +50,7 @@ class Promocao {
             'dataFim'    => $this->dataFim,
             'tipo'       => $this->tipo,
             'valor'      => $this->valor,
-            'status'     => $this->status // Status adicionado ao array
+            'status'     => $this->status
         ];
     }
 }

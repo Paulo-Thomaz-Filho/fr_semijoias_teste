@@ -126,7 +126,6 @@ class Mail {
     }
 }
 
-
 /** Exemplo de Uso
  * 
  * @var \app\core\utils\Mail $mail
@@ -148,4 +147,5 @@ class Mail {
  *         echo 'Falha ao enviar o e-mail.';
  * } ``` 
  */
+
 ?>

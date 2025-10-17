@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 class Categoria {
@@ -6,12 +7,10 @@ class Categoria {
     private $nome;
 
     // --- Getters ---
-
     public function getIdCategoria() { return $this->idCategoria; }
     public function getNome()        { return $this->nome; }
 
     // --- Setters ---
-
     public function setIdCategoria($idCategoria) { $this->idCategoria = $idCategoria; }
     public function setNome($nome)               { $this->nome = $nome; }
 

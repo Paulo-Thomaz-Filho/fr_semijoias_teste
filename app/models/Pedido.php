@@ -1,5 +1,5 @@
 <?php
-// Em: app/models/Pedido.php
+
 namespace app\models;
 
 class Pedido {
@@ -13,7 +13,7 @@ class Pedido {
     private $status;
     private $descricao;
 
-    // --- GETTERS ---
+    // --- Getters ---
     public function getIdPedido() { return $this->idPedido; }
     public function getProdutoNome() { return $this->produtoNome; }
     public function getClienteNome() { return $this->clienteNome; }
@@ -24,7 +24,7 @@ class Pedido {
     public function getStatus() { return $this->status; }
     public function getDescricao() { return $this->descricao; }
 
-    // --- SETTERS ---
+    // --- Setters ---
     public function setIdPedido($id) { $this->idPedido = $id; }
     public function setProdutoNome($nome) { $this->produtoNome = $nome; }
     public function setClienteNome($nome) { $this->clienteNome = $nome; }
@@ -34,6 +34,18 @@ class Pedido {
     public function setQuantidade($qtd) { $this->quantidade = $qtd; }
     public function setStatus($status) { $this->status = $status; }
     public function setDescricao($desc) { $this->descricao = $desc; }
+
+    public function load($idPedido, $produtoNome, $clienteNome, $preco, $endereco, $dataPedido, $quantidade, $status, $descricao) {
+        $this->setIdPedido($idPedido);
+        $this->setProdutoNome($produtoNome);
+        $this->setClienteNome($clienteNome);
+        $this->setPreco($preco);
+        $this->setEndereco($endereco);
+        $this->setDataPedido($dataPedido);
+        $this->setQuantidade($quantidade);
+        $this->setStatus($status);
+        $this->setDescricao($descricao);
+    }
 
     public function toArray() {
         return [

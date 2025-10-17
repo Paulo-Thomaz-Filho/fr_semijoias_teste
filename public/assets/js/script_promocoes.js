@@ -1,5 +1,4 @@
 // Em: public/assets/js/script_promocoes.js
-
 document.addEventListener('DOMContentLoaded', function() {
     // Referências aos elementos do formulário e da tabela
     const form = document.getElementById('formPromocao');
@@ -10,10 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputTipo = document.getElementById('promocaoTipo');
     const inputValor = document.getElementById('promocaoValor');
 
-    const btnSalvar = document.getElementById('btnSalvar');
-    const btnAtualizar = document.getElementById('btnAtualizar');
-    const btnExcluir = document.getElementById('btnExcluir');
-    const btnLimpar = document.getElementById('btnLimpar');
+    const btnSalvarPromocao = document.getElementById('btnSalvarPromocao');
+    const btnAtualizarPromocao = document.getElementById('btnAtualizarPromocao');
+    const btnExcluirPromocao = document.getElementById('btnExcluirPromocao');
+    const btnLimparPromocao = document.getElementById('btnLimparPromocao');
     const tabelaCorpo = document.querySelector('#tabelaPromocoes tbody');
 
     let idPromocaoSelecionada = null;
@@ -23,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset();
         inputId.value = 'Auto';
         idPromocaoSelecionada = null;
-        btnSalvar.classList.remove('d-none');
-        btnAtualizar.classList.add('d-none');
-        btnExcluir.classList.add('d-none');
+    btnSalvarPromocao.classList.remove('d-none');
+    btnAtualizarPromocao.classList.add('d-none');
+    btnExcluirPromocao.classList.add('d-none');
         document.querySelectorAll('#tabelaPromocoes tbody tr').forEach(row => row.classList.remove('table-active'));
     };
 
@@ -103,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
             inputValor.value = promocao.valor;
             idPromocaoSelecionada = promocao.idPromocao;
 
-            btnSalvar.classList.add('d-none');
-            btnAtualizar.classList.remove('d-none');
-            btnExcluir.classList.remove('d-none');
+            btnSalvarPromocao.classList.add('d-none');
+            btnAtualizarPromocao.classList.remove('d-none');
+            btnExcluirPromocao.classList.remove('d-none');
             
             document.querySelectorAll('#tabelaPromocoes tbody tr').forEach(row => row.classList.remove('table-active'));
             linhaSelecionada.classList.add('table-active');
@@ -127,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Ações dos botões do formulário
-    btnLimpar.addEventListener('click', resetarFormulario);
+    btnLimparPromocao.addEventListener('click', resetarFormulario);
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -149,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
     
-    btnExcluir.addEventListener('click', async () => {
+    btnExcluirPromocao.addEventListener('click', async () => {
         if (confirm(`Tem certeza que deseja excluir a promoção ID ${idPromocaoSelecionada}?`)) {
             const dados = new FormData();
             dados.append('id', idPromocaoSelecionada);

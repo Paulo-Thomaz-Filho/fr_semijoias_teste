@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Referências aos elementos do DOM
     const formPedido = document.getElementById('form-pedido');
-    const tabelaPedidos = document.querySelector('#pedidos-section table tbody');
+    const tabelaPedidos = document.querySelector('#pedidos-section tbody');
     const inputId = document.getElementById('pedido_id');
     const selectProduto = document.getElementById('produto_pedido');
     const inputCliente = document.getElementById('cliente_pedido');
@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputQuantidade = document.getElementById('quantidade_pedido');
     const selectStatus = document.getElementById('status_pedido');
     const inputValor = document.getElementById('valor_total_pedido');
-    const inputData = document.getElementById('data_pedido_pedido');
+    const inputData = document.getElementById('data_pedido');
     const inputDescricao = document.getElementById('descricao_pedido');
-    const btnCadastrar = document.getElementById('btn-cadastrar-pedido');
-    const btnAtualizar = document.getElementById('btn-atualizar-pedido');
-    const btnExcluir = document.getElementById('btn-excluir-pedido');
+    const btnCadastrarPedido = document.getElementById('btnCadastrarPedido');
+    const btnAtualizarPedido = document.getElementById('btnAtualizarPedido');
+    const btnExcluirPedido = document.getElementById('btnExcluirPedido');
     
     let pedidoSelecionado = null;
 
@@ -113,7 +113,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Calcular valor total (preco * quantidade)
                 const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
                 const valor = valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-                const data = p.dataPedido ? new Date(p.dataPedido).toLocaleDateString('pt-BR') : 'Sem data';
+                // Função utilitária para formatar datas yyyy-MM-dd ou outros formatos para dd/MM/yyyy
+                function formatarDataBR(dataStr) {
+                    if (!dataStr) return '';
+                    let partes = null;
+                    if (/^\d{4}-\d{2}-\d{2}/.test(dataStr)) {
+                        partes = dataStr.split('T')[0].split('-');
+                        if (partes.length === 3) {
+                            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                        }
+                    }
+                    const d = new Date(dataStr);
+                    if (!isNaN(d.getTime())) {
+                        return d.toLocaleDateString('pt-BR');
+                    }
+                    return dataStr;
+                }
+                const data = p.dataPedido ? formatarDataBR(p.dataPedido) : 'Sem data';
                 const status = p.status || 'Pendente';
                 const quantidade = p.quantidade || 0;
                 
@@ -127,6 +143,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Adicionar evento de clique aos botões de selecionar
             document.querySelectorAll('.btn-selecionar-pedido').forEach(btn => {
                 btn.addEventListener('click', function() {
+                    // Remover destaque de todas as linhas
+                    tabelaPedidos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+                    // Adicionar destaque na linha selecionada
+                    this.closest('tr').classList.add('table-active');
                     selecionarPedido(this.dataset.id);
                 });
             });
@@ -153,6 +173,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 limparFormulario();
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+                if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
+                if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
                 alert('Erro: ' + (resultado.erro || resultado.error || JSON.stringify(resultado)));
             }
@@ -176,6 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 limparFormulario();
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+                if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
+                if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
                 alert('Erro: ' + (resultado.erro || 'Desconhecido'));
             }
@@ -200,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 limparFormulario();
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
+                if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
+                if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
                 alert('Erro: ' + (resultado.erro || 'Desconhecido'));
             }
@@ -236,9 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
             inputData.value = pedido.dataPedido ? pedido.dataPedido.split(' ')[0] : '';
             inputDescricao.value = pedido.descricao || '';
             pedidoSelecionado = id;
-            btnCadastrar.disabled = true;
-            btnAtualizar.disabled = false;
-            btnExcluir.disabled = false;
+            btnCadastrarPedido.disabled = true;
+            btnAtualizarPedido.disabled = false;
+            btnExcluirPedido.disabled = false;
             formPedido.scrollIntoView({behavior: 'smooth', block: 'start'});
         } catch (error) {
             console.error('Erro ao selecionar pedido:', error);
@@ -251,9 +277,11 @@ document.addEventListener('DOMContentLoaded', function() {
         formPedido.reset();
         selectStatus.value = ''; // Resetar para a opção padrão "Selecione um status"
         pedidoSelecionado = null;
-        btnCadastrar.disabled = false;
-        btnAtualizar.disabled = true;
-        btnExcluir.disabled = true;
+        btnCadastrarPedido.disabled = false;
+        btnAtualizarPedido.disabled = true;
+        btnExcluirPedido.disabled = true;
+        // Remove destaque de linha selecionada
+        tabelaPedidos && tabelaPedidos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
     };
 
     // Event listener para o formulário
@@ -282,8 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners dos botões
-    if (btnAtualizar) {
-        btnAtualizar.addEventListener('click', function() {
+    if (btnAtualizarPedido) {
+        btnAtualizarPedido.addEventListener('click', function() {
             if (!pedidoSelecionado) {
                 alert('Selecione um pedido primeiro');
                 return;
@@ -305,8 +333,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (btnExcluir) {
-        btnExcluir.addEventListener('click', function() {
+    if (btnExcluirPedido) {
+        btnExcluirPedido.addEventListener('click', function() {
             if (!pedidoSelecionado) {
                 alert('Selecione um pedido primeiro');
                 return;
@@ -326,9 +354,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (inputQuantidade) inputQuantidade.addEventListener('input', calcularValorTotal);
 
     // Desabilitar/Habilitar botões inicialmente
-    if (btnCadastrar) btnCadastrar.disabled = false;
-    if (btnAtualizar) btnAtualizar.disabled = true;
-    if (btnExcluir) btnExcluir.disabled = true;
+    if (btnCadastrarPedido) btnCadastrarPedido.disabled = false;
+    if (btnAtualizarPedido) btnAtualizarPedido.disabled = true;
+    if (btnExcluirPedido) btnExcluirPedido.disabled = true;
 
     // Inicializar
     if (selectProduto) carregarProdutos();

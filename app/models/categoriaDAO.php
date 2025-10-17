@@ -1,13 +1,15 @@
 <?php
+
 namespace app\models;
 
+use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
+use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
 include_once __DIR__.'/../core/database/Where.php';
-
 include_once __DIR__.'/Categoria.php';
 
 class CategoriaDAO {
@@ -67,7 +69,7 @@ class CategoriaDAO {
     public function delete($id){
         try {
             $sql = "DELETE FROM categorias WHERE id_categoria = :id";
-            $stmt = $this->conn->prepare($sql);
+                $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->rowCount() > 0;

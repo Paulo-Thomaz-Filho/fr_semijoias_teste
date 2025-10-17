@@ -26,4 +26,5 @@ class Base64Files {
     }
 
 }
+
 ?>

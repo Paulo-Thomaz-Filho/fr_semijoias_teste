@@ -111,9 +111,4 @@ class Sanitize {
 
 }
 
-// Exemplo de uso da classe Sanitize
-// $sanitize = new Sanitize();
-// $data = "<script>alert('Hello World!');</script>";
-// $cleanData = $sanitize->clean($data);
-// echo $cleanData; // Saída: "alert('Hello World!');"
 ?>

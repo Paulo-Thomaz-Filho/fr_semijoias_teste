@@ -1,59 +1,78 @@
 <?php
-// Em: app/models/Usuario.php
 
 namespace app\models;
 
 class Usuario {
-	private $idUsuario;
-	private $nome;
-	private $email;
-	private $senhaHash;
-	private $acesso;
-	private $status; 
+    private $idUsuario;
+    private $nome;
+    private $email;
+    private $senha;
+    private $telefone;
+    private $cpf;
+    private $endereco;
+    private $dataNascimento;
+    private $idNivel;
 
-	// --- Getters ---
+    // --- Getters ---
+    public function getIdUsuario()      { return $this->idUsuario; }
+    public function getNome()           { return $this->nome; }
+    public function getEmail()          { return $this->email; }
+    public function getSenha()          { return $this->senha; }
+    public function getTelefone()       { return $this->telefone; }
+    public function getCpf()            { return $this->cpf; }
+    public function getEndereco()       { return $this->endereco; }
+    public function getDataNascimento() { return $this->dataNascimento; }
+    public function getIdNivel()        { return $this->idNivel; }
 
-	public function getIdUsuario() { return $this->idUsuario; }
-	public function getNome()      { return $this->nome; }
-	public function getEmail()     { return $this->email; }
-	public function getSenhaHash() { return $this->senhaHash; }
-	public function getAcesso()    { return $this->acesso; }
-	public function getStatus()    { return $this->status; } 
+    // --- Setters ---
+    public function setIdUsuario($id)           { $this->idUsuario = $id; }
+    public function setNome($nome)              { $this->nome = $nome; }
+    public function setEmail($email)            { $this->email = $email; }
+    public function setSenha($senha)            { $this->senha = $senha; }
+    public function setTelefone($telefone)      { $this->telefone = $telefone; }
+    public function setCpf($cpf)                { $this->cpf = $cpf; }
+    public function setEndereco($endereco)      { $this->endereco = $endereco; }
+    public function setDataNascimento($dataNascimento) { $this->dataNascimento = $dataNascimento; }
+    public function setIdNivel($idNivel)        { $this->idNivel = $idNivel; }
 
-	// --- Setters ---
-
-	public function setIdUsuario($id) { $this->idUsuario = $id; }
-	public function setNome($nome)    { $this->nome = $nome; }
-	public function setEmail($email)     { $this->email = $email; }
-	public function setAcesso($acesso)   { $this->acesso = $acesso; }
-	public function setSenha($senhaPura) { if (!empty($senhaPura)) {$this->senhaHash = password_hash($senhaPura, PASSWORD_DEFAULT);}}
-	public function setSenhaHash($hash)  { $this->senhaHash = $hash; }
-	public function setStatus($status)   { $this->status = $status; } 
-
-	// --- Métodos Especiais ---
-
-    public function verificarSenha($senhaPura) {
-        // Usando MD5 para simplicidade (não recomendado em produção)
-        return md5($senhaPura) === $this->senhaHash;
+    // Retorna o tipo de acesso do usuário
+    public function getAcesso() {
+        if ($this->idNivel == 1) {
+            return 'Administrador';
+        } elseif ($this->idNivel == 2) {
+            return 'Cliente';
+        }
+        return '';
+    }
+    // Verifica se a senha informada confere com a senha do usuário
+    public function verificarSenha($senhaInformada) {
+        // Senha no banco está em md5
+        return md5($senhaInformada) === $this->senha;
     }
 
-	public function load($id, $nome, $email, $senha, $telefone, $cpf, $dataNascimento, $idNivel) {
-		$this->setIdUsuario($id);
-		$this->setNome($nome);
-		$this->setEmail($email);
-		$this->setSenhaHash($senha);
-		// Telefone, CPF e DataNascimento podem ser adicionados como propriedades futuras se necessário
-		$this->setAcesso($idNivel == 1 ? 'admin' : 'user');
-		$this->setStatus('ativo');
-	}
-	
-	public function toArray() {
-		return [
-			'idUsuario' => $this->idUsuario,
-			'nome'      => $this->nome,
-			'email'     => $this->email,
-			'acesso'    => $this->acesso,
-			'status'    => $this->status
-		];
-	}
+    public function load($id, $nome, $email, $senha, $telefone, $cpf, $endereco, $dataNascimento, $idNivel) {
+        $this->setIdUsuario($id);
+        $this->setNome($nome);
+        $this->setEmail($email);
+        $this->setSenha($senha);
+        $this->setTelefone($telefone);
+        $this->setCpf($cpf);
+        $this->setEndereco($endereco);
+        $this->setDataNascimento($dataNascimento);
+        $this->setIdNivel($idNivel);
+    }
+
+    public function toArray() {
+        return [
+            'idUsuario'      => $this->idUsuario,
+            'nome'           => $this->nome,
+            'email'          => $this->email,
+            'senha'          => $this->senha,
+            'telefone'       => $this->telefone,
+            'cpf'            => $this->cpf,
+            'endereco'       => $this->endereco,
+            'dataNascimento' => $this->dataNascimento,
+            'idNivel'        => $this->idNivel
+        ];
+    }
 }

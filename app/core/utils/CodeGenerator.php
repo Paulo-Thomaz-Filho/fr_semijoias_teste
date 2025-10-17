@@ -1,4 +1,5 @@
 <?php
+
 namespace app\core\utils;
 
 class CodeGenerator {
@@ -14,7 +15,5 @@ class CodeGenerator {
         return ($code);
     }
 }
-
-
 
 ?>

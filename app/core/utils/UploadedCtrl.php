@@ -1,4 +1,5 @@
 <?php
+
 namespace app\core\utils;
 
 use core\database\DBQuery;
@@ -67,4 +68,5 @@ class UploadedCtrl {
         }
     }
 }
+
 ?>

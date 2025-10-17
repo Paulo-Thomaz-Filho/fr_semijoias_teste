@@ -73,8 +73,8 @@ const carregarPedidosRecentes = async () => {
             return;
         }
         
-        // Limita aos 10 mais recentes
-        pedidos = pedidos.slice(0, 10);
+    // Limita aos 10 mais recentes (mais novos primeiro)
+    pedidos = pedidos.reverse().slice(0, 10);
         if (pedidos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">Nenhum pedido</td></tr>';
             return;

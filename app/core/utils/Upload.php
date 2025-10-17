@@ -1,4 +1,5 @@
 <?php
+
 namespace app\core\utils;
 
 use app\core\utils\UploadedCtrl;
@@ -9,7 +10,6 @@ use core\utils\Base64Files;
  * Converter o arquivo enviado para base64 e salva.
  * Registrar o arquivo no banco de dados.
  */
-
 
 $uploadPathDir = __DIR__."/../../../"."app/uploads/";
 $uploader = new UploadedCtrl();
@@ -51,4 +51,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retornar o nome do arquivo para o cliente
     echo $fileBase64Name;
 }
+
 ?>

@@ -409,4 +409,5 @@ class DBQuery {
         $this->uniqueKeys = $uniqueKeys;
     }
 }
+
 ?>

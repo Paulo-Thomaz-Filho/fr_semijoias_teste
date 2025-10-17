@@ -1,6 +1,8 @@
-Membros do grupo :
-  Eduardo Nogueira Simões
-  João Marcos da Cruz
-  Jhonny Sancho Chagas
-  Paulo Thomaz Filho
-  Henrico da Silva Santos
+# ✨ FR Semijoias
+
+## 👥 Membros
+- Eduardo Nogueira Simoes
+- Henrico da Silva Santos
+- Jhonny Sancho Chagas
+- João Marcos da Cruz
+- Paulo Thomaz Filho

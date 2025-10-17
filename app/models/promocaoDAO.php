@@ -1,8 +1,8 @@
 <?php
-// Em: app/models/PromocaoDAO.php
 
 namespace app\models;
 
+use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
 

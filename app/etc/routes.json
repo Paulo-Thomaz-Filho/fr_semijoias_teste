@@ -1,163 +1,118 @@
 {
-    "usuarios": {
-        "path": "app/controls/Usuarios/listar.php"
+    "usuario": {
+        "path": "app/controllers/Usuario/listar.php"
     },
-    "usuarios/salvar": {
-        "path": "app/controls/Usuarios/salvar.php"
+    "usuario/salvar": {
+        "path": "app/controllers/Usuario/salvar.php"
     },
-    "usuarios/buscar": {
-        "path": "app/controls/Usuarios/buscarPorId.php"
+    "usuario/buscar": {
+        "path": "app/controllers/Usuario/buscarPorId.php"
     },
-    "usuarios/atualizar": {
-        "path": "app/controls/Usuarios/atualizar.php"
+    "usuario/atualizar": {
+        "path": "app/controllers/Usuario/atualizar.php"
     },
-    "usuarios/deletar": {
-        "path": "app/controls/Usuarios/deletar.php"
+    "usuario/deletar": {
+        "path": "app/controllers/Usuario/deletar.php"
     },
     "api/usuario/login": {
-        "path": "app/controls/Usuarios/login.php"
+        "path": "app/controllers/Usuario/login.php"
     },
     "api/usuario/registrar": {
-        "path": "app/controls/Usuarios/salvar.php"
+        "path": "app/controllers/Usuario/salvar.php"
     },
 
 
 
-    "promocoes": {
-        "path": "app/controls/Promocao/listar.php"
-    },
-    "promocoes/buscar": {
-        "path": "app/controls/Promocao/buscarPorId.php"
-    },
-    "promocoes/salvar": {
-        "path": "app/controls/Promocao/salvar.php"
-    },
-    "promocoes/atualizar": {
-        "path": "app/controls/Promocao/atualizar.php"
-    },
-    "promocoes/deletar": {
-        "path": "app/controls/Promocao/deletar.php"
-    },
-
-
-
-    "produtos": {
-        "path": "app/controls/Produto/listar.php"
-    },
-    "produtos/buscar": {
-        "path": "app/controls/Produto/buscarPorId.php"
-    },
-    "produtos/salvar": {
-        "path": "app/controls/Produto/salvar.php"
-    },
-    "produtos/atualizar": {
-        "path": "app/controls/Produto/atualizar.php"
-    },
-    "produtos/deletar": {
-        "path": "app/controls/Produto/deletar.php"
+    "niveis": {
+        "path": "app/controllers/Nivel/listar.php"
     },
 
 
 
     "dashboard/estatisticas": {
-        "path": "app/controls/Dashboard/estatisticas.php"
+        "path": "app/controllers/Dashboard/estatisticas.php"
     },
     "dashboard/estoque": {
-        "path": "app/controls/Dashboard/estoque.php"
+        "path": "app/controllers/Dashboard/estoque.php"
     },
     "dashboard/mais-vendidos": {
-        "path": "app/controls/Dashboard/maisVendidos.php"
+        "path": "app/controllers/Dashboard/maisVendidos.php"
+    },
+
+
+    
+    "produtos": {
+        "path": "app/controllers/Produto/listar.php"
+    },
+    "produtos/buscar": {
+        "path": "app/controllers/Produto/buscarPorId.php"
+    },
+    "produtos/salvar": {
+        "path": "app/controllers/Produto/salvar.php"
+    },
+    "produtos/atualizar": {
+        "path": "app/controllers/Produto/atualizar.php"
+    },
+    "produtos/deletar": {
+        "path": "app/controllers/Produto/deletar.php"
     },
 
 
 
     "pedidos": {
-        "path": "app/controls/Pedido/listar.php"
+        "path": "app/controllers/Pedido/listar.php"
     },
     "pedidos/buscar": {
-        "path": "app/controls/Pedido/buscarPorId.php"
+        "path": "app/controllers/Pedido/buscarPorId.php"
     },
     "pedidos/salvar": {
-        "path": "app/controls/Pedido/salvar.php"
+        "path": "app/controllers/Pedido/salvar.php"
     },
     "pedidos/atualizar": {
-        "path": "app/controls/Pedido/atualizar.php"
+        "path": "app/controllers/Pedido/atualizar.php"
     },
     "pedidos/deletar": {
-        "path": "app/controls/Pedido/deletar.php"
+        "path": "app/controllers/Pedido/deletar.php"
+    },
+
+
+
+    "promocoes": {
+        "path": "app/controllers/Promocao/listar.php"
+    },
+    "promocoes/buscar": {
+        "path": "app/controllers/Promocao/buscarPorId.php"
+    },
+    "promocoes/salvar": {
+        "path": "app/controllers/Promocao/salvar.php"
+    },
+    "promocoes/atualizar": {
+        "path": "app/controllers/Promocao/atualizar.php"
+    },
+    "promocoes/deletar": {
+        "path": "app/controllers/Promocao/deletar.php"
     },
 
 
 
     "marcas": {
-        "path": "app/controls/Marca/listar.php"
-    },
-    "marcas/buscar": {
-        "path": "app/controls/Marca/buscarPorId.php"
+        "path": "app/controllers/Marca/listar.php"
     },
     "marcas/salvar": {
-        "path": "app/controls/Marca/salvar.php"
+        "path": "app/controllers/Marca/salvar.php"
     },
-    "marcas/atualizar": {
-        "path": "app/controls/Marca/atualizar.php"
-    },
-    "marcas/deletar": {
-        "path": "app/controls/Marca/deletar.php"
-    },
-
+    
 
 
     "categorias": {
-        "path": "app/controls/Categoria/listar.php"
-    },
-    "categorias/buscar": {
-        "path": "app/controls/Categoria/buscarPorId.php"
+        "path": "app/controllers/Categoria/listar.php"
     },
     "categorias/salvar": {
-        "path": "app/controls/Categoria/salvar.php"
-    },
-    "categorias/atualizar": {
-        "path": "app/controls/Categoria/atualizar.php"
-    },
-    "categorias/deletar": {
-        "path": "app/controls/Categoria/deletar.php"
-    },
-
-    
-
-    "api/clientes/listar": {
-        "path": "app/controls/Usuarios/listar.php"
-    },
-    "api/produtos/listar": {
-        "path": "app/controls/Produto/listar.php"
+        "path": "app/controllers/Categoria/salvar.php"
     },
 
 
-    
-    
-    "verifica_login": {
-        "path": "app/admin/verifica_login.php"
-    },
-    "admin": {
-        "path": "app/admin/home.php"
-    },
-    "cliente": {
-        "path": "app/admin/cliente.php"
-    },
-    "produto": {
-        "path": "app/admin/produto.php"
-    },
-    "pedido": {
-        "path": "app/admin/pedidos.php"
-    },
-    "promocao": {
-        "path": "app/admin/promocoes.php"
-    },
 
-
-    "": {
-        "path": "public/views/login.html"
-    },
     "login": {
         "path": "public/views/login.html"
     },

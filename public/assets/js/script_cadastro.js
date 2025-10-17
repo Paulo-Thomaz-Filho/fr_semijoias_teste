@@ -7,8 +7,16 @@ $(document).ready(function(){
         const email = $('#cadastroEmail').val();
         const senha = $('#cadastroSenha').val();
 
+
         if (!nome || !email || !senha) {
-            alert('Porfavor, preencha todos os campos de cadastro');
+            alert('Por favor, preencha todos os campos de cadastro');
+            return;
+        }
+
+        // Validação de senha forte
+        const senhaForteRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+        if (!senhaForteRegex.test(senha)) {
+            alert('A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula e um caractere especial.');
             return;
         }
 
@@ -18,9 +26,7 @@ $(document).ready(function(){
             senha: senha
         }
 
-        const jsonData = JSON.stringify(cadastroData);
-
-        console.log('Enviando dados do cadastro via JSON') 
+        console.log('Enviando dados do cadastro via JSON');
 
         $.ajax({
             url: '/api/usuario/registrar',

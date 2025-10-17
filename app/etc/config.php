@@ -44,8 +44,9 @@ $uriArray    = array_values(
                         function ($item) { return trim($item) !== "";} 
                     )
                );
+
 $ultimaPastaDir = basename($rootPath);
-$primeiraPastaUri = $uriArray[0];
+$primeiraPastaUri = isset($uriArray[0]) ? $uriArray[0] : '';
 
 $rootPathUrl = $dominio;
 if ($ultimaPastaDir === $primeiraPastaUri) {
@@ -61,7 +62,7 @@ if ($showErrors){
     error_reporting(E_ALL);
 }
 
-$config['database']['host']		= 'fr_semijoias_db';
+$config['database']['host']		= 'mysql';
 $config['database']['schema']	= 'fr_semijoias';
 $config['database']['user']		= 'root';
 $config['database']['pass']		= 'root';
@@ -105,19 +106,10 @@ $head .= "\n\t".'<link  href="'.$rootPathUrl .'public/assets/css/'.'style.css" r
 
 if(!isset( $_SESSION['login'])){
     
-    
 }
 
 
 $config['head']['defaults']	    =  $head;
-
-/* 
-$config['login']['email']	    = null;
-$config['login']['nome']	    = null;
-$config['login']['idUsuario']	= null;
-$config['login']['idNivel']	    = null;
- */
-// Copia as configurações pra Sessão
 
 // Limpar a $_SESSION
 $_SESSION['database'] = [];
@@ -164,4 +156,5 @@ $_SESSION['login']['nome']      = $config['login']['nome'];
 $_SESSION['login']['idUsuario'] = $config['login']['idUsuario'];
 $_SESSION['login']['idNivel']   = $config['login']['idNivel'];
  */
+
 ?>

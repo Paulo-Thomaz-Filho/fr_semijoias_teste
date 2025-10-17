@@ -1,7 +1,5 @@
 <?php
-/**
- * Namespace para a classe DBConnection
- */
+
 namespace core\database;
 
 use PDOException;
