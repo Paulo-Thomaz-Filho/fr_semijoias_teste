@@ -192,5 +192,8 @@
     },
     "inicio": {
         "path": "public/views/inicio.html"
+    },
+    "imagem": {
+        "path": "app/admin/image.php"
     }
 }
