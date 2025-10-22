@@ -1,10 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Promocao.php';
 require_once $rootPath . '/app/models/PromocaoDAO.php';
 
@@ -18,18 +16,17 @@ $idPromocao = $_GET['id'] ?? $_GET['idPromocao'] ?? $_POST['id'] ?? $_POST['idPr
 
 if (!$idPromocao) {
     http_response_code(400);
-    echo json_encode(['erro' => 'O idPromocao é obrigatório para inativar.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['erro' => 'O idPromocao é obrigatório para exclusão.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
     $promocaoDAO = new \app\models\PromocaoDAO();
-    
-    // Verificar se existe antes de inativar
     $promocaoExistente = $promocaoDAO->getById($idPromocao);
+
     if (!$promocaoExistente) {
         http_response_code(404);
-        echo json_encode(['erro' => 'Promoção não encontrada.'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['erro' => 'Promoção não encontrada para exclusão.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 

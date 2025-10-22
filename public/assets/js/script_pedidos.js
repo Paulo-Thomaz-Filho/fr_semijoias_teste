@@ -1,5 +1,11 @@
 ﻿// Script completo para gerenciamento de pedidos
 document.addEventListener('DOMContentLoaded', function() {
+    // Sempre recarrega clientes quando houver alteração global
+    window.addEventListener('clientesAtualizados', function() {
+        carregarClientesPedido();
+    });
+    // Mapa de idCliente para nome
+    let clientesMap = {};
     // Referências aos elementos do DOM
     const formPedido = document.getElementById('form-pedido');
     const tabelaPedidos = document.querySelector('#pedidos-section tbody');
@@ -65,27 +71,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    const carregarClientesPedido = async () => {
+        if (!inputCliente) return;
+        try {
+            const response = await fetch('/usuario');
+            const clientes = await response.json();
+            inputCliente.innerHTML = '<option value="" disabled selected>Selecione um cliente</option>';
+            clientesMap = {};
+            clientes.forEach(cliente => {
+                inputCliente.innerHTML += `<option value="${cliente.idUsuario}">${cliente.nome}</option>`;
+                clientesMap[cliente.idUsuario] = cliente.nome;
+            });
+        } catch (e) {
+            inputCliente.innerHTML = '<option value="">Erro ao carregar clientes</option>';
+        }
+    };
+
     // Carregar status do pedido no select
     const carregarStatus = async () => {
         try {
-            const response = await fetch('/pedidos?only_status=true');
+            const response = await fetch('/status');
             const statusList = await response.json();
-            
+            window.statusMap = {};
             if (Array.isArray(statusList) && statusList.length > 0) {
                 selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
                 statusList.forEach(status => {
+                    window.statusMap[status.id_status] = status.nome;
                     const option = document.createElement('option');
-                    option.value = status;
-                    option.textContent = status;
+                    option.value = status.id_status;
+                    option.textContent = status.nome;
                     selectStatus.appendChild(option);
                 });
             } else {
-                // Se não houver status no banco, mostrar mensagem informativa
                 selectStatus.innerHTML = '<option value="" disabled selected>Nenhum status disponível - cadastre pedidos primeiro</option>';
             }
         } catch (error) {
             console.error('Erro ao carregar status:', error);
-            // Em caso de erro, mostrar mensagem de erro
             selectStatus.innerHTML = '<option value="" disabled selected>Erro ao carregar status - tente novamente</option>';
         }
     };
@@ -113,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Calcular valor total (preco * quantidade)
                 const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
                 const valor = valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-                // Função utilitária para formatar datas yyyy-MM-dd ou outros formatos para dd/MM/yyyy
                 function formatarDataBR(dataStr) {
                     if (!dataStr) return '';
                     let partes = null;
@@ -130,14 +150,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     return dataStr;
                 }
                 const data = p.dataPedido ? formatarDataBR(p.dataPedido) : 'Sem data';
-                const status = p.status || 'Pendente';
+                const statusNome = window.statusMap && window.statusMap[p.idStatus] ? window.statusMap[p.idStatus] : 'N/A';
                 const quantidade = p.quantidade || 0;
-                
-                // Mapear status para classe CSS
-                const statusClass = status.toLowerCase().replace(/\s+/g, '-');
-                const statusBadge = '<span class="status-badge status-' + statusClass + '">' + status + '</span>';
-                
-                return '<tr class="border-bottom border-light"><td class="py-4 text-dark">' + p.idPedido + '</td><td class="py-4 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-4 text-dark">' + (p.clienteNome || 'N/A') + '</td><td class="py-4 text-dark">' + valor + '</td><td class="py-4 text-dark">' + (p.endereco || '-') + '</td><td class="py-4 text-dark">' + data + '</td><td class="py-4">' + statusBadge + '</td><td class="py-4 text-dark">' + quantidade + '</td><td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido" data-id="' + p.idPedido + '">Selecionar</button></td></tr>';
+                let statusClass = statusNome.toLowerCase().replace(/\s+/g, '-');
+                if (statusClass === 'pendente') statusClass = 'pending';
+                if (statusClass === 'enviado') statusClass = 'sent';
+                if (statusClass === 'concluído' || statusClass === 'concluido') statusClass = 'green';
+                if (statusClass === 'cancelado') statusClass = 'danger';
+                const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
+                const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';
+                return '<tr class="border-bottom border-light"><td class="py-4 text-dark">' + p.idPedido + '</td><td class="py-4 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-4 text-dark">' + clienteNome + '</td><td class="py-4 text-dark">' + valor + '</td><td class="py-4 text-dark">' + (p.endereco || '-') + '</td><td class="py-4 text-dark">' + data + '</td><td class="py-4">' + statusBadge + '</td><td class="py-4 text-dark">' + quantidade + '</td><td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido" data-id="' + p.idPedido + '">Selecionar</button></td></tr>';
             }).join('');
             
             // Adicionar evento de clique aos botões de selecionar
@@ -252,11 +274,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            inputCliente.value = pedido.clienteNome || '';
+            // Verifica se o pedido tem propriedades esperadas
+            if (!pedido || Object.keys(pedido).length === 0) {
+                return;
+            }
+            inputCliente.value = pedido.idCliente || '';
             inputEndereco.value = pedido.endereco || '';
             inputQuantidade.value = pedido.quantidade || '';
-            selectStatus.value = pedido.status || 'Pendente';
-            // Calcular valor total
+            // Seleciona o status pelo nome ou id
+            if (pedido.idStatus) {
+                selectStatus.value = pedido.idStatus;
+                if (selectStatus.value !== pedido.idStatus && pedido.statusPedido) {
+                    selectStatus.value = pedido.statusPedido;
+                }
+            } else if (pedido.statusPedido) {
+                selectStatus.value = pedido.statusPedido;
+            } else {
+                selectStatus.value = '';
+            }
             const valorTotal = (parseFloat(pedido.preco) || 0) * (parseInt(pedido.quantidade) || 1);
             inputValor.value = valorTotal.toFixed(2).replace('.', ',');
             inputData.value = pedido.dataPedido ? pedido.dataPedido.split(' ')[0] : '';
@@ -292,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const produtoNome = selectProduto.options[selectProduto.selectedIndex]?.text || '';
             const dados = {
                 produto_nome: produtoNome,
-                cliente_nome: inputCliente.value.trim(),
+                id_cliente: inputCliente.value,
                 endereco: inputEndereco.value.trim(),
                 quantidade: inputQuantidade.value,
                 status: selectStatus.value,
@@ -321,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const dados = {
                 idPedido: pedidoSelecionado,
                 produto_nome: produtoNome,
-                cliente_nome: inputCliente.value.trim(),
+                id_cliente: inputCliente.value,
                 endereco: inputEndereco.value.trim(),
                 quantidade: inputQuantidade.value,
                 status: selectStatus.value,
@@ -361,6 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar
     if (selectProduto) carregarProdutos();
     if (selectStatus) carregarStatus();
+    if (inputCliente) carregarClientesPedido();
     if (tabelaPedidos) carregarPedidos();
 
     // Exportar funções globais para os botões onclick do HTML

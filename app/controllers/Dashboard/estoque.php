@@ -1,5 +1,4 @@
 <?php
-// app/controllers/Dashboard/estoque.php
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -14,14 +13,12 @@ try {
     // Query para buscar estatísticas de estoque por categoria
     $sql = "
         SELECT 
-            c.nome as categoria,
+            p.categoria as categoria,
             SUM(p.estoque) as total
         FROM 
             produtos p
-        LEFT JOIN
-            categorias c ON p.id_categoria = c.id_categoria
         GROUP BY 
-            c.id_categoria, c.nome
+            p.categoria
         ORDER BY 
             total DESC
     ";

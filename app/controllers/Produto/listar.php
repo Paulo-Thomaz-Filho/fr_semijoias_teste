@@ -9,10 +9,18 @@ require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
 
 try {
-    $produtoDAO = new \app\models\ProdutoDAO();
-    $produtos = $produtoDAO->getAllWithDetails();
+    // Remove promoções expiradas dos produtos antes de listar
+    require_once $rootPath . '/app/models/PromocaoDAO.php';
+    $promocaoDAO = new \app\models\PromocaoDAO();
+    $promocaoDAO->removerPromocoesExpiradasDosProdutos();
 
-    echo json_encode($produtos, JSON_UNESCAPED_UNICODE);
+    $produtoDAO = new \app\models\ProdutoDAO();
+    $produtos = $produtoDAO->getAll();
+    $produtosArray = [];
+    foreach ($produtos as $produto) {
+        $produtosArray[] = $produto->toArray();
+    }
+    echo json_encode($produtosArray, JSON_UNESCAPED_UNICODE);
 } catch (\Throwable $e) {
     http_response_code(500);
     echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);

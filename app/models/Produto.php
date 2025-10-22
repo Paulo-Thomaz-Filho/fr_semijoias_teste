@@ -14,6 +14,19 @@ class Produto {
     private $estoque;
     private $disponivel;
 
+    public function __construct($idProduto = null, $nome = null, $descricao = null, $preco = null, $marca = null, $categoria = null, $idPromocao = null, $imagem = null, $estoque = null, $disponivel = null) {
+        $this->idProduto = $idProduto;
+        $this->nome = $nome;
+        $this->descricao = $descricao;
+        $this->preco = $preco;
+        $this->marca = $marca;
+        $this->categoria = $categoria;
+        $this->idPromocao = $idPromocao;
+        $this->imagem = $imagem;
+        $this->estoque = $estoque;
+        $this->disponivel = $disponivel;
+    }
+
     // --- Getters ---
     public function getIdProduto()  { return $this->idProduto; }
     public function getNome()       { return $this->nome; }
@@ -37,19 +50,6 @@ class Produto {
     public function setImagem($imagem)         { $this->imagem = $imagem; }
     public function setEstoque($estoque)       { $this->estoque = $estoque; }
     public function setDisponivel($disponivel) { $this->disponivel = $disponivel; }
-
-    public function load($idProduto, $nome, $descricao, $preco, $marca, $categoria, $idPromocao, $imagem, $estoque, $disponivel) {
-        $this->setIdProduto($idProduto);
-        $this->setNome($nome);
-        $this->setDescricao($descricao);
-        $this->setPreco($preco);
-        $this->setMarca($marca);
-        $this->setCategoria($categoria);
-        $this->setIdPromocao($idPromocao);
-        $this->setImagem($imagem);
-        $this->setEstoque($estoque);
-        $this->setDisponivel($disponivel);
-    }
 
     public function toArray() {
         return [

@@ -21,7 +21,8 @@ try {
     $pedido = $pedidoDAO->getById($idPedido);
 
     if ($pedido) {
-        echo json_encode($pedido->toArray(), JSON_UNESCAPED_UNICODE);
+        // Envia o array diretamente
+        echo json_encode($pedido, JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(404);
         echo json_encode(['erro' => 'Pedido não encontrado.'], JSON_UNESCAPED_UNICODE);

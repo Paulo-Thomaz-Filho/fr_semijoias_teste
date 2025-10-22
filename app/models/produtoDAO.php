@@ -5,7 +5,6 @@ namespace app\models;
 use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
-use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
@@ -20,7 +19,7 @@ class ProdutoDAO {
         $this->conn = (new DBConnection())->getConn();
         $this->dbQuery = new DBQuery(
             'produtos',
-            'id_produto, nome, descricao, preco, id_marca, id_categoria, id_promocao, imagem, estoque, disponivel',
+            'id_produto, nome, descricao, preco, marca, categoria, id_promocao, imagem, estoque, disponivel',
             'id_produto'
         );
     }
@@ -30,17 +29,18 @@ class ProdutoDAO {
 
         $produtos = [];
         foreach($dados as $row){
-            $produto = new Produto();
-            $produto->setIdProduto($row['id_produto']);
-            $produto->setNome($row['nome']);
-            $produto->setDescricao($row['descricao']);
-            $produto->setPreco($row['preco']);
-            $produto->setMarca($row['id_marca']);
-            $produto->setCategoria($row['id_categoria']);
-            $produto->setIdPromocao($row['id_promocao']);
-            $produto->setImagem($row['imagem']);
-            $produto->setEstoque($row['estoque']);
-            $produto->setDisponivel($row['disponivel']);
+            $produto = new Produto(
+                $row['id_produto'],
+                $row['nome'],
+                $row['descricao'],
+                $row['preco'],
+                $row['marca'],
+                $row['categoria'],
+                $row['id_promocao'],
+                $row['imagem'],
+                $row['estoque'],
+                $row['disponivel']
+            );
             $produtos[] = $produto;
         }
         return $produtos;
@@ -49,33 +49,24 @@ class ProdutoDAO {
     public function getAllWithDetails(){
         $conn = (new \core\database\DBConnection())->getConn();
         
-        // Query com JOIN para buscar nomes de marca e categoria
-        // snake_case do DB → camelCase para o PHP/JSON
         $sql = "
             SELECT 
-                p.id_produto as idProduto,
-                p.nome as nome,
-                p.descricao as descricao,
-                p.preco as preco,
-                m.nome as marca,
-                c.nome as categoria,
-                p.id_promocao as idPromocao,
-                p.imagem as imagem,
-                p.estoque as estoque,
-                p.disponivel as disponivel
-            FROM 
-                produtos p
-            LEFT JOIN
-                marcas m ON p.id_marca = m.id_marca
-            LEFT JOIN
-                categorias c ON p.id_categoria = c.id_categoria
-            ORDER BY
-                p.nome
+                id_produto as idProduto,
+                nome,
+                descricao,
+                preco,
+                marca,
+                categoria,
+                id_promocao as idPromocao,
+                imagem,
+                estoque,
+                disponivel
+            FROM produtos
+            ORDER BY nome
         ";
-        
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById($id){
@@ -85,18 +76,18 @@ class ProdutoDAO {
 
         if($dados){
             $row = $dados[0];
-            $produto = new Produto();
-            $produto->setIdProduto($row['id_produto']);
-            $produto->setNome($row['nome']);
-            $produto->setDescricao($row['descricao']);
-            $produto->setPreco($row['preco']);
-            $produto->setMarca($row['id_marca']);
-            $produto->setCategoria($row['id_categoria']);
-            $produto->setIdPromocao($row['id_promocao']);
-            $produto->setImagem($row['imagem']);
-            $produto->setEstoque($row['estoque']);
-            $produto->setDisponivel($row['disponivel']);
-            return $produto;
+            return new Produto(
+                $row['id_produto'],
+                $row['nome'],
+                $row['descricao'],
+                $row['preco'],
+                $row['marca'],
+                $row['categoria'],
+                $row['id_promocao'],
+                $row['imagem'],
+                $row['estoque'],
+                $row['disponivel']
+            );
         }
 
         return null;
@@ -108,8 +99,8 @@ class ProdutoDAO {
             $produto->getNome(),
             $produto->getDescricao(),
             $produto->getPreco(),
-            $produto->getMarca(),        
-            $produto->getCategoria(),  
+            $produto->getMarca(),
+            $produto->getCategoria(),
             $produto->getIdPromocao(),
             null,
             $produto->getEstoque(),
@@ -125,14 +116,13 @@ class ProdutoDAO {
             'nome'            => $produto->getNome(),
             'descricao'       => $produto->getDescricao(),
             'preco'           => $produto->getPreco(),
-            'id_marca'        => $produto->getMarca(),
-            'id_categoria'    => $produto->getCategoria(),
+            'marca'           => $produto->getMarca(),
+            'categoria'       => $produto->getCategoria(),
             'id_promocao'     => $produto->getIdPromocao(),
             'imagem'          => null,
             'estoque'         => $produto->getEstoque(),
             'disponivel'      => $produto->getDisponivel()
         ];
-        
         return $this->dbQuery->update($dados);
     }
 
@@ -147,5 +137,4 @@ class ProdutoDAO {
             throw new \Exception('Erro ao deletar produto: ' . $e->getMessage());
         }
     }
-
 }

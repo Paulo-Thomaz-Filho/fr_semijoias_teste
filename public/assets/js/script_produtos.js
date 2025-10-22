@@ -1,27 +1,25 @@
 // Script completo para gerenciamento de produtos
 document.addEventListener('DOMContentLoaded', function() {
+    // Atualiza promoções/produtos ao receber evento global
+    window.addEventListener('promocaoAtualizada', async function() {
+        await carregarPromocoes();
+        await carregarProdutos();
+    });
     // Referências aos elementos do DOM
     const formProduto = document.getElementById('form-produto');
     const inputId = document.getElementById('produto_id');
     const inputNome = document.getElementById('nome_produto');
     const inputDescricao = document.getElementById('descricao_produto');
-    const selectCategoria = document.getElementById('categoria_id');
-    const selectMarca = document.getElementById('marca_id');
+    const inputCategoria = document.getElementById('categoria_produto');
+    const inputMarca = document.getElementById('marca_produto');
     const inputPreco = document.getElementById('preco_produto');
-    const selectPromocao = document.getElementById('promocao_id');
+    const selectPromocao = document.getElementById('promocao_produto');
     const inputEstoque = document.getElementById('estoque');
     const selectDisponivel = document.getElementById('disponivel');
     const tabelaProdutos = document.querySelector('#produtos-section tbody');
     const btnCadastrarProduto = document.getElementById('btnCadastrarProduto');
     const btnAtualizarProduto = document.getElementById('btnAtualizarProduto');
     const btnExcluirProduto = document.getElementById('btnExcluirProduto');
-    // Novos elementos para modais
-    const modalNovaMarca = document.getElementById('modalNovaMarca');
-    const inputNovaMarca = document.getElementById('inputNovaMarca');
-    const btnSalvarNovaMarca = document.getElementById('btnSalvarNovaMarca');
-    const modalNovaCategoria = document.getElementById('modalNovaCategoria');
-    const inputNovaCategoria = document.getElementById('inputNovaCategoria');
-    const btnSalvarNovaCategoria = document.getElementById('btnSalvarNovaCategoria');
 
     // Mapeamento de promoções por id
     let mapaPromocoes = {};
@@ -31,14 +29,26 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/promocoes');
             const promocoes = await response.json();
+            // Salva array global para uso no cálculo de preço
+            window.promocoesArray = promocoes;
             selectPromocao.innerHTML = '<option value="" disabled selected>Selecione uma promoção</option>';
+            selectPromocao.innerHTML += '<option value="sem">Sem promoção</option>';
             mapaPromocoes = {};
             promocoes.forEach(promocao => {
-                const option = document.createElement('option');
-                option.value = promocao.idPromocao;
-                option.textContent = `${promocao.nome} - ${promocao.valor}%`;
-                selectPromocao.appendChild(option);
-                mapaPromocoes[promocao.idPromocao] = promocao.nome;
+                // Só adiciona se ativa e dentro do período (backend já filtra, mas reforça no frontend)
+                const hoje = new Date();
+                const inicio = new Date(promocao.dataInicio);
+                const fim = new Date(promocao.dataFim);
+                if (promocao.status == 1 && inicio <= hoje && fim >= hoje) {
+                    const option = document.createElement('option');
+                    option.value = promocao.idPromocao;
+                    let desconto = promocao.desconto !== undefined && promocao.desconto !== null ? parseInt(promocao.desconto) : '';
+                    let tipo = (promocao.tipo_desconto === 'valor') ? 'R$' : '%';
+                    let descontoFormatado = (tipo === 'R$') ? `R$ ${desconto}` : `${desconto}%`;
+                    option.textContent = `${promocao.nome} - ${descontoFormatado}`;
+                    selectPromocao.appendChild(option);
+                    mapaPromocoes[promocao.idPromocao] = `${promocao.nome} - ${descontoFormatado}`;
+                }
             });
         } catch (error) {
             console.error('Erro ao carregar promoções:', error);
@@ -78,127 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseFloat(valorFormatado.replace(',', '.'));
     };
 
-
-    // Carregar marcas no select
-    const carregarMarcas = async (selecionarId = null) => {
-        try {
-            const response = await fetch('/marcas');
-            const marcas = await response.json();
-            selectMarca.innerHTML = '<option value="" disabled selected>Selecione uma marca</option>';
-            marcas.forEach(marca => {
-                const option = document.createElement('option');
-                option.value = marca.idMarca;
-                option.textContent = marca.nome;
-                selectMarca.appendChild(option);
-            });
-            // Adiciona opção para nova marca
-            const optNova = document.createElement('option');
-            optNova.value = '__nova__';
-            optNova.textContent = 'Adicionar nova marca...';
-            selectMarca.appendChild(optNova);
-            if (selecionarId) selectMarca.value = selecionarId;
-        } catch (error) {
-            console.error('Erro ao carregar marcas:', error);
-        }
-    };
-
-
-    // Carregar categorias no select
-    const carregarCategorias = async (selecionarId = null) => {
-        try {
-            const response = await fetch('/categorias');
-            const categorias = await response.json();
-            selectCategoria.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
-            categorias.forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria.idCategoria;
-                option.textContent = categoria.nome;
-                selectCategoria.appendChild(option);
-            });
-            // Adiciona opção para nova categoria
-            const optNova = document.createElement('option');
-            optNova.value = '__nova__';
-            optNova.textContent = 'Adicionar nova categoria...';
-            selectCategoria.appendChild(optNova);
-            if (selecionarId) selectCategoria.value = selecionarId;
-        } catch (error) {
-            console.error('Erro ao carregar categorias:', error);
-        }
-    };
-    // Handler para abrir modal de nova marca
-    selectMarca.addEventListener('change', function() {
-        if (this.value === '__nova__') {
-            inputNovaMarca.value = '';
-            const modal = new bootstrap.Modal(modalNovaMarca);
-            modal.show();
-        }
-    });
-
-    // Handler para abrir modal de nova categoria
-    selectCategoria.addEventListener('change', function() {
-        if (this.value === '__nova__') {
-            inputNovaCategoria.value = '';
-            const modal = new bootstrap.Modal(modalNovaCategoria);
-            modal.show();
-        }
-    });
-
-    // Salvar nova marca
-    btnSalvarNovaMarca.addEventListener('click', async function() {
-        const nome = inputNovaMarca.value.trim();
-        if (!nome) {
-            inputNovaMarca.focus();
-            return;
-        }
-        btnSalvarNovaMarca.disabled = true;
-        try {
-            const response = await fetch('/marcas/salvar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ nome })
-            });
-            const result = await response.json();
-            if (response.ok && result.idMarca) {
-                bootstrap.Modal.getInstance(modalNovaMarca).hide();
-                await carregarMarcas(result.idMarca);
-            } else {
-                alert(result.erro || 'Erro ao salvar marca');
-            }
-        } catch (e) {
-            alert('Erro ao salvar marca');
-        }
-        btnSalvarNovaMarca.disabled = false;
-    });
-
-    // Salvar nova categoria
-    btnSalvarNovaCategoria.addEventListener('click', async function() {
-        const nome = inputNovaCategoria.value.trim();
-        if (!nome) {
-            inputNovaCategoria.focus();
-            return;
-        }
-        btnSalvarNovaCategoria.disabled = true;
-        try {
-            const response = await fetch('/categorias/salvar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ nome })
-            });
-            const result = await response.json();
-            if (response.ok && result.idCategoria) {
-                bootstrap.Modal.getInstance(modalNovaCategoria).hide();
-                await carregarCategorias(result.idCategoria);
-            } else {
-                alert(result.erro || 'Erro ao salvar categoria');
-            }
-        } catch (e) {
-            alert('Erro ao salvar categoria');
-        }
-        btnSalvarNovaCategoria.disabled = false;
-    });
-
-    // (Removido: duplicidade, função já declarada acima com o mapa de promoções)
-
     // Carregar opções de disponibilidade
     const carregarDisponibilidade = () => {
         selectDisponivel.innerHTML = '<option value="" disabled selected>Selecione uma disponibilidade</option>';
@@ -222,20 +111,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             tabelaProdutos.innerHTML = produtos.map(p => {
-                const preco = formatarPreco(p.preco);
+                let precoOriginal = parseFloat(p.preco);
+                let precoFinal = precoOriginal;
+                let promocao = 'N/A';
+                // Busca promoção pelo id
+                let promocaoObj = null;
+                if (p.idPromocao) {
+                    promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == p.idPromocao);
+                }
+                if (promocaoObj) {
+                    let descontoFormatado = '';
+                    if (promocaoObj.tipo_desconto === 'valor') {
+                        descontoFormatado = 'R$ ' + parseInt(promocaoObj.desconto);
+                    } else {
+                        descontoFormatado = parseInt(promocaoObj.desconto) + '%';
+                    }
+                    promocao = promocaoObj.nome + ' - ' + descontoFormatado;
+                    if (promocaoObj.tipo_desconto === 'percentual') {
+                        precoFinal = precoOriginal * (1 - promocaoObj.desconto / 100);
+                    } else if (promocaoObj.tipo_desconto === 'valor') {
+                        precoFinal = precoOriginal - promocaoObj.desconto;
+                    }
+                    if (precoFinal < 0) precoFinal = 0;
+                }
+                const precoFormatado = formatarPreco(precoFinal);
                 // Badge para disponibilidade
                 const disponivelBadge = p.disponivel == 1 
-                    ? '<span class="status-badge status-concluído">Sim</span>' 
-                    : '<span class="status-badge status-cancelado">Não</span>';
-                // Promoção
-                let promocao = '-';
-                if (p.idPromocao && mapaPromocoes[p.idPromocao]) {
-                    promocao = mapaPromocoes[p.idPromocao];
-                }
+                    ? '<span class="status-badge status-green">• Sim</span>' 
+                    : '<span class="status-badge status-danger">• Não</span>';
                 return '<tr class="border-bottom border-light">'
                     + '<td class="py-4 text-dark">' + p.idProduto + '</td>'
                     + '<td class="py-4 text-dark">' + (p.nome || 'N/A') + '</td>'
-                    + '<td class="py-4 text-dark">' + preco + '</td>'
+                    + '<td class="py-4 text-dark">' + precoFormatado + '</td>'
                     + '<td class="py-4 text-dark">' + (p.marca || 'N/A') + '</td>'
                     + '<td class="py-4 text-dark">' + (p.categoria || 'N/A') + '</td>'
                     + '<td class="py-4 text-dark">' + (p.estoque || 0) + '</td>'
@@ -268,10 +175,40 @@ document.addEventListener('DOMContentLoaded', function() {
             inputId.value = produto.idProduto ?? produto.id_produto ?? '';
             inputNome.value = produto.nome ?? produto.nome_produto ?? '';
             inputDescricao.value = produto.descricao ?? produto.descricao_produto ?? '';
-            selectCategoria.value = produto.categoria ?? produto.idCategoria ?? produto.id_categoria ?? '';
-            selectMarca.value = produto.marca ?? produto.idMarca ?? produto.id_marca ?? '';
-            inputPreco.value = produto.preco ? parseFloat(produto.preco).toFixed(2).replace('.', ',') : '';
-            selectPromocao.value = produto.idPromocao ?? produto.id_promocao ?? '';
+            inputCategoria.value = produto.categoria ?? '';
+            inputMarca.value = produto.marca ?? '';
+            // Aplica desconto se houver promoção válida
+            let precoOriginal = parseFloat(produto.preco);
+            let precoFinal = precoOriginal;
+            let promocaoId = produto.idPromocao ?? produto.id_promocao ?? '';
+            let promocaoValida = false;
+            if (promocaoId && mapaPromocoes[promocaoId]) {
+                // Checa se a promoção ainda está válida
+                const promocoesValidas = Object.keys(mapaPromocoes);
+                if (promocoesValidas.includes(promocaoId.toString())) {
+                    promocaoValida = true;
+                    const texto = mapaPromocoes[promocaoId];
+                    const match = texto.match(/([\d]+)(%|R\$)/);
+                    if (match) {
+                        const valorDesconto = parseInt(match[1]);
+                        const tipo = match[2];
+                        if (tipo === '%') {
+                            precoFinal = precoOriginal * (1 - valorDesconto / 100);
+                        } else if (tipo === 'R$') {
+                            precoFinal = precoOriginal - valorDesconto;
+                        }
+                        if (precoFinal < 0) precoFinal = 0;
+                    }
+                }
+            }
+            // Se a promoção não for válida, seleciona 'sem promoção' e volta ao preço original
+            if (!promocaoValida) {
+                selectPromocao.value = 'sem';
+                inputPreco.value = precoOriginal ? precoOriginal.toFixed(2).replace('.', ',') : '';
+            } else {
+                selectPromocao.value = promocaoId;
+                inputPreco.value = precoFinal ? precoFinal.toFixed(2).replace('.', ',') : '';
+            }
             inputEstoque.value = produto.estoque ?? produto.qtd_estoque ?? 0;
             selectDisponivel.value = produto.disponivel ?? produto.status ?? 1;
             produtoSelecionado = produto;
@@ -374,13 +311,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener para o formulário
     formProduto.addEventListener('submit', function(e) {
         e.preventDefault();
+        let idPromocaoValue = selectPromocao.value;
+        if (idPromocaoValue === 'sem') idPromocaoValue = '';
         const dados = {
             nome: inputNome.value,
             descricao: inputDescricao.value,
             preco: precoParaNumero(inputPreco.value),
-            marca: selectMarca.value,
-            categoria: selectCategoria.value,
-            idPromocao: selectPromocao.value || '',
+            marca: inputMarca.value,
+            categoria: inputCategoria.value,
+            idPromocao: idPromocaoValue,
             estoque: inputEstoque.value || 0,
             disponivel: selectDisponivel.value
         };
@@ -398,14 +337,16 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Selecione um produto primeiro');
             return;
         }
+        let idPromocaoValue = selectPromocao.value;
+        if (idPromocaoValue === 'sem') idPromocaoValue = '';
         const dados = {
             idProduto: inputId.value,
             nome: inputNome.value,
             descricao: inputDescricao.value,
             preco: precoParaNumero(inputPreco.value),
-            marca: selectMarca.value,
-            categoria: selectCategoria.value,
-            idPromocao: selectPromocao.value || '',
+            marca: inputMarca.value,
+            categoria: inputCategoria.value,
+            idPromocao: idPromocaoValue,
             estoque: inputEstoque.value || 0,
             disponivel: selectDisponivel.value
         };
@@ -431,9 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
     btnAtualizarProduto.disabled = true;
     btnExcluirProduto.disabled = true;
 
-    // Inicializar
-    carregarMarcas();
-    carregarCategorias();
     carregarPromocoes();
     carregarDisponibilidade();
     carregarProdutos();

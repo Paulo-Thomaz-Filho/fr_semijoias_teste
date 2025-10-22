@@ -5,12 +5,12 @@ namespace app\models;
 use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
-use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
 include_once __DIR__.'/../core/database/Where.php';
 include_once __DIR__.'/Pedido.php';
+include_once __DIR__.'/StatusDAO.php';
 
 class PedidoDAO {
     private $dbQuery;
@@ -21,7 +21,7 @@ class PedidoDAO {
         
         $this->dbQuery = new DBQuery(
             'pedidos', 
-            'id_pedido, produto_nome, cliente_nome, preco, endereco, data_pedido, quantidade, status, descricao', 
+                'id_pedido, produto_nome, id_cliente, preco, endereco, data_pedido, quantidade, id_status, descricao', 
             'id_pedido'
         );
     }
@@ -31,17 +31,18 @@ class PedidoDAO {
         $dados = $this->dbQuery->select();
 
         foreach($dados as $row){ 
-            $pedido = new Pedido();
-            $pedido->setIdPedido($row['id_pedido']);
-            $pedido->setProdutoNome($row['produto_nome']);
-            $pedido->setClienteNome($row['cliente_nome']);
-            $pedido->setPreco($row['preco']);
-            $pedido->setEndereco($row['endereco']);
-            $pedido->setDataPedido($row['data_pedido']);
-            $pedido->setQuantidade($row['quantidade']);
-            $pedido->setStatus($row['status']);
-            $pedido->setDescricao($row['descricao']);
-            $pedidos[] = $pedido;
+            $pedido = new Pedido(
+                $row['id_pedido'],
+                $row['produto_nome'],
+                $row['id_cliente'],
+                $row['preco'],
+                $row['endereco'],
+                $row['data_pedido'],
+                $row['quantidade'],
+                $row['id_status'],
+                $row['descricao']
+            );
+            $pedidos[] = $pedido->toArray();
         }
 
         return $pedidos;
@@ -50,20 +51,25 @@ class PedidoDAO {
     public function getAllByStatus($status) {
         $pedidos = [];
         $where = new Where();
-        $where->addCondition('AND', 'status', '=', $status);
+        // Buscar id_status pelo nome
+        $statusDAO = new StatusDAO();
+        $statusObj = $statusDAO->getByName($status);
+        if (!$statusObj) return [];
+        $where->addCondition('AND', 'id_status', '=', $statusObj->getIdStatus());
         $dados = $this->dbQuery->selectFiltered($where);
 
         foreach($dados as $row){ 
-            $pedido = new Pedido();
-            $pedido->setIdPedido($row['id_pedido']);
-            $pedido->setProdutoNome($row['produto_nome']);
-            $pedido->setClienteNome($row['cliente_nome']);
-            $pedido->setPreco($row['preco']);
-            $pedido->setEndereco($row['endereco']);
-            $pedido->setDataPedido($row['data_pedido']);
-            $pedido->setQuantidade($row['quantidade']);
-            $pedido->setStatus($row['status']);
-            $pedido->setDescricao($row['descricao']);
+            $pedido = new Pedido(
+                $row['id_pedido'],
+                $row['produto_nome'],
+                $row['id_cliente'],
+                $row['preco'],
+                $row['endereco'],
+                $row['data_pedido'],
+                $row['quantidade'],
+                $row['id_status'],
+                $row['descricao']
+            );
             $pedidos[] = $pedido;
         }
 
@@ -71,34 +77,36 @@ class PedidoDAO {
     }
 
     public function getTotalGanhos() {
-        $conn = (new \core\database\DBConnection())->getConn();
-        $stmt = $conn->prepare("SELECT SUM(preco * quantidade) as total FROM pedidos WHERE status = 'Concluído'");
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result['total'] ?? 0;
+    $conn = (new \core\database\DBConnection())->getConn();
+        // Buscar id_status para 'N/A'
+    $statusDAO = new StatusDAO();
+        $statusObj = $statusDAO->getByName('N/A');
+    if (!$statusObj) return 0;
+    $stmt = $conn->prepare("SELECT SUM(preco * quantidade) as total FROM pedidos WHERE id_status = :id_status");
+    $stmt->bindValue(':id_status', $statusObj->getIdStatus());
+    $stmt->execute();
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    return $result['total'] ?? 0;
     }
 
     public function getTotalVendas() {
-        $conn = (new \core\database\DBConnection())->getConn();
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE status = 'Concluído'");
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result['total'] ?? 0;
+    $conn = (new \core\database\DBConnection())->getConn();
+    $statusDAO = new StatusDAO();
+        $statusObj = $statusDAO->getByName('N/A');
+    if (!$statusObj) return 0;
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE id_status = :id_status");
+    $stmt->bindValue(':id_status', $statusObj->getIdStatus());
+    $stmt->execute();
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    return $result['total'] ?? 0;
     }
 
     public function getAllStatus() {
-        $conn = (new \core\database\DBConnection())->getConn();
-        $stmt = $conn->prepare("SELECT DISTINCT status FROM pedidos WHERE status IS NOT NULL AND status != '' ORDER BY status");
-        $stmt->execute();
-        
-        $status = [];
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $status[] = $row['status'];
-        }
-        
-        // Retorna array vazio se não houver status no banco
-        // O frontend já está preparado para lidar com isso
-        return $status;
+        // Agora retorna todos os status da tabela status
+        $statusDAO = new StatusDAO();
+        $statusList = $statusDAO->getAll();
+        // Retorna apenas os nomes
+        return array_map(function($s) { return $s['nome']; }, $statusList);
     }
 
     public function getById($id){
@@ -107,33 +115,34 @@ class PedidoDAO {
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
-            $pedido = new Pedido();
             $row = $dados[0];
-
-            $pedido->setIdPedido($row['id_pedido']);
-            $pedido->setProdutoNome($row['produto_nome']);
-            $pedido->setClienteNome($row['cliente_nome']);
-            $pedido->setPreco($row['preco']);
-            $pedido->setEndereco($row['endereco']);
-            $pedido->setDataPedido($row['data_pedido']);
-            $pedido->setQuantidade($row['quantidade']);
-            $pedido->setStatus($row['status']);
-            $pedido->setDescricao($row['descricao']);
-            return $pedido;
+            $pedido = new Pedido(
+                $row['id_pedido'],
+                $row['produto_nome'],
+                $row['id_cliente'],
+                $row['preco'],
+                $row['endereco'],
+                $row['data_pedido'],
+                $row['quantidade'],
+                $row['id_status'],
+                $row['descricao']
+            );
+            // Retorna apenas o array padrão, sem statusPedido textual
+            return $pedido->toArray();
         }
-    return null;
+        return null;
     }
 
     public function insert(Pedido $pedido){
         $dados = [
             null,  // id_pedido (auto increment)
             $pedido->getProdutoNome(),
-            $pedido->getClienteNome(),
+            $pedido->getIdCliente(),
             $pedido->getPreco(),
             $pedido->getEndereco(),
             $pedido->getDataPedido(),
             $pedido->getQuantidade(),
-            $pedido->getStatus(),
+            $pedido->getIdStatus(),
             $pedido->getDescricao()
         ];
         return $this->dbQuery->insert($dados);
@@ -143,10 +152,10 @@ class PedidoDAO {
     public function update(Pedido $pedido){
         $dados = [
             'id_pedido'    => $pedido->getIdPedido(),
-            'cliente_nome' => $pedido->getClienteNome(),
+            'id_cliente'   => $pedido->getIdCliente(),
             'endereco'     => $pedido->getEndereco(),
             'data_pedido'  => $pedido->getDataPedido(),
-            'status'       => $pedido->getStatus(),
+            'id_status'    => $pedido->getIdStatus(),
             'produto_nome' => $pedido->getProdutoNome(),
             'preco'        => $pedido->getPreco(),
             'quantidade'   => $pedido->getQuantidade(),

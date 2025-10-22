@@ -1,10 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Promocao.php';
 require_once $rootPath . '/app/models/PromocaoDAO.php';
 

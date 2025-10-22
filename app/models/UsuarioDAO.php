@@ -5,7 +5,6 @@ namespace app\models;
 use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
-use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
@@ -18,18 +17,18 @@ class UsuarioDAO {
 		$where->addCondition('AND', 'email', '=', $email);
 		$dados = $this->dbQuery->selectFiltered($where);
 		if($dados){
-			$usuario = new Usuario();
 			$row = $dados[0];
-			$usuario->setIdUsuario($row['id_usuario']);
-			$usuario->setNome($row['nome']);
-			$usuario->setEmail($row['email']);
-			$usuario->setSenha($row['senha']);
-			$usuario->setTelefone($row['telefone']);
-			$usuario->setCpf($row['cpf']);
-			$usuario->setEndereco($row['endereco']);
-			$usuario->setDataNascimento($row['data_nascimento']);
-			$usuario->setIdNivel($row['id_nivel']);
-			return $usuario;
+			return new Usuario(
+				$row['id_usuario'],
+				$row['nome'],
+				$row['email'],
+				$row['senha'],
+				$row['telefone'],
+				$row['cpf'],
+				$row['endereco'],
+				$row['data_nascimento'],
+				$row['id_nivel']
+			);
 		}
 		return null;
 	}
@@ -50,21 +49,22 @@ class UsuarioDAO {
 				$usuarios = [];
 				$dados = $this->dbQuery->select();
 
-				foreach($dados as $row){
-						$usuario = new Usuario();
-						$usuario->setIdUsuario($row['id_usuario']);
-						$usuario->setNome($row['nome']);
-						$usuario->setEmail($row['email']);
-						$usuario->setSenha($row['senha']);
-						$usuario->setTelefone($row['telefone']);
-						$usuario->setCpf($row['cpf']);
-						$usuario->setEndereco($row['endereco']);
-						$usuario->setDataNascimento($row['data_nascimento']);
-						$usuario->setIdNivel($row['id_nivel']);
-						$usuarios[] = $usuario;
-				}
-				
-				return $usuarios;
+			foreach($dados as $row){
+				$usuario = new Usuario(
+				    $row['id_usuario'],
+				    $row['nome'],
+				    $row['email'],
+				    $row['senha'],
+				    $row['telefone'],
+				    $row['cpf'],
+				    $row['endereco'],
+				    $row['data_nascimento'],
+				    $row['id_nivel']
+				);
+				$usuarios[] = $usuario;
+			}
+        
+			return $usuarios;
 		}
 
 		public function getById($id){
@@ -72,23 +72,22 @@ class UsuarioDAO {
 				$where->addCondition('AND', 'id_usuario', '=', $id);
 				$dados = $this->dbQuery->selectFiltered($where);
 
-				if($dados){
-					$usuario = new Usuario();
-						$row = $dados[0];
-
-						$usuario->setIdUsuario($row['id_usuario']);
-						$usuario->setNome($row['nome']);
-						$usuario->setEmail($row['email']);
-						$usuario->setSenha($row['senha']);
-						$usuario->setTelefone($row['telefone']);
-						$usuario->setCpf($row['cpf']);
-						$usuario->setEndereco($row['endereco']);
-						$usuario->setDataNascimento($row['data_nascimento']);
-						$usuario->setIdNivel($row['id_nivel']);
-						return $usuario;
-				}
-				
-		return null;
+			if($dados){
+				$row = $dados[0];
+				return new Usuario(
+				    $row['id_usuario'],
+				    $row['nome'],
+				    $row['email'],
+				    $row['senha'],
+				    $row['telefone'],
+				    $row['cpf'],
+				    $row['endereco'],
+				    $row['data_nascimento'],
+				    $row['id_nivel']
+				);
+			}
+        
+			return null;
 		}
 
 		public function insert(Usuario $usuario){

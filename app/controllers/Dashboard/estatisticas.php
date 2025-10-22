@@ -1,6 +1,4 @@
 <?php
-// Ficheiro: app/controllers/Dashboard/estatisticas.php
-
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -30,25 +28,25 @@ try {
     $stmtVendasMes->execute();
     $vendasMes = $stmtVendasMes->fetch(\PDO::FETCH_ASSOC)['vendas_mes'];
 
-    // 4. Produto Mais Vendido
-    $sqlMaisVendido = "
-        SELECT produto_nome, SUM(quantidade) as total_vendido
+    // 4. Produto Mais Pedido
+    $sqlMaisPedido = "
+        SELECT produto_nome, SUM(quantidade) as total_pedido
         FROM pedidos
         GROUP BY produto_nome
-        ORDER BY total_vendido DESC
+        ORDER BY total_pedido DESC
         LIMIT 1
     ";
-    $stmtMaisVendido = $conn->prepare($sqlMaisVendido);
-    $stmtMaisVendido->execute();
-    $maisVendido = $stmtMaisVendido->fetch(\PDO::FETCH_ASSOC);
-    $produtoMaisVendido = $maisVendido ? $maisVendido['produto_nome'] : 'N/A';
+    $stmtMaisPedido = $conn->prepare($sqlMaisPedido);
+    $stmtMaisPedido->execute();
+    $maisPedido = $stmtMaisPedido->fetch(\PDO::FETCH_ASSOC);
+    $produtoMaisPedido = $maisPedido ? $maisPedido['produto_nome'] : 'N/A';
 
     // Monta o objeto de resposta
     $resposta = [
         'total_ganhos' => (float) $totalGanhos,
         'total_usuarios' => (int) $totalUsuarios,
         'vendas_mes' => (int) $vendasMes,
-        'produto_mais_vendido' => $produtoMaisVendido
+        'produto_mais_pedido' => $produtoMaisPedido
     ];
 
     echo json_encode($resposta, JSON_UNESCAPED_UNICODE);

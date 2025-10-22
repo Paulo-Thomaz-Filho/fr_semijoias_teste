@@ -1,4 +1,16 @@
 {
+    "dashboard/estatisticas": {
+        "path": "app/controllers/Dashboard/estatisticas.php"
+    },
+    "dashboard/estoque": {
+        "path": "app/controllers/Dashboard/estoque.php"
+    },
+    "dashboard/mais-vendidos": {
+        "path": "app/controllers/Dashboard/maisVendidos.php"
+    },
+
+
+
     "usuario": {
         "path": "app/controllers/Usuario/listar.php"
     },
@@ -24,19 +36,7 @@
 
 
     "niveis": {
-        "path": "app/controllers/Nivel/listar.php"
-    },
-
-
-
-    "dashboard/estatisticas": {
-        "path": "app/controllers/Dashboard/estatisticas.php"
-    },
-    "dashboard/estoque": {
-        "path": "app/controllers/Dashboard/estoque.php"
-    },
-    "dashboard/mais-vendidos": {
-        "path": "app/controllers/Dashboard/maisVendidos.php"
+        "path": "app/controllers/NivelAcesso/listar.php"
     },
 
 
@@ -89,26 +89,18 @@
     "promocoes/atualizar": {
         "path": "app/controllers/Promocao/atualizar.php"
     },
+
     "promocoes/deletar": {
         "path": "app/controllers/Promocao/deletar.php"
     },
 
 
 
-    "marcas": {
-        "path": "app/controllers/Marca/listar.php"
+    "status": {
+        "path": "app/controllers/Status/listar.php"
     },
-    "marcas/salvar": {
-        "path": "app/controllers/Marca/salvar.php"
-    },
-    
-
-
-    "categorias": {
-        "path": "app/controllers/Categoria/listar.php"
-    },
-    "categorias/salvar": {
-        "path": "app/controllers/Categoria/salvar.php"
+    "status/salvar": {
+        "path": "app/controllers/Status/salvar.php"
     },
 
 

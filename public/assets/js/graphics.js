@@ -9,24 +9,17 @@ window.carregarGraficoBarras = async function() {
         const labels = dados.map(item => item.nome || 'Produto');
         const valores = dados.map(item => parseInt(item.total_vendido || 0));
         
-        // Cores dinâmicas para cada barra
-        const cores = [
-            'rgba(99, 102, 241, 0.8)',
-            'rgba(16, 185, 129, 0.8)',
-            'rgba(245, 158, 11, 0.8)',
-            'rgba(239, 68, 68, 0.8)',
-            'rgba(139, 92, 246, 0.8)',
-            'rgba(6, 182, 212, 0.8)'
-        ];
-        const coresHover = [
-            'rgba(99, 102, 241, 1)',
-            'rgba(16, 185, 129, 1)',
-            'rgba(245, 158, 11, 1)',
-            'rgba(239, 68, 68, 1)',
-            'rgba(139, 92, 246, 1)',
-            'rgba(6, 182, 212, 1)'
-        ];
-        
+        // Gerar todas as cores automaticamente via HSL
+        function gerarCoresHSL(qtd, alpha) {
+            const cores = [];
+            for (let i = 0; i < qtd; i++) {
+                const hue = Math.round((360 / qtd) * i);
+                cores.push(`hsl(${hue}, 50%, 50%, ${alpha})`);
+            }
+            return cores;
+        }
+        const cores = gerarCoresHSL(labels.length, 0.8);
+        const coresHover = gerarCoresHSL(labels.length, 1);
         const ctx = document.getElementById('graficoBarras');
         if (!ctx) return;
         if (graficoBarras) graficoBarras.destroy();
@@ -147,23 +140,17 @@ window.carregarGraficoPizza = async function() {
         console.log('Labels:', labels, 'Valores:', valores);
         
         // Cores modernas para o gráfico de pizza
-        const cores = [
-            'rgba(99, 102, 241, 0.9)',
-            'rgba(16, 185, 129, 0.9)',
-            'rgba(245, 158, 11, 0.9)',
-            'rgba(239, 68, 68, 0.9)',
-            'rgba(139, 92, 246, 0.9)',
-            'rgba(6, 182, 212, 0.9)'
-        ];
-        const coresHover = [
-            'rgba(99, 102, 241, 1)',
-            'rgba(16, 185, 129, 1)',
-            'rgba(245, 158, 11, 1)',
-            'rgba(239, 68, 68, 1)',
-            'rgba(139, 92, 246, 1)',
-            'rgba(6, 182, 212, 1)'
-        ];
-        
+        // Gerar todas as cores automaticamente via HSL
+        function gerarCoresHSL(qtd, alpha) {
+            const cores = [];
+            for (let i = 0; i < qtd; i++) {
+                const hue = Math.round((360 / qtd) * i);
+                cores.push(`hsl(${hue}, 50%, 50%, ${alpha})`);
+            }
+            return cores;
+        }
+        const cores = gerarCoresHSL(labels.length, 0.9);
+        const coresHover = gerarCoresHSL(labels.length, 1);
         const ctx = document.getElementById('graficoPizza');
         if (!ctx) {
             console.error('Elemento graficoPizza não encontrado');

@@ -198,6 +198,7 @@
                   class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-black fw-medium py-2 px-3 rounded-4"
                   onmouseover="this.classList.add('bg-body-secondary');"
                   onmouseout="this.classList.remove('bg-body-secondary');"
+                  onclick="showSection('promocoes-section'); return false;"
                 >
                   <svg
                     width="24"
@@ -552,7 +553,7 @@
                           </div>
                           <div>
                             <p class="text-muted mb-1 small fw-normal">
-                              Mais Vendido
+                              Mais Pedido
                             </p>
                             <h5
                               class="fw-medium text-black mb-0"
@@ -636,6 +637,17 @@
                       </thead>
                       <tbody>
                         <tr>
+                          <div
+                            id="dropdown-pesquisa-global"
+                            class="dropdown-menu w-100 mt-1 shadow-sm"
+                            style="
+                              max-height: 300px;
+                              overflow-y: auto;
+                              display: none;
+                              position: absolute;
+                              z-index: 1000;
+                            "
+                          ></div>
                           <td colspan="6" class="text-center py-4 text-muted">
                             Carregando pedidos...
                           </td>
@@ -682,8 +694,8 @@
                     >
                     <div class="position-relative">
                       <svg
-                        width="20"
-                        height="20"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -709,7 +721,7 @@
                     <label
                       for="nome_cliente"
                       class="form-label text-muted small fw-medium"
-                      >Nome</label
+                      >Nome Completo</label
                     >
                     <div class="position-relative">
                       <svg
@@ -731,7 +743,7 @@
                         type="text"
                         class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="nome_cliente"
-                        placeholder="João da Silva"
+                        placeholder="Ex: João da Silva"
                         required
                       />
                     </div>
@@ -780,7 +792,7 @@
                   </div>
                   <div class="col-md-3">
                     <label
-                      for="email_cliente"
+                      for="senha_cliente"
                       class="form-label text-muted small fw-medium"
                       >Senha</label
                     >
@@ -805,7 +817,7 @@
                         type="password"
                         class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="senha_cliente"
-                        placeholder="Ex: joao@123"
+                        placeholder="********"
                         required
                       />
                     </div>
@@ -851,7 +863,7 @@
                   </div>
                   <div class="col-md-2">
                     <label
-                      for="email_cliente"
+                      for="numero_cliente"
                       class="form-label text-muted small fw-medium"
                       >Número de Telefone</label
                     >
@@ -1097,9 +1109,6 @@
                         Número de Telefone
                       </th>
                       <th scope="col" class="text-muted fw-medium small pb-2">
-                        CPF
-                      </th>
-                      <th scope="col" class="text-muted fw-medium small pb-2">
                         Data de Nascimento
                       </th>
                       <th scope="col" class="text-muted fw-medium small pb-2">
@@ -1203,7 +1212,7 @@
                   </div>
                   <div class="col-md-4">
                     <label
-                      for="marca_id"
+                      for="marca_produto"
                       class="form-label text-muted small fw-medium"
                       >Marca</label
                     >
@@ -1224,15 +1233,13 @@
                           stroke-linejoin="round"
                         />
                       </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="marca_id"
-                      >
-                        <option value="">Carregando marcas...</option>
-                        <option value="__nova__">
-                          Adicionar nova marca...
-                        </option>
-                      </select>
+                      <input
+                        type="text"
+                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                        id="marca_produto"
+                        placeholder="Prada"
+                        required
+                      />
                     </div>
                   </div>
                   <div class="col-md-2">
@@ -1270,7 +1277,7 @@
                   </div>
                   <div class="col-md-4">
                     <label
-                      for="categoria_id"
+                      for="categoria_produto"
                       class="form-label text-muted small fw-medium"
                       >Categoria</label
                     >
@@ -1304,15 +1311,13 @@
                           stroke-width="2"
                         />
                       </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="categoria_id"
-                      >
-                        <option value="">Carregando categorias...</option>
-                        <option value="__nova__">
-                          Adicionar nova categoria...
-                        </option>
-                      </select>
+                      <input
+                        type="text"
+                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                        id="categoria_produto"
+                        placeholder="Anéis"
+                        required
+                      />
                     </div>
                   </div>
                   <div class="col-md-2">
@@ -1391,7 +1396,7 @@
                   </div>
                   <div class="col-md-3">
                     <label
-                      for="promocao_id"
+                      for="promocao_produto"
                       class="form-label text-muted small fw-medium"
                       >Promoção</label
                     >
@@ -1413,7 +1418,7 @@
                       </svg>
                       <select
                         class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="promocao_id"
+                        id="promocao_produto"
                       >
                         <option value="">Carregando promoções...</option>
                       </select>
@@ -1638,13 +1643,13 @@
                           fill="currentColor"
                         />
                       </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                      <select
+                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="cliente_pedido"
-                        placeholder="André Silva"
                         required
-                      />
+                      >
+                        <option value="">Carregando clientes...</option>
+                      </select>
                     </div>
                   </div>
                   <div class="col-md-2">
@@ -1981,6 +1986,448 @@
             </div>
           </div>
         </section>
+
+        <!-- Promoções -->
+        <section
+          id="promocoes-section"
+          class="bg-body-secondary rounded-4 px-3 py-4"
+          hidden
+          aria-hidden="true"
+        >
+          <div class="container-fluid">
+            <!-- Formulário de Promoções -->
+            <div class="bg-light p-4 rounded-4 mb-4">
+              <h2 class="fw-medium fs-5 text-black mb-4">
+                Gerenciar Promoções
+              </h2>
+              <form id="form-promocoes">
+                <div class="row mb-3">
+                  <div class="col-md-7 mb-3">
+                    <div class="row g-3">
+                      <div class="col-3">
+                        <label
+                          for="promocao_id"
+                          class="form-label text-muted small fw-medium"
+                          >ID</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M3 5C2.44772 5 2 5.44771 2 6V18C2 18.5523 2.44772 19 3 19H21C21.5523 19 22 18.5523 22 18V6C22 5.44772 21.5523 5 21 5H3ZM0 6C0 4.34315 1.34314 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12C6.67157 12 6 11.3284 6 10.5ZM10.1756 12.7565C10.69 12.1472 11 11.3598 11 10.5C11 8.567 9.433 7 7.5 7C5.567 7 4 8.567 4 10.5C4 11.3598 4.31002 12.1472 4.82438 12.7565C3.68235 13.4994 3 14.7069 3 16C3 16.5523 3.44772 17 4 17C4.55228 17 5 16.5523 5 16C5 15.1145 5.80048 14 7.5 14C9.19952 14 10 15.1145 10 16C10 16.5523 10.4477 17 11 17C11.5523 17 12 16.5523 12 16C12 14.7069 11.3177 13.4994 10.1756 12.7565ZM13 8C12.4477 8 12 8.44772 12 9C12 9.55228 12.4477 10 13 10H19C19.5523 10 20 9.55228 20 9C20 8.44772 19.5523 8 19 8H13ZM14 12C13.4477 12 13 12.4477 13 13C13 13.5523 13.4477 14 14 14H18C18.5523 14 19 13.5523 19 13C19 12.4477 18.5523 12 18 12H14Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2 text-muted"
+                            id="promocao_id"
+                            placeholder="Auto"
+                            readonly
+                          />
+                        </div>
+                      </div>
+                      <div class="col-9">
+                        <label
+                          for="nome_promocao"
+                          class="form-label text-muted small fw-medium"
+                          >Nome</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M7.25 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5zm-1.543 9.207a1 1 0 0 1-1.414-1.414l14-14a1 1 0 1 1 1.414 1.414l-14 14zM13 17.25a3.75 3.75 0 1 0 7.5 0 3.75 3.75 0 0 0-7.5 0zM7.25 8.5a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5zm11.25 8.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="nome_promocao"
+                            placeholder="Promoção de Natal"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-5">
+                        <label
+                          for="tipo_desconto_promocao"
+                          class="form-label text-muted small fw-medium"
+                          >Tipo de Desconto</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M7.19549 8H21V16H7.19549L3 12L7.19549 8Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M7 12L7 12.01"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <line
+                              x1="11"
+                              y1="12"
+                              x2="17"
+                              y2="12"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="tipo_desconto_promocao"
+                            required
+                          >
+                            <option value="">
+                              Carregando tipo de desconto...
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <label
+                          for="desconto_promocao"
+                          class="form-label text-muted small fw-medium"
+                          >Desconto</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M19.5 12.5C19.5 11.12 20.62 10 22 10V9C22 5 21 4 17 4H7C3 4 2 5 2 9V9.5C3.38 9.5 4.5 10.62 4.5 12C4.5 13.38 3.38 14.5 2 14.5V15C2 19 3 20 7 20H17C21 20 22 19 22 15C20.62 15 19.5 13.88 19.5 12.5Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M10 4L10 20"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-dasharray="5 5"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="desconto_promocao"
+                            placeholder="10"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <label
+                          for="status_promocao"
+                          class="form-label text-muted small fw-medium"
+                          >Status</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 -3 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <g
+                              stroke="none"
+                              stroke-width="1"
+                              fill="none"
+                              fill-rule="evenodd"
+                            >
+                              <g
+                                transform="translate(-100.000000, -4242.000000)"
+                                fill="currentColor"
+                              >
+                                <g transform="translate(56.000000, 160.000000)">
+                                  <path
+                                    d="M53.708,4088.932 C53.708,4087.275 55.051,4085.932 56.708,4085.932 C58.365,4085.932 59.708,4087.275 59.708,4088.932 C59.708,4090.589 58.365,4091.932 56.708,4091.932 C55.051,4091.932 53.708,4090.589 53.708,4088.932 L53.708,4088.932 Z M50.884,4084 L56.884,4084 C59.641,4084 61.884,4086.243 61.884,4089 C61.884,4091.757 59.641,4094 56.884,4094 L50.884,4094 C48.127,4094 45.884,4091.757 45.884,4089 C45.884,4086.243 48.127,4084 50.884,4084 L50.884,4084 Z M64,4089 C64,4085.134 60.866,4082 57,4082 L51,4082 C47.134,4082 44,4085.134 44,4089 L44,4089 C44,4092.866 47.134,4096 51,4096 L57,4096 C60.866,4096 64,4092.866 64,4089 L64,4089 Z"
+                                  />
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="status_promocao"
+                            required
+                          >
+                            <option value="">Carregando status...</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label
+                          for="data_inicio"
+                          class="form-label text-muted small fw-medium"
+                          >Data de Início</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M20 10V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V10M20 10V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V10M20 10H4M8 3V7M16 3V7"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                            <rect
+                              x="6"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="10.5"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="15"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="date"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="data_inicio"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label
+                          for="data_fim"
+                          class="form-label text-muted small fw-medium"
+                          >Data de Fim</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M20 10V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V10M20 10V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V10M20 10H4M8 3V7M16 3V7"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                            <rect
+                              x="6"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="10.5"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="15"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="date"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="data_fim"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div
+                      class="d-flex flex-column justify-content-center h-100"
+                    >
+                      <label
+                        for="descricao_promocao"
+                        class="form-label text-muted small fw-medium"
+                        >Descrição</label
+                      >
+                      <div class="position-relative w-100">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 16 16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="position-absolute ms-3 mt-3 text-muted"
+                        >
+                          <path
+                            d="M2,3 L14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M2,7 L14,7 C14.5522847,7 15,7.44771525 15,8 C15,8.55228475 14.5522847,9 14,9 L2,9 C1.44771525,9 1,8.55228475 1,8 C1,7.44771525 1.44771525,7 2,7 Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M1.88888889,11 L8.11111111,11 C8.60203089,11 9,11.4477153 9,12 C9,12.5522847 8.60203089,13 8.11111111,13 L1.88888889,13 C1.39796911,13 1,12.5522847 1,12 C1,11.4477153 1.39796911,11 1.88888889,11 Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        <textarea
+                          class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-3"
+                          id="descricao_promocao"
+                          placeholder="Ex: Descrição da promoção"
+                          rows="3"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex gap-3 mt-4">
+                  <button
+                    type="submit"
+                    id="btnCadastrarPromocao"
+                    class="btn btn-success px-3 py-2 fw-medium rounded-4"
+                  >
+                    Cadastrar
+                  </button>
+                  <button
+                    type="button"
+                    id="btnAtualizarPromocao"
+                    class="btn btn-primary px-3 py-2 fw-medium rounded-4"
+                  >
+                    Atualizar
+                  </button>
+                  <button
+                    type="button"
+                    id="btnExcluirPromocao"
+                    class="btn btn-danger px-3 py-2 fw-medium rounded-4"
+                  >
+                    Excluir
+                  </button>
+                  <button
+                    type="reset"
+                    class="btn btn-secondary px-3 py-2 fw-medium rounded-4"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Tabela de Promoções -->
+            <div class="bg-light p-4 rounded-4">
+              <h2 class="fw-medium fs-5 text-black mb-4">Lista de Promoções</h2>
+              <div class="rounded table-scroll">
+                <table
+                  id="tabelaPromocoes"
+                  class="table table-borderless table-transparent table-sm"
+                >
+                  <thead class="position-sticky bg-light">
+                    <tr class="border-bottom">
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        ID
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Nome
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Desconto
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Data de Início
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Data de Fim
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Status
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Descrição
+                      </th>
+                      <th scope="col" class="text-muted fw-medium small pb-2">
+                        Ações
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="8" class="text-center py-4 text-muted">
+                        Carregando promoções...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -1992,10 +2439,14 @@
     <!-- Script Dashboard -->
     <script src="../assets/js/script_clientes.js"></script>
     <!-- Script Clientes -->
+    <script src="../assets/js/script_niveis.js"></script>
+    <!-- Script Níveis -->
     <script src="../assets/js/script_produtos.js"></script>
     <!-- Script Produtos -->
     <script src="../assets/js/script_pedidos.js"></script>
     <!-- Script Pedidos -->
+    <script src="../assets/js/script_promocoes.js"></script>
+    <!-- Script Promoções -->
     <script src="../assets/js/navigation-section.js"></script>
     <!-- Navegação -->
     <script src="../assets/js/table-sort.js"></script>
@@ -2005,115 +2456,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Bootstrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-    <!-- Modal Nova Marca -->
-    <div
-      class="modal fade"
-      id="modalNovaMarca"
-      tabindex="-1"
-      aria-labelledby="modalNovaMarcaLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-light rounded-4 shadow p-2 border-0">
-          <div class="modal-header border-0 pb-0">
-            <h5
-              class="modal-title fw-semibold text-black"
-              id="modalNovaMarcaLabel"
-            >
-              Adicionar Nova Marca
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Fechar"
-            ></button>
-          </div>
-          <div class="modal-body pt-3 pb-0">
-            <input
-              type="text"
-              class="form-control bg-body-secondary border-0 rounded-4 px-4 py-3 mb-2"
-              id="inputNovaMarca"
-              placeholder="Nome da nova marca"
-            />
-          </div>
-          <div
-            class="modal-footer border-0 pt-0 d-flex justify-content-end gap-2"
-          >
-            <button
-              type="button"
-              class="btn btn-secondary px-4 py-2 rounded-4 fw-medium"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              class="btn btn-success px-4 py-2 rounded-4 fw-medium"
-              id="btnSalvarNovaMarca"
-            >
-              Salvar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Nova Categoria -->
-    <div
-      class="modal fade"
-      id="modalNovaCategoria"
-      tabindex="-1"
-      aria-labelledby="modalNovaCategoriaLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-light rounded-4 shadow p-2 border-0">
-          <div class="modal-header border-0 pb-0">
-            <h5
-              class="modal-title fw-semibold text-black"
-              id="modalNovaCategoriaLabel"
-            >
-              Adicionar Nova Categoria
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Fechar"
-            ></button>
-          </div>
-          <div class="modal-body pt-3 pb-0">
-            <input
-              type="text"
-              class="form-control bg-body-secondary border-0 rounded-4 px-4 py-3 mb-2"
-              id="inputNovaCategoria"
-              placeholder="Nome da nova categoria"
-            />
-          </div>
-          <div
-            class="modal-footer border-0 pt-0 d-flex justify-content-end gap-2"
-          >
-            <button
-              type="button"
-              class="btn btn-secondary px-4 py-2 rounded-4 fw-medium"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              class="btn btn-success px-4 py-2 rounded-4 fw-medium"
-              id="btnSalvarNovaCategoria"
-            >
-              Salvar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script src="../assets/js/script_niveis.js"></script>
     <!-- jQuery -->
     <script src="../assets/js/mask_inputs.js"></script>
     <!-- Máscara de Inputs -->

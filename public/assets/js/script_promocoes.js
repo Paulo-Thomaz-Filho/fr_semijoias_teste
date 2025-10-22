@@ -1,171 +1,208 @@
-// Em: public/assets/js/script_promocoes.js
-document.addEventListener('DOMContentLoaded', function() {
-    // Referências aos elementos do formulário e da tabela
-    const form = document.getElementById('formPromocao');
-    const inputId = document.getElementById('promocaoId');
-    const inputNome = document.getElementById('promocaoNome');
-    const inputDataInicio = document.getElementById('promocaoDataInicio');
-    const inputDataFim = document.getElementById('promocaoDataFim');
-    const inputTipo = document.getElementById('promocaoTipo');
-    const inputValor = document.getElementById('promocaoValor');
+// Script padronizado para CRUD de promoções
+// Adaptado para funcionar com os IDs e campos do HTML de inicio.html
 
-    const btnSalvarPromocao = document.getElementById('btnSalvarPromocao');
-    const btnAtualizarPromocao = document.getElementById('btnAtualizarPromocao');
-    const btnExcluirPromocao = document.getElementById('btnExcluirPromocao');
-    const btnLimparPromocao = document.getElementById('btnLimparPromocao');
+document.addEventListener('DOMContentLoaded', function() {
+    // Preenche o select de tipo de desconto com os valores do backend
+    function carregarTipoDesconto() {
+        // Os valores possíveis do banco
+        const tipos = [
+            { value: 'percentual', label: '%' },
+            { value: 'valor', label: 'R$' }
+        ];
+        selectTipoDesconto.innerHTML = '<option value="" selected disabled>Selecione um tipo de desconto</option>';
+        tipos.forEach(tipo => {
+            const option = document.createElement('option');
+            option.value = tipo.value;
+            option.textContent = tipo.label;
+            selectTipoDesconto.appendChild(option);
+        });
+    }
+    // Elementos do DOM
+    const formPromocao = document.getElementById('form-promocoes');
+    const inputId = document.getElementById('promocao_id');
+    const inputNome = document.getElementById('nome_promocao');
+    const inputDataInicio = document.getElementById('data_inicio');
+    const inputDataFim = document.getElementById('data_fim');
+    const inputDesconto = document.getElementById('desconto_promocao');
+    const selectStatus = document.getElementById('status_promocao');
+    const inputDescricao = document.getElementById('descricao_promocao');
+    const selectTipoDesconto = document.getElementById('tipo_desconto_promocao');
+    const btnCadastrar = document.getElementById('btnCadastrarPromocao');
+    const btnAtualizar = document.getElementById('btnAtualizarPromocao');
+    const btnExcluir = document.getElementById('btnExcluirPromocao');
     const tabelaCorpo = document.querySelector('#tabelaPromocoes tbody');
 
-    let idPromocaoSelecionada = null;
+    let promocaoSelecionada = null;
 
-    // Reseta o formulário para o estado inicial
-    const resetarFormulario = () => {
-        form.reset();
+    // Limpa e reseta o formulário
+    function limparFormulario() {
+        formPromocao.reset();
         inputId.value = 'Auto';
-        idPromocaoSelecionada = null;
-    btnSalvarPromocao.classList.remove('d-none');
-    btnAtualizarPromocao.classList.add('d-none');
-    btnExcluirPromocao.classList.add('d-none');
-        document.querySelectorAll('#tabelaPromocoes tbody tr').forEach(row => row.classList.remove('table-active'));
-    };
+        promocaoSelecionada = null;
+        btnCadastrar.disabled = false;
+        btnAtualizar.disabled = true;
+        btnExcluir.disabled = true;
+        tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+        carregarTipoDesconto();
+    }
 
-    // Formata a data para exibição na tabela (dd/mm/aaaa)
-    const formatarData = (dataISO) => {
-        if (!dataISO) return '';
-        const data = new Date(dataISO);
-        // Adiciona 1 dia para corrigir problemas de fuso horário na exibição
-        data.setDate(data.getDate() + 1);
-        return data.toLocaleDateString('pt-BR');
-    };
-    
-    // Formata o valor do desconto para exibição
-    const formatarValor = (valor, tipo) => {
-        if (tipo === 'porcentual') {
-            return `${parseFloat(valor).toFixed(2)}%`;
-        }
-        return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    };
+    // Carrega status possíveis
+    function carregarStatus() {
+    selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
+    selectStatus.innerHTML += '<option value="1">Ativo</option>';
+    selectStatus.innerHTML += '<option value="0">Inativo</option>';
+    }
 
-    // Carrega a lista de promoções da API e preenche a tabela
-    const carregarPromocoes = async () => {
-        tabelaCorpo.innerHTML = `<tr><td colspan="7" class="text-center">Carregando...</td></tr>`;
+    // Carrega promoções na tabela
+    async function carregarPromocoes() {
+        tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Carregando promoções...</td></tr>';
         try {
-            const response = await fetch('/promocoes'); // Endpoint do seu routes.json
-            if (!response.ok) throw new Error('Falha ao carregar promoções.');
-            
+            const response = await fetch('/promocoes');
             const promocoes = await response.json();
-            tabelaCorpo.innerHTML = ''; 
-
-            if (promocoes.length === 0) {
-                tabelaCorpo.innerHTML = `<tr><td colspan="7" class="text-center">Nenhuma promoção cadastrada.</td></tr>`;
+            if (!Array.isArray(promocoes) || promocoes.length === 0) {
+                tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Nenhuma promoção cadastrada.</td></tr>';
                 return;
             }
-
-            promocoes.forEach(promocao => {
-                const linha = `
-                    <tr data-id="${promocao.idPromocao}">
-                        <td>${promocao.idPromocao}</td>
-                        <td>${promocao.nome}</td>
-                        <td>${promocao.tipo}</td>
-                        <td>${formatarValor(promocao.valor, promocao.tipo)}</td>
-                        <td>${formatarData(promocao.dataInicio)}</td>
-                        <td>${formatarData(promocao.dataFim)}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-secondary btn-selecionar">Selecionar</button>
-                        </td>
-                    </tr>
-                `;
-                tabelaCorpo.insertAdjacentHTML('beforeend', linha);
+            tabelaCorpo.innerHTML = promocoes.map(p => {
+                let descontoFormatado = '';
+                if (p.desconto !== undefined && p.desconto !== null && p.desconto !== '') {
+                    if (p.tipo_desconto === 'valor') {
+                        descontoFormatado = 'R$ ' + parseInt(p.desconto);
+                    } else {
+                        descontoFormatado = parseInt(p.desconto) + '%';
+                    }
+                }
+                let statusBadge = p.status == 1
+                    ? '<span class="status-badge status-green">• Ativo</span>'
+                    : '<span class="status-badge status-danger">• Inativo</span>';
+                return `<tr class="border-bottom border-light">
+                    <td class="py-4 text-dark">${p.idPromocao}</td>
+                    <td class="py-4 text-dark">${p.nome || ''}</td>
+                    <td class="py-4 text-dark">${descontoFormatado}</td>
+                    <td class="py-4 text-dark">${formatarDataBR(p.dataInicio)}</td>
+                    <td class="py-4 text-dark">${formatarDataBR(p.dataFim)}</td>
+                    <td class="py-4">${statusBadge}</td>
+                    <td class="py-4 text-dark">${p.descricao || ''}</td>
+                    <td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-promocao" data-id="${p.idPromocao}">Selecionar</button></td>
+                </tr>`;
+            }).join('');
+            document.querySelectorAll('.btn-selecionar-promocao').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selecionarPromocao(this.dataset.id, this.closest('tr'));
+                });
             });
         } catch (error) {
-            console.error(error);
-            tabelaCorpo.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Erro ao carregar lista.</td></tr>`;
+            tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar promoções.</td></tr>';
         }
-    };
+    }
 
-    // Preenche o formulário com os dados de uma promoção selecionada
-    const selecionarPromocao = async (id, linhaSelecionada) => {
+    // Formata data para dd/MM/yyyy
+    function formatarDataBR(dataStr) {
+        if (!dataStr) return '';
+        let partes = null;
+        if (/^\d{4}-\d{2}-\d{2}/.test(dataStr)) {
+            partes = dataStr.split('T')[0].split('-');
+            if (partes.length === 3) {
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+        }
+        const d = new Date(dataStr);
+        if (!isNaN(d.getTime())) {
+            return d.toLocaleDateString('pt-BR');
+        }
+        return dataStr;
+    }
+
+    // Seleciona promoção para edição
+    async function selecionarPromocao(id, linha) {
         try {
             const response = await fetch(`/promocoes/buscar?idPromocao=${id}`);
             if (!response.ok) throw new Error('Promoção não encontrada.');
-            
-            const promocao = await response.json();
-
-            // Formata a data para o formato YYYY-MM-DD que o input[type=date] espera
-            const dataInicioFormatada = promocao.dataInicio ? promocao.dataInicio.split('T')[0] : '';
-            const dataFimFormatada = promocao.dataFim ? promocao.dataFim.split('T')[0] : '';
-
-            inputId.value = promocao.idPromocao;
-            inputNome.value = promocao.nome;
-            inputDataInicio.value = dataInicioFormatada;
-            inputDataFim.value = dataFimFormatada;
-            inputTipo.value = promocao.tipo;
-            inputValor.value = promocao.valor;
-            idPromocaoSelecionada = promocao.idPromocao;
-
-            btnSalvarPromocao.classList.add('d-none');
-            btnAtualizarPromocao.classList.remove('d-none');
-            btnExcluirPromocao.classList.remove('d-none');
-            
-            document.querySelectorAll('#tabelaPromocoes tbody tr').forEach(row => row.classList.remove('table-active'));
-            linhaSelecionada.classList.add('table-active');
-
+            const p = await response.json();
+            inputId.value = p.idPromocao;
+            inputNome.value = p.nome;
+            inputDataInicio.value = p.dataInicio ? p.dataInicio.split('T')[0] : '';
+            inputDataFim.value = p.dataFim ? p.dataFim.split('T')[0] : '';
+            inputDesconto.value = p.desconto !== undefined && p.desconto !== null ? parseInt(p.desconto) : '';
+            if (selectTipoDesconto && p.tipo_desconto) selectTipoDesconto.value = p.tipo_desconto;
+            selectStatus.value = p.status;
+            inputDescricao.value = p.descricao;
+            promocaoSelecionada = p.idPromocao;
+            btnCadastrar.disabled = true;
+            btnAtualizar.disabled = false;
+            btnExcluir.disabled = false;
+            tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+            linha && linha.classList.add('table-active');
         } catch (error) {
-            console.error(error);
             alert('Não foi possível carregar os dados da promoção.');
         }
-    };
-    
-    // --- EVENT LISTENERS ---
+    }
 
-    // Ouve cliques na tabela para o botão "Selecionar"
-    tabelaCorpo.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('btn-selecionar')) {
-            const linha = e.target.closest('tr');
-            selecionarPromocao(linha.dataset.id, linha);
-        }
-    });
-
-    // Ações dos botões do formulário
-    btnLimparPromocao.addEventListener('click', resetarFormulario);
-
-    form.addEventListener('submit', async (e) => {
+    // SUBMIT cadastrar
+    formPromocao.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const dados = new FormData(form);
-        const endpoint = idPromocaoSelecionada ? `promocoes/atualizar?idPromocao=${idPromocaoSelecionada}` : 'promocoes/salvar';
-
-        
+        // Garante que todos os campos obrigatórios sejam enviados
+        const dados = new FormData();
+        dados.append('nome', inputNome.value.trim());
+        dados.append('data_inicio', inputDataInicio.value);
+        dados.append('data_fim', inputDataFim.value);
+        dados.append('desconto', inputDesconto.value);
+        dados.append('tipo_desconto', selectTipoDesconto.value);
+        dados.append('status', selectStatus.value);
+        dados.append('descricao', inputDescricao.value);
+        if (promocaoSelecionada) {
+            dados.append('idPromocao', promocaoSelecionada);
+        }
+        let endpoint = '/promocoes/salvar';
+        if (promocaoSelecionada) {
+            endpoint = '/promocoes/atualizar';
+        }
         try {
             const response = await fetch(endpoint, { method: 'POST', body: dados });
             const resultado = await response.json();
-            if (!response.ok) throw new Error(resultado.erro || 'Erro ao salvar a promoção.');
-            
-            alert(`Promoção ${idPromocaoSelecionada ? 'atualizada' : 'salva'} com sucesso!`);
-            resetarFormulario();
+            if (!response.ok) throw new Error(resultado.erro || 'Erro ao salvar promoção.');
+            alert(`Promoção ${promocaoSelecionada ? 'atualizada' : 'cadastrada'} com sucesso!`);
+            limparFormulario();
             carregarPromocoes();
+            // Dispara evento global para atualizar produtos
+            window.dispatchEvent(new Event('promocaoAtualizada'));
         } catch (error) {
             alert(error.message);
         }
-
     });
-    
-    btnExcluirPromocao.addEventListener('click', async () => {
-        if (confirm(`Tem certeza que deseja excluir a promoção ID ${idPromocaoSelecionada}?`)) {
-            const dados = new FormData();
-            dados.append('id', idPromocaoSelecionada);
-            try {
-                const response = await fetch('/promocoes/deletar', { method: 'POST', body: dados });
-                const resultado = await response.json();
-                if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir a promoção.');
-                
-                alert('Promoção excluída com sucesso!');
-                resetarFormulario();
-                carregarPromocoes();
-            } catch (error) {
-                alert(error.message);
-            }
+
+    // Atualizar
+    btnAtualizar.addEventListener('click', function() {
+        if (promocaoSelecionada) {
+            formPromocao.dispatchEvent(new Event('submit'));
         }
     });
 
-    // --- INICIALIZAÇÃO ---
+    // Excluir
+    btnExcluir.addEventListener('click', async function() {
+        if (!promocaoSelecionada) return;
+        if (!confirm(`Tem certeza que deseja excluir a promoção ID ${promocaoSelecionada}?`)) return;
+        const dados = new FormData();
+        dados.append('id', promocaoSelecionada);
+        try {
+            const response = await fetch('/promocoes/deletar', { method: 'POST', body: dados });
+            const resultado = await response.json();
+            if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir promoção.');
+            alert('Promoção excluída com sucesso!');
+            limparFormulario();
+            carregarPromocoes();
+            // Dispara evento global para atualizar produtos
+            window.dispatchEvent(new Event('promocaoAtualizada'));
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Limpar
+    formPromocao.addEventListener('reset', limparFormulario);
+
+    // Inicialização
+    carregarStatus();
+    limparFormulario();
     carregarPromocoes();
 });

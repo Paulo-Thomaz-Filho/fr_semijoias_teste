@@ -1,10 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Promocao.php';
 require_once $rootPath . '/app/models/PromocaoDAO.php';
 
@@ -18,8 +16,9 @@ $idPromocao = $_POST['idPromocao'] ?? null;
 $nome = $_POST['nome'] ?? null;
 $dataInicio = $_POST['data_inicio'] ?? null;
 $dataFim = $_POST['data_fim'] ?? null;
-$tipo = $_POST['tipo'] ?? null;
-$valor = $_POST['valor_desconto'] ?? null;
+$descricao = $_POST['descricao'] ?? '';
+$desconto = $_POST['desconto'] ?? null;
+$status = $_POST['status'] ?? 1;
 
 if (!$idPromocao) {
     http_response_code(400);
@@ -27,9 +26,10 @@ if (!$idPromocao) {
     exit;
 }
 
-if (!$nome || !$dataInicio || !$dataFim || !$tipo || !$valor) {
+    $tipoDesconto = $_POST['tipo_desconto'] ?? 'percentual';
+    if (!$nome || !$dataInicio || !$dataFim || !$desconto) {
     http_response_code(400);
-    echo json_encode(['erro' => 'Dados incompletos. Nome, datas, tipo e valor são obrigatórios.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['erro' => 'Dados incompletos. Nome, datas e desconto são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -46,14 +46,16 @@ try {
     $promocaoExistente->setNome($nome);
     $promocaoExistente->setDataInicio($dataInicio);
     $promocaoExistente->setDataFim($dataFim);
-    $promocaoExistente->setTipo($tipo);
-    $promocaoExistente->setValor($valor);
+    $promocaoExistente->setDescricao($descricao);
+    $promocaoExistente->setDesconto($desconto);
+        $promocaoExistente->setTipoDesconto($tipoDesconto);
+    $promocaoExistente->setStatus($status);
 
     if ($promocaoDAO->update($promocaoExistente)) {
         echo json_encode(['sucesso' => 'Promoção atualizada com sucesso!'], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Ocorreu um erro ao atualizar a promoção.'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['erro' => 'Erro ao atualizar a promoção.'], JSON_UNESCAPED_UNICODE);
     }
 } catch (\Throwable $e) {
     http_response_code(500);

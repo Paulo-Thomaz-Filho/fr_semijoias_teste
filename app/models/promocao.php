@@ -7,17 +7,31 @@ class Promocao {
     private $nome;
     private $dataInicio;
     private $dataFim;
-    private $tipo;
-    private $valor;
+    private $descricao;
+    private $desconto;
+    private $tipoDesconto;
     private $status;
+
+    public function __construct($idPromocao = null, $nome = null, $dataInicio = null, $dataFim = null, $descricao = null, $desconto = null, $tipoDesconto = 'percentual', $status = null) {
+        $this->idPromocao = $idPromocao;
+        $this->nome = $nome;
+        $this->dataInicio = $dataInicio;
+        $this->dataFim = $dataFim;
+        $this->descricao = $descricao;
+        $this->desconto = $desconto;
+        $this->tipoDesconto = $tipoDesconto;
+        $this->status = $status;
+    }
 
     // --- Getters ---
     public function getIdPromocao() { return $this->idPromocao; }
     public function getNome()       { return $this->nome; }
     public function getDataInicio() { return $this->dataInicio; }
     public function getDataFim()    { return $this->dataFim; }
-    public function getTipo()       { return $this->tipo; }
-    public function getValor()      { return $this->valor; }
+    public function getDescricao()  { return $this->descricao; }
+    public function getDesconto()   { return $this->desconto; }
+
+    public function getTipoDesconto() { return $this->tipoDesconto; }
     public function getStatus()     { return $this->status; }
 
     // --- Setters ---
@@ -25,22 +39,11 @@ class Promocao {
     public function setNome($nome)             { $this->nome = $nome; }
     public function setDataInicio($dataInicio) { $this->dataInicio = $dataInicio; }
     public function setDataFim($dataFim)       { $this->dataFim = $dataFim; }
-    public function setTipo($tipo)             { $this->tipo = $tipo; }
-    public function setValor($valor)           { $this->valor = $valor; }
+    public function setDescricao($descricao)   { $this->descricao = $descricao; }
+    public function setDesconto($desconto)     { $this->desconto = $desconto; }
+
+    public function setTipoDesconto($tipoDesconto) { $this->tipoDesconto = $tipoDesconto; }
     public function setStatus($status)         { $this->status = $status; }
-
-    // --- Métodos Especiais ---
-
-    // O método load PRECISA ser atualizado para receber o status do banco de dados
-    public function load($idPromocao, $nome, $dataInicio, $dataFim, $tipo, $valor, $status) {
-        $this->setIdPromocao($idPromocao);
-        $this->setNome($nome);
-        $this->setDataInicio($dataInicio);
-        $this->setDataFim($dataFim);
-        $this->setTipo($tipo);
-        $this->setValor($valor);
-        $this->setStatus($status);
-    }
 
     public function toArray() {
         return [
@@ -48,8 +51,9 @@ class Promocao {
             'nome'       => $this->nome,
             'dataInicio' => $this->dataInicio,
             'dataFim'    => $this->dataFim,
-            'tipo'       => $this->tipo,
-            'valor'      => $this->valor,
+            'descricao'  => $this->descricao,
+            'desconto'   => $this->desconto,
+            'tipo_desconto' => $this->tipoDesconto,
             'status'     => $this->status
         ];
     }

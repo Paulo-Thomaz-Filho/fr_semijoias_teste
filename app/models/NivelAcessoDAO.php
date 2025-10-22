@@ -5,12 +5,11 @@ namespace app\models;
 use core\database\DBConnection;
 use core\database\DBQuery;
 use core\database\Where;
-use PDO;
 
 include_once __DIR__.'/../core/database/DBConnection.php';
 include_once __DIR__.'/../core/database/DBQuery.php';
 include_once __DIR__.'/../core/database/Where.php';
-include_once __DIR__.'/NivelAcesso.php';
+include_once __DIR__.'/NivelAcesso.php';    
 
 class NivelAcessoDAO {
     private $conn;
@@ -29,8 +28,7 @@ class NivelAcessoDAO {
         $niveis = [];
         $dados = $this->dbQuery->select();
         foreach($dados as $nivel){
-            $obj = new NivelAcesso();
-            $obj->load($nivel['id_nivel'], $nivel['tipo']);
+            $obj = new NivelAcesso($nivel['id_nivel'], $nivel['tipo']);
             $niveis[] = $obj;
         }
         return $niveis;

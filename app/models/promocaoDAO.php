@@ -12,32 +12,63 @@ include_once __DIR__.'/../core/database/Where.php';
 include_once __DIR__.'/Promocao.php';
 
 class PromocaoDAO {
+    // Remove promoções expiradas ou inativas dos produtos
+    public function removerPromocoesExpiradasDosProdutos() {
+        $hoje = date('Y-m-d');
+        $db = new \core\database\DBConnection();
+        // Busca todas promoções expiradas (status=1 e data_fim < hoje)
+        $sqlExp = "SELECT id_promocao FROM promocoes WHERE status = 1 AND data_fim < ?";
+        $stmtExp = $db->getConn()->prepare($sqlExp);
+        $stmtExp->execute([$hoje]);
+        $expiradas = $stmtExp->fetchAll(\PDO::FETCH_COLUMN);
+
+        // Busca todas promoções inativas (status=0 ou status='inativa')
+        $sqlInat = "SELECT id_promocao FROM promocoes WHERE status = 0 OR status = 'inativa'";
+        $stmtInat = $db->getConn()->query($sqlInat);
+        $inativas = $stmtInat->fetchAll(\PDO::FETCH_COLUMN);
+
+        $idsRemover = array_unique(array_merge($expiradas ?: [], $inativas ?: []));
+        if ($idsRemover && count($idsRemover) > 0) {
+            $in = implode(',', array_map('intval', $idsRemover));
+            if (!empty($in)) {
+                // Remove dos produtos
+                $sqlUpdate = "UPDATE produtos SET id_promocao = NULL WHERE id_promocao IN ($in)";
+                $db->getConn()->exec($sqlUpdate);
+                // Inativa promoções expiradas
+                if (!empty($expiradas)) {
+                    $inExp = implode(',', array_map('intval', $expiradas));
+                    $sqlInativa = "UPDATE promocoes SET status = 0 WHERE id_promocao IN ($inExp)";
+                    $db->getConn()->exec($sqlInativa);
+                }
+            }
+        }
+    }
     private $dbQuery;
     
     public function __construct(){
         $this->dbQuery = new DBQuery(
             'promocoes', 
-            'id_promocao, nome, data_inicio, data_fim, desconto', 
+            'id_promocao, nome, data_inicio, data_fim, desconto, tipo_desconto, status, descricao', 
             'id_promocao'
         );
     }
     
     public function getAll(){
-        $promocoes = [];
-        
-        $dados = $this->dbQuery->select();
+    $promocoes = [];
+    $hoje = date('Y-m-d');
+    // Retorna todas as promoções, sem filtro
+    $dados = $this->dbQuery->select();
 
-        foreach($dados as $dadosPromocao){
-            $promocao = new Promocao();
-            // Mapear campos do banco (snake_case) para o Model (camelCase)
-            $promocao->load(
-                $dadosPromocao['id_promocao'],
-                $dadosPromocao['nome'],
-                $dadosPromocao['data_inicio'],
-                $dadosPromocao['data_fim'],
-                'percentual', // tipo padrão
-                $dadosPromocao['desconto'],
-                'ativa' // status padrão
+        foreach($dados as $row){
+            $promocao = new Promocao(
+                $row['id_promocao'],
+                $row['nome'],
+                $row['data_inicio'],
+                $row['data_fim'],
+                $row['descricao'],
+                $row['desconto'],
+                $row['tipo_desconto'] ?? 'percentual',
+                $row['status'] ?? null
             );
             $promocoes[] = $promocao;
         }
@@ -51,25 +82,32 @@ class PromocaoDAO {
         $dados = $this->dbQuery->selectFiltered($where);
 
         if($dados){
-            $promocao = new Promocao();
-            $promocao->load(...array_values($dados[0]));
-            return $promocao;
+            $row = $dados[0];
+            return new Promocao(
+                $row['id_promocao'],
+                $row['nome'],
+                $row['data_inicio'],
+                $row['data_fim'],
+                $row['descricao'],
+                $row['desconto'],
+                $row['tipo_desconto'] ?? 'percentual',
+                $row['status'] ?? null
+            );
         }
 
         return null;
     }
     
     public function insert(Promocao $promocao){
-        $status = $promocao->getStatus() ?? 'ativa';
-
         $dados = [
             null, // id_promocao (auto increment)
             $promocao->getNome(),
             $promocao->getDataInicio(),
             $promocao->getDataFim(),
-            $promocao->getTipo(),
-            $promocao->getValor(),
-            $status
+            $promocao->getDescricao(),
+            $promocao->getDesconto(),
+            $promocao->getTipoDesconto(),
+            $promocao->getStatus()
         ];
         return $this->dbQuery->insert($dados);
     }
@@ -80,7 +118,10 @@ class PromocaoDAO {
             'nome'           => $promocao->getNome(),
             'data_inicio'    => $promocao->getDataInicio(),
             'data_fim'       => $promocao->getDataFim(),
-            'desconto'       => $promocao->getValor(),
+            'descricao'      => $promocao->getDescricao(),
+            'desconto'       => $promocao->getDesconto(),
+            'tipo_desconto'  => $promocao->getTipoDesconto(),
+            'status'         => $promocao->getStatus()
         ];
         
         return $this->dbQuery->update($dados);

@@ -1,5 +1,4 @@
 <?php
-// app/controllers/Dashboard/maisVendidos.php
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -11,20 +10,22 @@ require_once $rootPath . '/app/core/database/DBConnection.php';
 try {
     $conn = (new \core\database\DBConnection())->getConn();
     
-    // Query para buscar os produtos mais vendidos usando a tabela pedidos
+    // Query para buscar os produtos mais vendidos apenas com status Concluído ou Enviado
     $sql = "
         SELECT 
             ped.produto_nome as nome,
-            COALESCE(c.nome, 'N/A') as categoria,
+            COALESCE(p.categoria, 'N/A') as categoria,
             SUM(ped.quantidade) as total_vendido
         FROM 
             pedidos ped
         LEFT JOIN 
             produtos p ON ped.produto_nome = p.nome
-        LEFT JOIN
-            categorias c ON p.id_categoria = c.id_categoria
+        INNER JOIN 
+            status s ON ped.id_status = s.id_status
+        WHERE 
+            s.nome IN ('Concluído', 'Enviado')
         GROUP BY 
-            ped.produto_nome, c.nome
+            ped.produto_nome, p.categoria
         ORDER BY 
             total_vendido DESC
         LIMIT 6

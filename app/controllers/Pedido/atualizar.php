@@ -7,6 +7,7 @@ require_once $rootPath . '/app/etc/config.php';
 
 require_once $rootPath . '/app/models/Pedido.php';
 require_once $rootPath . '/app/models/PedidoDAO.php';
+require_once $rootPath . '/app/models/StatusDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -16,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $idPedido = $_POST['idPedido'] ?? null;
 $produto_nome = $_POST['produto_nome'] ?? null;
-$cliente_nome = $_POST['cliente_nome'] ?? null;
+$id_cliente = $_POST['id_cliente'] ?? null;
 $preco = $_POST['preco'] ?? null;
 $endereco = $_POST['endereco'] ?? '';
 $quantidade = $_POST['quantidade'] ?? null;
 $data_pedido = $_POST['data_pedido'] ?? null;
 $descricao = $_POST['descricao'] ?? '';
-$status = $_POST['status'] ?? 'Pendente';
+$id_status = $_POST['status'] ?? null;
 
 if (!$idPedido) {
     http_response_code(400);
@@ -30,7 +31,7 @@ if (!$idPedido) {
     exit;
 }
 
-if (!$produto_nome || !$cliente_nome || !$preco || !$quantidade) {
+if (!$produto_nome || !$id_cliente || !$preco || !$quantidade) {
     http_response_code(400);
     echo json_encode(['erro' => 'Dados incompletos. Produto, Cliente, Preço e Quantidade são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -38,22 +39,40 @@ if (!$produto_nome || !$cliente_nome || !$preco || !$quantidade) {
 
 try {
     $pedidoDAO = new \app\models\PedidoDAO();
-    $pedidoExistente = $pedidoDAO->getById($idPedido);
+    $pedidoArray = $pedidoDAO->getById($idPedido);
 
-    if (!$pedidoExistente) {
+    if (!$pedidoArray) {
         http_response_code(404);
         echo json_encode(['erro' => 'Pedido não encontrado para atualização.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    $pedidoExistente->setProdutoNome($produto_nome);
-    $pedidoExistente->setClienteNome($cliente_nome);
-    $pedidoExistente->setPreco($preco);
-    $pedidoExistente->setEndereco($endereco);
-    $pedidoExistente->setQuantidade($quantidade);
-    $pedidoExistente->setDataPedido($data_pedido);
-    $pedidoExistente->setDescricao($descricao);
-    $pedidoExistente->setStatus($status);
+
+    if (!$id_status || !is_numeric($id_status)) {
+        http_response_code(400);
+        echo json_encode(['erro' => 'Status inválido.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    $statusDAO = new \app\models\StatusDAO();
+    $statusObj = $statusDAO->getById($id_status);
+    if (!$statusObj) {
+        http_response_code(400);
+        echo json_encode(['erro' => 'Status inválido.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // Reconstrói o objeto Pedido a partir do array
+    $pedidoExistente = new \app\models\Pedido(
+        $pedidoArray['idPedido'],
+        $produto_nome,
+        $id_cliente,
+        $preco,
+        $endereco,
+        $data_pedido,
+        $quantidade,
+        $id_status,
+        $descricao
+    );
 
     if ($pedidoDAO->update($pedidoExistente)) {
         echo json_encode(['sucesso' => 'Pedido atualizado com sucesso!'], JSON_UNESCAPED_UNICODE);

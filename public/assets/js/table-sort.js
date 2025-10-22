@@ -2,7 +2,7 @@ const TABLE_SELECTOR = ".table";
 const VISIBLE_TABLES_SELECTOR = "section:not([hidden]) .table";
 const SORT_INITIALIZED_ATTRIBUTE = "data-sort-initialized";
 const EXCLUDED_COLUMNS = ["ações"];
-const STATUS_ORDER = ["Concluído", "Pendente", "Cancelado"];
+const STATUS_ORDER = ["N/A"];
 
 let tablesSortStates = new WeakMap();
 

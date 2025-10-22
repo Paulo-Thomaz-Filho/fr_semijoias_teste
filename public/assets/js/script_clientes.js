@@ -69,6 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (idNivel == 2) return "Cliente";
                     return "Desconhecido";
                 }
+                // Badge de acesso usando classes já existentes
+                let badge = '';
+                if (cliente.idNivel == 1) {
+                    badge = '<span class="status-badge status-danger">• Administrador</span>';
+                } else if (cliente.idNivel == 2) {
+                    badge = '<span class="status-badge status-sent">• Cliente</span>';
+                } else {
+                    badge = '<span class="status-badge status-pending">Desconhecido</span>';
+                }
                 return `
                     <tr class="border-bottom border-light" data-id="${cliente.idUsuario}">
                         <td class="py-4 text-dark">${cliente.idUsuario ?? ''}</td>
@@ -76,9 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td class="py-4 text-dark">${cliente.email ?? ''}</td>
                         <td class="py-4 text-dark">${cliente.endereco ?? ''}</td>
                         <td class="py-4 text-dark">${cliente.telefone ?? ''}</td>
-                        <td class="py-4 text-dark">${cliente.cpf ?? ''}</td>
                         <td class="py-4 text-dark">${dataFormatada}</td>
-                        <td class="py-4 text-dark">${getTipoAcesso(cliente.idNivel)}</td>
+                        <td class="py-4">${badge}</td>
                         <td class="py-4">
                             <button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-cliente" data-id="${cliente.idUsuario}">Selecionar</button>
                         </td>
@@ -109,9 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
             inputTelefone.value = cliente.telefone || '';
             inputCpf.value = cliente.cpf || '';
             inputNascimento.value = cliente.dataNascimento || '';
-            setTimeout(() => {
-                selectNivel.value = String(cliente.idNivel || '');
-            }, 200);
+            selectNivel.value = String(cliente.idNivel || '');
             clienteSelecionado = cliente.idUsuario;
             btnCadastrarCliente.disabled = true; // Desabilita cadastrar
             btnAtualizarCliente.disabled = false; // Habilita atualizar
@@ -146,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Cliente salvo com sucesso!');
             limparFormulario();
             carregarClientes();
+            window.dispatchEvent(new Event('clientesAtualizados'));
         } catch (error) {
             alert(error.message);
         }
@@ -172,6 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Cliente atualizado com sucesso!');
             limparFormulario();
             carregarClientes();
+            window.dispatchEvent(new Event('clientesAtualizados'));
         } catch (error) {
             alert(error.message);
         }
@@ -190,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Cliente excluído com sucesso!');
             limparFormulario();
             carregarClientes();
+            window.dispatchEvent(new Event('clientesAtualizados'));
         } catch (error) {
             alert(error.message);
         }

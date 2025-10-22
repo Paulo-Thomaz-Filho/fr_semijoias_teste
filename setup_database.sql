@@ -6,33 +6,17 @@ USE fr_semijoias;
 SET NAMES utf8mb4;
 
 -- ==========================================
--- TABELA: marcas
--- ==========================================
-CREATE TABLE IF NOT EXISTS marcas (
-    id_marca INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    descricao TEXT
-) ENGINE=InnoDB;
-
--- ==========================================
--- TABELA: categorias
--- ==========================================
-CREATE TABLE IF NOT EXISTS categorias (
-    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    descricao TEXT
-) ENGINE=InnoDB;
-
--- ==========================================
 -- TABELA: promocoes
 -- ==========================================
 CREATE TABLE IF NOT EXISTS promocoes (
     id_promocao INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    desconto DECIMAL(5,2) NOT NULL,
+    desconto DECIMAL(10,2) NOT NULL,
+    tipo_desconto ENUM('percentual','valor') NOT NULL DEFAULT 'percentual',
     data_inicio DATE,
     data_fim DATE,
-    ativo BOOLEAN NOT NULL
+    status BOOLEAN NOT NULL,
+    descricao TEXT
 ) ENGINE=InnoDB;
 
 -- ==========================================
@@ -43,14 +27,12 @@ CREATE TABLE IF NOT EXISTS produtos (
     nome VARCHAR(200) NOT NULL,
     descricao TEXT,
     preco DECIMAL(10,2) NOT NULL,
-    id_marca INT,
-    id_categoria INT,
+    marca VARCHAR(100),
+    categoria VARCHAR(100),
     id_promocao INT NULL,
     imagem VARCHAR(255),
     estoque INT NOT NULL,
-    disponivel TINYINT(1) NOT NULL,
-    FOREIGN KEY (id_marca) REFERENCES marcas(id_marca) ON DELETE SET NULL,
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria) ON DELETE SET NULL,
+    disponivel BOOLEAN NOT NULL,
     FOREIGN KEY (id_promocao) REFERENCES promocoes(id_promocao) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -79,70 +61,67 @@ CREATE TABLE IF NOT EXISTS usuarios (
 ) ENGINE=InnoDB;
 
 -- ==========================================
+-- TABELA: status
+-- ==========================================
+CREATE TABLE IF NOT EXISTS status (
+    id_status INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- ==========================================
 -- TABELA: pedidos
 -- ==========================================
 CREATE TABLE IF NOT EXISTS pedidos (
     id_pedido INT AUTO_INCREMENT PRIMARY KEY,
     produto_nome VARCHAR(200),
-    cliente_nome VARCHAR(200) NOT NULL,
     preco DECIMAL(10,2),
     endereco VARCHAR(255),
     data_pedido DATE,
     quantidade INT NOT NULL,
-    status VARCHAR(50),
+    id_status INT NOT NULL,
     descricao TEXT,
     id_produto INT,
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE SET NULL
+    id_cliente INT NOT NULL,
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE SET NULL,
+    FOREIGN KEY (id_status) REFERENCES status(id_status) ON DELETE RESTRICT,
+    FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 -- ==========================================
 -- POPULAÇÃO DAS TABELAS
 -- ==========================================
 
--- MARCAS
-INSERT INTO marcas (id_marca, nome, descricao) VALUES
-(1, 'Vivara', 'Joias e semijoias de alta qualidade'),
-(2, 'Pandora', 'Joias personalizáveis e berloques exclusivos'),
-(3, 'Rommanel', 'Semijoias folheadas a ouro'),
-(4, 'Life by Vivara', 'Semijoias modernas e acessíveis'),
-(5, 'Carla Amorim', 'Design exclusivo e pedras brasileiras');
-
--- CATEGORIAS
-INSERT INTO categorias (id_categoria, nome, descricao) VALUES
-(1, 'Anéis', 'Anéis diversos em ouro, prata e pedras'),
-(2, 'Brincos', 'Brincos de argola, ponto de luz, ear cuff'),
-(3, 'Colares', 'Colares delicados e gargantilhas'),
-(4, 'Pulseiras', 'Pulseiras finas e braceletes'),
-(5, 'Conjuntos', 'Kits de joias combinadas');
-
--- PROMOÇÕES
-INSERT INTO promocoes (id_promocao, nome, desconto, data_inicio, data_fim, ativo) VALUES
-(1, 'Black Friday 2025', 30.00, '2025-11-20', '2025-11-30', true),
-(2, 'Natal Especial', 20.00, '2025-12-01', '2025-12-25', true),
-(3, 'Dia das Mães', 25.00, '2026-05-01', '2026-05-12', false);
+-- Datas
+-- Hoje: 2025-10-18
+-- Ontem: 2025-10-17
+-- Daqui 2 meses: 2025-12-18
+INSERT INTO promocoes (id_promocao, nome, desconto, tipo_desconto, data_inicio, data_fim, status, descricao) VALUES
+(1, 'Promoção Percentual', 15.00, 'percentual', '2025-10-17', '2025-12-18', 1, '15% de desconto por tempo limitado.'),
+(2, 'Promoção Valor Fixo', 25.00, 'valor', '2025-10-17', '2025-12-18', 1, 'R$25 de desconto em produtos selecionados.'),
+(3, 'Promoção Expirada', 10.00, 'percentual', '2025-08-01', '2025-08-15', 0, 'Promoção já expirada, não pode ser usada.');
 
 -- PRODUTOS
-INSERT INTO produtos (id_produto, nome, descricao, estoque, preco, id_categoria, id_marca, id_promocao, disponivel) VALUES
-(1, 'Anel Solitário', 'Anel com zircônia central', 50, 89.90, 1, 3, NULL, 1),
-(2, 'Anel Meia Aliança', 'Anel com zircônias laterais', 30, 129.90, 1, 1, 1, 1),
-(3, 'Anel Trio', 'Set com 3 anéis empilháveis', 25, 149.90, 1, 4, NULL, 1),
-(4, 'Anel Life', 'Anel delicado folheado', 40, 69.90, 1, 4, 2, 1),
-(5, 'Brinco Argola Média', 'Argola lisa 3cm', 60, 119.90, 2, 2, NULL, 1),
-(6, 'Brinco Ponto de Luz', 'Brinco com zircônia 6mm', 80, 79.90, 2, 3, 1, 1),
-(7, 'Brinco Argola Grande', 'Argola grossa 5cm', 35, 179.90, 2, 1, NULL, 1),
-(8, 'Ear Cuff Estrelas', 'Brinco sem furo', 45, 89.90, 2, 4, 2, 1),
-(9, 'Brinco Argola Pequena', 'Argola fina 1.5cm', 100, 79.90, 2, 3, NULL, 1),
-(10, 'Brinco Gota Luxo', 'Brinco de gota com pedras', 20, 139.90, 2, 5, NULL, 1),
-(11, 'Colar Ponto de Luz', 'Colar delicado com zircônia', 55, 119.90, 3, 3, 1, 1),
-(12, 'Gargantilha Choker', 'Gargantilha ajustável', 40, 99.90, 3, 4, NULL, 1),
-(13, 'Colar Corrente Grossa', 'Corrente statement', 25, 189.90, 3, 1, NULL, 1),
-(14, 'Colar Gravatinha', 'Gravatinha com zircônia', 50, 129.90, 3, 2, 2, 1),
-(15, 'Pulseira Riviera', 'Pulseira com zircônias sequenciais', 30, 299.90, 4, 1, NULL, 1),
-(16, 'Pulseira Berloque', 'Pulseira com berloques Pandora', 25, 249.90, 4, 2, 1, 1),
-(17, 'Pulseira Elos', 'Pulseira de elos cartier', 35, 399.90, 4, 5, NULL, 1),
-(18, 'Bracelete Liso', 'Bracelete aberto ajustável', 50, 149.90, 4, 4, 2, 1),
-(19, 'Conjunto Delicado', 'Colar + brincos + anel', 15, 799.90, 5, 1, NULL, 1),
-(20, 'Conjunto Noiva', 'Set completo para casamento', 10, 599.90, 5, 5, NULL, 1);
+INSERT INTO produtos (id_produto, nome, descricao, estoque, preco, marca, categoria, id_promocao, disponivel) VALUES
+(1, 'Anel Solitário', 'Anel com zircônia central', 50, 89.90, 'Rommanel', 'Anéis', 1, 1),
+(2, 'Anel Meia Aliança', 'Anel com zircônias laterais', 30, 129.90, 'Vivara', 'Anéis', 2, 1),
+(3, 'Anel Trio', 'Set com 3 anéis empilháveis', 25, 149.90, 'Life by Vivara', 'Anéis', NULL, 1),
+(4, 'Anel Life', 'Anel delicado folheado', 40, 69.90, 'Life by Vivara', 'Anéis', NULL, 1),
+(5, 'Brinco Argola Média', 'Argola lisa 3cm', 60, 119.90, 'Pandora', 'Brincos', NULL, 1),
+(6, 'Brinco Ponto de Luz', 'Brinco com zircônia 6mm', 80, 79.90, 'Rommanel', 'Brincos', NULL, 1),
+(7, 'Brinco Argola Grande', 'Argola grossa 5cm', 35, 179.90, 'Vivara', 'Brincos', NULL, 1),
+(8, 'Ear Cuff Estrelas', 'Brinco sem furo', 45, 89.90, 'Life by Vivara', 'Brincos', NULL, 1),
+(9, 'Brinco Argola Pequena', 'Argola fina 1.5cm', 100, 79.90, 'Rommanel', 'Brincos', NULL, 1),
+(10, 'Brinco Gota Luxo', 'Brinco de gota com pedras', 20, 139.90, 'Carla Amorim', 'Brincos', NULL, 1),
+(11, 'Colar Ponto de Luz', 'Colar delicado com zircônia', 55, 119.90, 'Rommanel', 'Colares', NULL, 1),
+(12, 'Gargantilha Choker', 'Gargantilha ajustável', 40, 99.90, 'Life by Vivara', 'Colares', NULL, 1),
+(13, 'Colar Corrente Grossa', 'Corrente statement', 25, 189.90, 'Vivara', 'Colares', NULL, 1),
+(14, 'Colar Gravatinha', 'Gravatinha com zircônia', 50, 129.90, 'Pandora', 'Colares', NULL, 1),
+(15, 'Pulseira Riviera', 'Pulseira com zircônias sequenciais', 30, 299.90, 'Vivara', 'Pulseiras', NULL, 1),
+(16, 'Pulseira Berloque', 'Pulseira com berloques Pandora', 25, 249.90, 'Pandora', 'Pulseiras', NULL, 1),
+(17, 'Pulseira Elos', 'Pulseira de elos cartier', 35, 399.90, 'Carla Amorim', 'Pulseiras', NULL, 1),
+(18, 'Bracelete Liso', 'Bracelete aberto ajustável', 50, 149.90, 'Life by Vivara', 'Pulseiras', NULL, 1),
+(19, 'Conjunto Delicado', 'Colar + brincos + anel', 15, 799.90, 'Vivara', 'Conjuntos', NULL, 1),
+(20, 'Conjunto Noiva', 'Set completo para casamento', 10, 599.90, 'Carla Amorim', 'Conjuntos', NULL, 1);
 
 -- NÍVEIS DE ACESSO
 INSERT INTO nivel_acesso (id_nivel, tipo) VALUES
@@ -157,20 +136,27 @@ INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, d
 (5, 'Pedro Oliveira', 'pedro.oliveira@email.com', MD5('123456'), '555.555.555-55', '(11) 95555-5555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2),
 (6, 'Carla Mendes', 'carla.mendes@email.com', MD5('123456'), '666.666.666-66', '(11) 94444-4444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2);
 
+-- STATUS
+INSERT INTO status (nome) VALUES
+('Cancelado'),
+('Pendente'),
+('Concluído'),
+('Enviado');
+
 -- PEDIDOS
-INSERT INTO pedidos (id_pedido, produto_nome, cliente_nome, preco, endereco, data_pedido, quantidade, status, descricao, id_produto) VALUES
-(1, 'Brinco Argola Média', 'Maria Silva', 239.80, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-14', 2, 'Pendente', 'Dois colares ponto de luz', 5),
-(2, 'Conjunto Delicado', 'João Santos', 799.90, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-14', 1, 'Pendente', 'Conjunto presente', 19),
-(3, 'Pulseira Elos', 'Ana Costa', 399.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-13', 1, 'Concluído', 'Pedido especial', 17),
-(4, 'Anel Meia Aliança', 'Pedro Oliveira', 159.80, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-13', 1, 'Concluído', 'Dois anéis diferentes', 2),
-(5, 'Pulseira Riviera', 'Carla Mendes', 299.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-12', 1, 'Concluído', 'Pulseira Riviera', 15),
-(6, 'Ear Cuff Estrelas', 'Maria Silva', 349.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-11', 1, 'Concluído', 'Colar premium', 8),
-(7, 'Brinco Argola Pequena', 'João Santos', 259.70, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-10', 3, 'Concluído', '3 brincos argola', 9),
-(8, 'Bracelete Liso', 'Ana Costa', 449.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-09', 1, 'Cancelado', 'Conjunto dourado', 18),
-(9, 'Brinco Gota Luxo', 'Pedro Oliveira', 329.85, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-08', 2, 'Concluído', 'Brincos para presente', 10),
-(10, 'Gargantilha Choker', 'Carla Mendes', 189.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-08', 1, 'Concluído', 'Brinco Pandora', 12),
-(11, 'Conjunto Noiva', 'Maria Silva', 599.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-05', 1, 'Concluído', 'Conjunto de noiva', 20),
-(12, 'Colar Gravatinha', 'João Santos', 319.80, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-03', 1, 'Concluído', 'Pulseira berloque', 14),
-(13, 'Anel Solitário', 'Ana Costa', 449.75, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-02', 5, 'Concluído', '5 anéis solitário', 1),
-(14, 'Brinco Argola Média', 'Pedro Oliveira', 299.70, 'Rua do Ouro, 321 - São Paulo, SP', '2025-09-28', 3, 'Concluído', '3 colares ponto de luz', 5),
-(15, 'Colar Ponto de Luz', 'Carla Mendes', 219.80, 'Rua das Pedras, 654 - São Paulo, SP', '2025-09-25', 2, 'Concluído', '2 ear cuff', 11);
+INSERT INTO pedidos (id_pedido, produto_nome, preco, endereco, data_pedido, quantidade, id_status, descricao, id_produto, id_cliente) VALUES
+(1, 'Brinco Argola Média', 239.80, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-14', 2, 2, 'Dois colares ponto de luz', 5, 2),
+(2, 'Conjunto Delicado', 799.90, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-14', 1, 2, 'Conjunto presente', 19, 3),
+(3, 'Pulseira Elos', 399.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-13', 1, 4, 'Pedido especial', 17, 4),
+(4, 'Anel Meia Aliança', 159.80, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-13', 1, 4, 'Dois anéis diferentes', 2, 5),
+(5, 'Pulseira Riviera', 299.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-12', 1, 3, 'Pulseira Riviera', 15, 6),
+(6, 'Ear Cuff Estrelas', 349.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-11', 1, 3, 'Colar premium', 8, 2),
+(7, 'Brinco Argola Pequena', 259.70, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-10', 3, 3, '3 brincos argola', 9, 3),
+(8, 'Bracelete Liso', 449.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-09', 1, 1, 'Conjunto dourado', 18, 4),
+(9, 'Brinco Gota Luxo', 329.85, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-08', 2, 4, 'Brincos para presente', 10, 5),
+(10, 'Gargantilha Choker', 189.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-08', 1, 3, 'Brinco Pandora', 12, 6),
+(11, 'Conjunto Noiva', 599.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-05', 1, 4, 'Conjunto de noiva', 20, 2),
+(12, 'Colar Gravatinha', 319.80, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-03', 1, 3, 'Pulseira berloque', 14, 3),
+(13, 'Anel Solitário', 449.75, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-02', 5, 3, '5 anéis solitário', 1, 4),
+(14, 'Brinco Argola Média', 299.70, 'Rua do Ouro, 321 - São Paulo, SP', '2025-09-28', 3, 3, '3 colares ponto de luz', 5, 5),
+(15, 'Colar Ponto de Luz', 219.80, 'Rua das Pedras, 654 - São Paulo, SP', '2025-09-25', 2, 3, '2 ear cuff', 11, 6);

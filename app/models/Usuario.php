@@ -13,6 +13,18 @@ class Usuario {
     private $dataNascimento;
     private $idNivel;
 
+    public function __construct($idUsuario = null, $nome = null, $email = null, $senha = null, $telefone = null, $cpf = null, $endereco = null, $dataNascimento = null, $idNivel = null) {
+        $this->idUsuario = $idUsuario;
+        $this->nome = $nome;
+        $this->email = $email;
+        $this->senha = $senha;
+        $this->telefone = $telefone;
+        $this->cpf = $cpf;
+        $this->endereco = $endereco;
+        $this->dataNascimento = $dataNascimento;
+        $this->idNivel = $idNivel;
+    }
+
     // --- Getters ---
     public function getIdUsuario()      { return $this->idUsuario; }
     public function getNome()           { return $this->nome; }
@@ -25,15 +37,15 @@ class Usuario {
     public function getIdNivel()        { return $this->idNivel; }
 
     // --- Setters ---
-    public function setIdUsuario($id)           { $this->idUsuario = $id; }
-    public function setNome($nome)              { $this->nome = $nome; }
-    public function setEmail($email)            { $this->email = $email; }
-    public function setSenha($senha)            { $this->senha = $senha; }
-    public function setTelefone($telefone)      { $this->telefone = $telefone; }
-    public function setCpf($cpf)                { $this->cpf = $cpf; }
-    public function setEndereco($endereco)      { $this->endereco = $endereco; }
+    public function setIdUsuario($id)                  { $this->idUsuario = $id; }
+    public function setNome($nome)                     { $this->nome = $nome; }
+    public function setEmail($email)                   { $this->email = $email; }
+    public function setSenha($senha)                   { $this->senha = $senha; }
+    public function setTelefone($telefone)             { $this->telefone = $telefone; }
+    public function setCpf($cpf)                       { $this->cpf = $cpf; }
+    public function setEndereco($endereco)             { $this->endereco = $endereco; }
     public function setDataNascimento($dataNascimento) { $this->dataNascimento = $dataNascimento; }
-    public function setIdNivel($idNivel)        { $this->idNivel = $idNivel; }
+    public function setIdNivel($idNivel)               { $this->idNivel = $idNivel; }
 
     // Retorna o tipo de acesso do usuário
     public function getAcesso() {
@@ -48,18 +60,6 @@ class Usuario {
     public function verificarSenha($senhaInformada) {
         // Senha no banco está em md5
         return md5($senhaInformada) === $this->senha;
-    }
-
-    public function load($id, $nome, $email, $senha, $telefone, $cpf, $endereco, $dataNascimento, $idNivel) {
-        $this->setIdUsuario($id);
-        $this->setNome($nome);
-        $this->setEmail($email);
-        $this->setSenha($senha);
-        $this->setTelefone($telefone);
-        $this->setCpf($cpf);
-        $this->setEndereco($endereco);
-        $this->setDataNascimento($dataNascimento);
-        $this->setIdNivel($idNivel);
     }
 
     public function toArray() {
