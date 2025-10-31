@@ -266,128 +266,83 @@
             <h2 class="small text-muted">O que você gostaria de fazer hoje?</h2>
           </div>
 
-          <!-- Button, Pesquisar, User Dropdown -->
-          <div class="d-flex gap-4">
+          <!-- User Dropdown -->
+          <div class="dropdown">
             <button
-              class="border-0 bg-body-secondary rounded-pill p-2 hover-transition"
-              onmouseover="this.style.transform='scale(1.05)';"
-              onmouseout="this.style.transform='scale(1)';"
+              class="border-0 bg-transparent d-flex align-items-center shadow-none"
+              type="button"
+              id="userDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
               <svg
-                width="26"
-                height="26"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
                 fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="3"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
                 <path
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  d="M9 17a1 1 0 102 0v-6h6a1 1 0 100-2h-6V3a1 1 0 10-2 0v6H3a1 1 0 000 2h6v6z"
+                  d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
                 />
               </svg>
             </button>
-            <div class="input-group rounded-pill overflow-hidden border-0">
-              <span
-                class="input-group-text bg-body-secondary border-0 py-2 ps-3"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
+            <ul
+              class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-4 shadow p-2"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <span
+                  class="dropdown-item-text fw-medium text-black fs-6 py-2 px-3 text-nowrap user-select-none"
+                  id="usuario-nome-completo"
+                  >Usuário</span
                 >
-                  <path
-                    fill="#6c757d"
-                    fill-rule="evenodd"
-                    d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
-                  />
-                </svg>
-              </span>
-              <input
-                type="text"
-                class="form-control border-0 bg-body-secondary ps-0 pe-5 shadow-none fw-medium"
-                placeholder="Pesquisar"
-              />
-            </div>
-            <div class="dropdown">
-              <button
-                class="border-0 bg-transparent d-flex align-items-center shadow-none"
-                type="button"
-                id="userDropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <svg
-                  width="40"
-                  height="40"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              </li>
+              <li><hr class="dropdown-divider my-2 opacity-25" /></li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3"
+                  href="javascript:void(0);"
+                  onclick="sessionStorage.clear(); window.location.href='/login';"
+                  onmouseover="this.classList.add('bg-danger', 'text-white');"
+                  onmouseout="this.classList.remove('bg-danger', 'text-white');"
                 >
-                  <circle
-                    cx="12"
-                    cy="9"
-                    r="3"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </button>
-              <ul
-                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-4 shadow p-2"
-                aria-labelledby="userDropdown"
-              >
-                <li>
-                  <span
-                    class="dropdown-item-text fw-medium text-black fs-6 py-2 px-3 text-nowrap user-select-none"
-                    id="usuario-nome-completo"
-                    >Usuário</span
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 600 600"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                </li>
-                <li><hr class="dropdown-divider my-2 opacity-25" /></li>
-                <li>
-                  <a
-                    class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3"
-                    href="javascript:void(0);"
-                    onclick="sessionStorage.clear(); window.location.href='/login';"
-                    onmouseover="this.classList.add('bg-danger', 'text-white');"
-                    onmouseout="this.classList.remove('bg-danger', 'text-white');"
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 600 600"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M 130 0 C 58.672245 0 0 58.672245 0 130 L 0 470 C 0 541.32776 58.672245 600 130 600 L 301.57812 600 C 367.83331 600 423.13643 549.36696 430.67188 485 L 349.43555 485 C 343.32179 505.66026 324.7036 520 301.57812 520 L 130 520 C 101.60826 520 80 498.39174 80 470 L 80 130 C 80 101.60826 101.60826 80 130 80 L 301.57812 80 C 324.7036 80 343.32179 94.339739 349.43555 115 L 430.67188 115 C 423.13642 50.633038 367.83331 0 301.57812 0 L 130 0 z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="m 476.86328,179.99911 a 40,40 0 0 0 -28.28516,11.71484 40,40 0 0 0 0,56.57032 l 11.71485,11.71484 H 163.72656 a 40,40 0 0 0 -40,40 40,40 0 0 0 40,40 h 296.56641 l -11.71485,11.71484 a 40,40 0 0 0 0,56.57032 40,40 0 0 0 56.57032,0 l 72.79101,-72.79102 A 40,40 0 0 0 600,299.99911 40,40 0 0 0 577.5293,264.09481 l -72.38086,-72.38086 a 40,40 0 0 0 -28.28516,-11.71484 z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Sair
-                  </a>
-                </li>
-              </ul>
-            </div>
+                    <path
+                      d="M 130 0 C 58.672245 0 0 58.672245 0 130 L 0 470 C 0 541.32776 58.672245 600 130 600 L 301.57812 600 C 367.83331 600 423.13643 549.36696 430.67188 485 L 349.43555 485 C 343.32179 505.66026 324.7036 520 301.57812 520 L 130 520 C 101.60826 520 80 498.39174 80 470 L 80 130 C 80 101.60826 101.60826 80 130 80 L 301.57812 80 C 324.7036 80 343.32179 94.339739 349.43555 115 L 430.67188 115 C 423.13642 50.633038 367.83331 0 301.57812 0 L 130 0 z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="m 476.86328,179.99911 a 40,40 0 0 0 -28.28516,11.71484 40,40 0 0 0 0,56.57032 l 11.71485,11.71484 H 163.72656 a 40,40 0 0 0 -40,40 40,40 0 0 0 40,40 h 296.56641 l -11.71485,11.71484 a 40,40 0 0 0 0,56.57032 40,40 0 0 0 56.57032,0 l 72.79101,-72.79102 A 40,40 0 0 0 600,299.99911 40,40 0 0 0 577.5293,264.09481 l -72.38086,-72.38086 a 40,40 0 0 0 -28.28516,-11.71484 z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Sair
+                </a>
+              </li>
+            </ul>
           </div>
         </header>
 
@@ -1424,7 +1379,20 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-12 mb-3">
+                  <div class="col-5 mb-3">
+                    <label
+                      for="imagem_produto"
+                      class="form-label text-muted small fw-medium"
+                      >Imagem</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control border-0 bg-body-secondary rounded-4"
+                      id="imagem_produto"
+                      accept="image/*"
+                    />
+                  </div>
+                  <div class="col-7">
                     <label
                       for="descricao_produto"
                       class="form-label text-muted small fw-medium"
@@ -1555,37 +1523,248 @@
             <div class="bg-light p-4 rounded-4 mb-4">
               <h2 class="fw-medium fs-5 text-black mb-4">Gerenciar Pedido</h2>
               <form id="form-pedido">
-                <div class="row g-3 mb-3">
-                  <div class="col-md-2">
-                    <label
-                      for="pedido_id"
-                      class="form-label text-muted small fw-medium"
-                      >ID</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M3 5C2.44772 5 2 5.44771 2 6V18C2 18.5523 2.44772 19 3 19H21C21.5523 19 22 18.5523 22 18V6C22 5.44772 21.5523 5 21 5H3ZM0 6C0 4.34315 1.34314 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12C6.67157 12 6 11.3284 6 10.5ZM10.1756 12.7565C10.69 12.1472 11 11.3598 11 10.5C11 8.567 9.433 7 7.5 7C5.567 7 4 8.567 4 10.5C4 11.3598 4.31002 12.1472 4.82438 12.7565C3.68235 13.4994 3 14.7069 3 16C3 16.5523 3.44772 17 4 17C4.55228 17 5 16.5523 5 16C5 15.1145 5.80048 14 7.5 14C9.19952 14 10 15.1145 10 16C10 16.5523 10.4477 17 11 17C11.5523 17 12 16.5523 12 16C12 14.7069 11.3177 13.4994 10.1756 12.7565ZM13 8C12.4477 8 12 8.44772 12 9C12 9.55228 12.4477 10 13 10H19C19.5523 10 20 9.55228 20 9C20 8.44772 19.5523 8 19 8H13ZM14 12C13.4477 12 13 12.4477 13 13C13 13.5523 13.4477 14 14 14H18C18.5523 14 19 13.5523 19 13C19 12.4477 18.5523 12 18 12H14Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2 text-muted"
-                        id="pedido_id"
-                        readonly
-                        placeholder="Auto"
-                      />
+                <div class="row mb-3">
+                  <div class="col-md-7 mb-3">
+                    <div class="row g-3">
+                      <div class="col-md-3">
+                        <label
+                          for="pedido_id"
+                          class="form-label text-muted small fw-medium"
+                          >ID</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M3 5C2.44772 5 2 5.44771 2 6V18C2 18.5523 2.44772 19 3 19H21C21.5523 19 22 18.5523 22 18V6C22 5.44772 21.5523 5 21 5H3ZM0 6C0 4.34315 1.34314 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12C6.67157 12 6 11.3284 6 10.5ZM10.1756 12.7565C10.69 12.1472 11 11.3598 11 10.5C11 8.567 9.433 7 7.5 7C5.567 7 4 8.567 4 10.5C4 11.3598 4.31002 12.1472 4.82438 12.7565C3.68235 13.4994 3 14.7069 3 16C3 16.5523 3.44772 17 4 17C4.55228 17 5 16.5523 5 16C5 15.1145 5.80048 14 7.5 14C9.19952 14 10 15.1145 10 16C10 16.5523 10.4477 17 11 17C11.5523 17 12 16.5523 12 16C12 14.7069 11.3177 13.4994 10.1756 12.7565ZM13 8C12.4477 8 12 8.44772 12 9C12 9.55228 12.4477 10 13 10H19C19.5523 10 20 9.55228 20 9C20 8.44772 19.5523 8 19 8H13ZM14 12C13.4477 12 13 12.4477 13 13C13 13.5523 13.4477 14 14 14H18C18.5523 14 19 13.5523 19 13C19 12.4477 18.5523 12 18 12H14Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2 text-muted"
+                            id="pedido_id"
+                            readonly
+                            placeholder="Auto"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label
+                          for="cliente_pedido"
+                          class="form-label text-muted small fw-medium"
+                          >Cliente</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9ZM15.8243 13.6235C17.1533 12.523 18 10.8604 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 10.8604 6.84668 12.523 8.17572 13.6235C4.98421 14.7459 3 17.2474 3 20C3 20.5523 3.44772 21 4 21C4.55228 21 5 20.5523 5 20C5 17.7306 7.3553 15 12 15C16.6447 15 19 17.7306 19 20C19 20.5523 19.4477 21 20 21C20.5523 21 21 20.5523 21 20C21 17.2474 19.0158 14.7459 15.8243 13.6235Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="cliente_pedido"
+                            required
+                          >
+                            <option value="">Carregando clientes...</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <label
+                          for="data_pedido"
+                          class="form-label text-muted small fw-medium"
+                          >Data</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M20 10V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V10M20 10V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V10M20 10H4M8 3V7M16 3V7"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                            <rect
+                              x="6"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="10.5"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="15"
+                              y="12"
+                              width="3"
+                              height="3"
+                              rx="0.5"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="date"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="data_pedido"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <label
+                          for="endereco_pedido"
+                          class="form-label text-muted small fw-medium"
+                          >Endereço</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M12 21C15.5 17.4 19 14.1764 19 10.2C19 6.22355 15.866 3 12 3C8.13401 3 5 6.22355 5 10.2C5 14.1764 8.5 17.4 12 21Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="endereco_pedido"
+                            placeholder="Rua das Flores, 123 - São Paulo, SP"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <label
+                          for="status_pedido"
+                          class="form-label text-muted small fw-medium"
+                          >Status</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 -3 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <g
+                              stroke="none"
+                              stroke-width="1"
+                              fill="none"
+                              fill-rule="evenodd"
+                            >
+                              <g
+                                transform="translate(-100.000000, -4242.000000)"
+                                fill="currentColor"
+                              >
+                                <g transform="translate(56.000000, 160.000000)">
+                                  <path
+                                    d="M53.708,4088.932 C53.708,4087.275 55.051,4085.932 56.708,4085.932 C58.365,4085.932 59.708,4087.275 59.708,4088.932 C59.708,4090.589 58.365,4091.932 56.708,4091.932 C55.051,4091.932 53.708,4090.589 53.708,4088.932 L53.708,4088.932 Z M50.884,4084 L56.884,4084 C59.641,4084 61.884,4086.243 61.884,4089 C61.884,4091.757 59.641,4094 56.884,4094 L50.884,4094 C48.127,4094 45.884,4091.757 45.884,4089 C45.884,4086.243 48.127,4084 50.884,4084 L50.884,4084 Z M64,4089 C64,4085.134 60.866,4082 57,4082 L51,4082 C47.134,4082 44,4085.134 44,4089 L44,4089 C44,4092.866 47.134,4096 51,4096 L57,4096 C60.866,4096 64,4092.866 64,4089 L64,4089 Z"
+                                  />
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="status_pedido"
+                            required
+                          >
+                            <option value="">Carregando status...</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div
+                      class="d-flex flex-column justify-content-center h-100"
+                    >
+                      <label
+                        for="descricao_pedido"
+                        class="form-label text-muted small fw-medium"
+                        >Descrição</label
+                      >
+                      <div class="position-relative">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 16 16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="position-absolute ms-3 mt-3 text-muted"
+                        >
+                          <path
+                            d="M2,3 L14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M2,7 L14,7 C14.5522847,7 15,7.44771525 15,8 C15,8.55228475 14.5522847,9 14,9 L2,9 C1.44771525,9 1,8.55228475 1,8 C1,7.44771525 1.44771525,7 2,7 Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M1.88888889,11 L8.11111111,11 C8.60203089,11 9,11.4477153 9,12 C9,12.5522847 8.60203089,13 8.11111111,13 L1.88888889,13 C1.39796911,13 1,12.5522847 1,12 C1,11.4477153 1.39796911,11 1.88888889,11 Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        <textarea
+                          class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-3"
+                          id="descricao_pedido"
+                          placeholder="Ex: Descrição do pedido"
+                          rows="3"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <hr class="my-3 border-2 rounded-4" />
                   </div>
                   <div class="col-md-4">
                     <label
@@ -1615,40 +1794,8 @@
                       <select
                         class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="produto_pedido"
-                        required
                       >
                         <option value="">Carregando produtos...</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label
-                      for="cliente_pedido"
-                      class="form-label text-muted small fw-medium"
-                      >Cliente</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9ZM15.8243 13.6235C17.1533 12.523 18 10.8604 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 10.8604 6.84668 12.523 8.17572 13.6235C4.98421 14.7459 3 17.2474 3 20C3 20.5523 3.44772 21 4 21C4.55228 21 5 20.5523 5 20C5 17.7306 7.3553 15 12 15C16.6447 15 19 17.7306 19 20C19 20.5523 19.4477 21 20 21C20.5523 21 21 20.5523 21 20C21 17.2474 19.0158 14.7459 15.8243 13.6235Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="cliente_pedido"
-                        required
-                      >
-                        <option value="">Carregando clientes...</option>
                       </select>
                     </div>
                   </div>
@@ -1697,46 +1844,8 @@
                         class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="quantidade_pedido"
                         placeholder="0"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label
-                      for="endereco_pedido"
-                      class="form-label text-muted small fw-medium"
-                      >Endereço</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          d="M12 21C15.5 17.4 19 14.1764 19 10.2C19 6.22355 15.866 3 12 3C8.13401 3 5 6.22355 5 10.2C5 14.1764 8.5 17.4 12 21Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="endereco_pedido"
-                        placeholder="Rua das Flores, 123 - São Paulo, SP"
-                        required
+                        min="0"
+                        step="1"
                       />
                     </div>
                   </div>
@@ -1769,138 +1878,100 @@
                         class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                         id="valor_total_pedido"
                         placeholder="0,00"
-                        required
                       />
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2 d-flex align-items-end">
+                    <button
+                      type="button"
+                      id="btnAdicionarItem"
+                      class="btn btn-success px-3 py-2 fw-medium rounded-4"
+                    >
+                      Adicionar item
+                    </button>
+                  </div>
+                  <div class="col-md-2">
                     <label
-                      for="data_pedido"
+                      for="valor_total_itens"
                       class="form-label text-muted small fw-medium"
-                      >Data</label
+                      >Valor Total</label
                     >
                     <div class="position-relative">
                       <svg
                         width="20"
                         height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
+                        viewBox="0 0 611.998 611.998"
+                        fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
                         class="position-absolute top-50 translate-middle-y ms-3 text-muted"
                       >
-                        <path
-                          d="M20 10V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V10M20 10V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V10M20 10H4M8 3V7M16 3V7"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                        />
-                        <rect
-                          x="6"
-                          y="12"
-                          width="3"
-                          height="3"
-                          rx="0.5"
-                          fill="currentColor"
-                        />
-                        <rect
-                          x="10.5"
-                          y="12"
-                          width="3"
-                          height="3"
-                          rx="0.5"
-                          fill="currentColor"
-                        />
-                        <rect
-                          x="15"
-                          y="12"
-                          width="3"
-                          height="3"
-                          rx="0.5"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <input
-                        type="date"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="data_pedido"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label
-                      for="status_pedido"
-                      class="form-label text-muted small fw-medium"
-                      >Status</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 -3 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <g
-                          stroke="none"
-                          stroke-width="1"
-                          fill="none"
-                          fill-rule="evenodd"
-                        >
-                          <g
-                            transform="translate(-100.000000, -4242.000000)"
-                            fill="currentColor"
-                          >
-                            <g transform="translate(56.000000, 160.000000)">
-                              <path
-                                d="M53.708,4088.932 C53.708,4087.275 55.051,4085.932 56.708,4085.932 C58.365,4085.932 59.708,4087.275 59.708,4088.932 C59.708,4090.589 58.365,4091.932 56.708,4091.932 C55.051,4091.932 53.708,4090.589 53.708,4088.932 L53.708,4088.932 Z M50.884,4084 L56.884,4084 C59.641,4084 61.884,4086.243 61.884,4089 C61.884,4091.757 59.641,4094 56.884,4094 L50.884,4094 C48.127,4094 45.884,4091.757 45.884,4089 C45.884,4086.243 48.127,4084 50.884,4084 L50.884,4084 Z M64,4089 C64,4085.134 60.866,4082 57,4082 L51,4082 C47.134,4082 44,4085.134 44,4089 L44,4089 C44,4092.866 47.134,4096 51,4096 L57,4096 C60.866,4096 64,4092.866 64,4089 L64,4089 Z"
-                              />
-                            </g>
-                          </g>
+                        <g>
+                          <path
+                            d="M506.382,480.901c0,19.249-15.598,34.848-34.847,34.848h-19.988v41.971c0,29.912-24.337,54.278-54.266,54.278H214.678 c-29.912,0-54.266-24.352-54.266-54.278v-41.971h-19.976c-19.249,0-34.847-15.599-34.847-34.848 c0-19.264,15.598-34.848,34.847-34.848h331.084C490.784,446.054,506.382,461.652,506.382,480.901z M582.811,77.279v268.97 c0,42.626-34.666,77.294-77.279,77.294H106.467c-42.612,0-77.279-34.668-77.279-77.294V77.279C29.188,34.666,63.855,0,106.467,0 h399.064C548.143,0,582.811,34.666,582.811,77.279z M513.114,77.279c0-4.182-3.4-7.583-7.583-7.583H106.467 c-4.182,0-7.583,3.4-7.583,7.583v268.97c0,4.183,3.401,7.597,7.583,7.597h399.064c4.183,0,7.583-3.414,7.583-7.597V77.279z M447.934,265.751h-97.575c-7.694,0-13.938,6.244-13.938,13.939v27.878c0,7.695,6.244,13.939,13.938,13.939h97.575 c7.695,0,13.939-6.244,13.939-13.939V279.69C461.873,271.995,455.629,265.751,447.934,265.751z M447.934,114.664h-97.575 c-7.694,0-13.938,6.245-13.938,13.939v27.879c0,7.695,6.244,13.939,13.938,13.939h97.575c7.695,0,13.939-6.245,13.939-13.939 v-27.879C461.873,120.895,455.629,114.664,447.934,114.664z M447.934,190.199h-97.575c-7.694,0-13.938,6.245-13.938,13.939v27.879 c0,7.695,6.244,13.939,13.938,13.939h97.575c7.695,0,13.939-6.244,13.939-13.939v-27.879 C461.873,196.446,455.629,190.199,447.934,190.199z M222.147,202.105c-26.679-6.816-33.272-10.121-33.272-20.253v-0.447 c0-7.499,6.83-13.438,19.821-13.438c10.579,0,21.159,3.75,32.409,10.372c2.634,1.546,5.27,2.426,8.586,2.426 c8.809,0,15.863-6.845,15.863-15.653c0-6.607-3.764-11.249-7.513-13.438c-9.716-6.175-20.7-10.288-32.799-12.252V127.81 c0-8.113-6.565-14.678-14.664-14.678c-8.113,0-14.678,6.565-14.678,14.678v11.485c-24.323,4.488-40.731,21.34-40.731,45.19v0.433 c0,30.639,20.06,39.239,51.114,47.156c25.788,6.608,31.071,11.026,31.071,19.599v0.447c0,9.019-8.378,14.539-22.26,14.539 c-14.984,0-27.752-5.284-39.434-13.884c-2.203-1.534-5.283-3.066-9.673-3.066c-8.823,0-15.863,6.816-15.863,15.641 c0,5.269,2.634,10.147,6.383,12.768c11.932,8.558,25.481,13.954,39.407,16.587v12.127c0,8.1,6.564,14.678,14.678,14.678 c8.099,0,14.664-6.578,14.664-14.678v-10.899c27.377-3.401,45.818-19.947,45.818-47.1v-0.459 C271.06,221.507,253.428,210.259,222.147,202.105z"
+                          />
                         </g>
                       </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="status_pedido"
-                        required
-                      >
-                        <option value="">Carregando status...</option>
-                      </select>
+                      <input
+                        type="text"
+                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                        id="valor_total_itens"
+                        value="0,00"
+                        readonly
+                      />
                     </div>
                   </div>
+
+                  <!-- Tabela de Itens do Pedido -->
                   <div class="col-12 mb-3">
-                    <label
-                      for="descricao_pedido"
-                      class="form-label text-muted small fw-medium"
-                      >Descrição</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute ms-3 mt-3 text-muted"
-                      >
-                        <path
-                          d="M2,3 L14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M2,7 L14,7 C14.5522847,7 15,7.44771525 15,8 C15,8.55228475 14.5522847,9 14,9 L2,9 C1.44771525,9 1,8.55228475 1,8 C1,7.44771525 1.44771525,7 2,7 Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M1.88888889,11 L8.11111111,11 C8.60203089,11 9,11.4477153 9,12 C9,12.5522847 8.60203089,13 8.11111111,13 L1.88888889,13 C1.39796911,13 1,12.5522847 1,12 C1,11.4477153 1.39796911,11 1.88888889,11 Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <textarea
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-3"
-                        id="descricao_pedido"
-                        placeholder="Ex: Descrição do pedido"
-                        rows="3"
-                      ></textarea>
+                    <div class="bg-body-secondary rounded-4 p-3 mt-4">
+                      <h5 class="fw-medium fs-6 text-black mb-3">
+                        Itens do Pedido
+                      </h5>
+                      <div class="rounded table-scroll">
+                        <table
+                          id="tabelaItensPedido"
+                          class="table table-borderless table-transparent table-sm mb-0"
+                        >
+                          <thead class="position-sticky bg-body-secondary">
+                            <tr class="border-bottom">
+                              <th
+                                scope="col"
+                                class="text-muted fw-medium small pb-2"
+                              >
+                                Produto
+                              </th>
+                              <th
+                                scope="col"
+                                class="text-muted fw-medium small pb-2"
+                              >
+                                Quantidade
+                              </th>
+                              <th
+                                scope="col"
+                                class="text-muted fw-medium small pb-2"
+                              >
+                                Preço (R$)
+                              </th>
+                              <th
+                                scope="col"
+                                class="text-muted fw-medium small pb-2"
+                              >
+                                Ação
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr id="linhaVaziaItensPedido">
+                              <td
+                                colspan="4"
+                                class="text-center py-3 text-muted"
+                              >
+                                Nenhum item adicionado.
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1941,6 +2012,7 @@
               <h2 class="fw-medium fs-5 text-black mb-4">Lista de Pedidos</h2>
               <div class="rounded table-scroll">
                 <table
+                  id="tabelaPedidos"
                   class="table table-borderless mb-0 table-transparent table-sm"
                 >
                   <thead class="position-sticky bg-light">

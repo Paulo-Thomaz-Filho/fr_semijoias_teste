@@ -36,6 +36,20 @@ services:
     networks:
       - fr_semijoias_network
 
+  # phpMyAdmin (Gerenciar o banco)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: fr_semijoias_phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+    networks:
+      - fr_semijoias_network
+
 networks:
   fr_semijoias_network:
     driver: bridge

@@ -37,6 +37,10 @@ function showTargetSection() {
     if (typeof window.initializeVisibleTables === "function") {
       window.initializeVisibleTables();
     }
+    // Atualiza dashboard ao navegar para ela
+    if (currentSectionId === "dashboard-section" && typeof window.atualizarDashboard === "function") {
+      window.atualizarDashboard();
+    }
   }
 }
 
