@@ -1,40 +1,11 @@
-// =============================================================================
-// SCRIPT DE GERENCIAMENTO DE PRODUTOS
-// =============================================================================
-
-// Carregar informações do usuário logado
-const carregarUsuarioLogado = () => {
-    const nomeCompleto = sessionStorage.getItem('usuario_nome') || 'Usuário';
-    const primeiroNome = nomeCompleto.split(' ')[0];
-    
-    const elementoNomeCompleto = document.getElementById('usuario-nome-completo');
-    if (elementoNomeCompleto) {
-        elementoNomeCompleto.textContent = nomeCompleto;
-    }
-    
-    const elementoPrimeiroNome = document.getElementById('usuario-primeiro-nome');
-    if (elementoPrimeiroNome) {
-        elementoPrimeiroNome.textContent = primeiroNome;
-    }
-};
-
-// =============================================================================
-// INICIALIZAÇÃO
-// =============================================================================
-
+// Script completo para gerenciamento de produtos
 document.addEventListener('DOMContentLoaded', function() {
-    // Carregar nome do usuário
-    carregarUsuarioLogado();
-    
-    // Atualizar quando promoções forem modificadas
+    // Atualiza promoções/produtos ao receber evento global
     window.addEventListener('promocaoAtualizada', async function() {
         await carregarPromocoes();
         await carregarProdutos();
     });
-    
-    // -------------------------------------------------------------------------
-    // ELEMENTOS DO DOM
-    // -------------------------------------------------------------------------
+    // Referências aos elementos do DOM
     const formProduto = document.getElementById('form-produto');
     const inputId = document.getElementById('produto_id');
     const inputNome = document.getElementById('nome_produto');
@@ -45,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectPromocao = document.getElementById('promocao_produto');
     const inputEstoque = document.getElementById('estoque');
     const selectDisponivel = document.getElementById('disponivel');
+    const inputImagem = document.getElementById('imagem_produto');
     const tabelaProdutos = document.querySelector('#produtos-section tbody');
     const btnCadastrarProduto = document.getElementById('btnCadastrarProduto');
     const btnAtualizarProduto = document.getElementById('btnAtualizarProduto');
@@ -52,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mapeamento de promoções por id
     let mapaPromocoes = {};
+    let produtoSelecionado = null;
 
     // Carregar promoções no select e no mapa
     const carregarPromocoes = async () => {
@@ -83,8 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro ao carregar promoções:', error);
         }
     };
-
-    let produtoSelecionado = null;
 
     // Função para formatar preço em Real
     const formatarPreco = (preco) => {
@@ -127,13 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar produtos na tabela
     const carregarProdutos = async () => {
         tabelaProdutos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Carregando produtos...</td></tr>';
-        // Garante que o mapa de promoções está carregado
         if (Object.keys(mapaPromocoes).length === 0) {
             await carregarPromocoes();
         }
         
         try {
-            const response = await fetch('/produtos');
+            const response = await fetch('/produtos'); // Endpoint de listagem
             const produtos = await response.json();
             if (!Array.isArray(produtos) || produtos.length === 0) {
                 tabelaProdutos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Nenhum produto cadastrado</td></tr>';
@@ -143,11 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 let precoOriginal = parseFloat(p.preco);
                 let precoFinal = precoOriginal;
                 let promocao = 'N/A';
-                // Busca promoção pelo id
+                let promocaoId = p.id_promocao; 
                 let promocaoObj = null;
-                if (p.idPromocao) {
-                    promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == p.idPromocao);
+                if (promocaoId) {
+                    promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == promocaoId);
                 }
+
                 if (promocaoObj) {
                     let descontoFormatado = '';
                     if (promocaoObj.tipo_desconto === 'valor') {
@@ -164,12 +135,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (precoFinal < 0) precoFinal = 0;
                 }
                 const precoFormatado = formatarPreco(precoFinal);
-                // Badge para disponibilidade
                 const disponivelBadge = p.disponivel == 1 
                     ? '<span class="status-badge status-green">• Sim</span>' 
                     : '<span class="status-badge status-danger">• Não</span>';
                 return '<tr class="border-bottom border-light">'
-                    + '<td class="py-4 text-dark">' + p.idProduto + '</td>'
+                    + '<td class="py-4 text-dark">' + p.id_produto + '</td>' 
                     + '<td class="py-4 text-dark">' + (p.nome || 'N/A') + '</td>'
                     + '<td class="py-4 text-dark">' + precoFormatado + '</td>'
                     + '<td class="py-4 text-dark">' + (p.marca || 'N/A') + '</td>'
@@ -177,14 +147,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     + '<td class="py-4 text-dark">' + (p.estoque || 0) + '</td>'
                     + '<td class="py-4">' + disponivelBadge + '</td>'
                     + '<td class="py-4 text-dark">' + promocao + '</td>'
-                    + '<td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-produto" data-id="' + p.idProduto + '">Selecionar</button></td>'
+                    + '<td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-produto" data-id="' + p.id_produto + '">Selecionar</button></td>'
                     + '</tr>';
             }).join('');
                 document.querySelectorAll('.btn-selecionar-produto').forEach(btnSelecionarProduto => {
                 btnSelecionarProduto.addEventListener('click', function() {
-                    // Remover destaque de todas as linhas
                     tabelaProdutos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
-                    // Adicionar destaque na linha selecionada
                     this.closest('tr').classList.add('table-active');
                     selecionarProduto(this.dataset.id);
                 });
@@ -198,18 +166,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Selecionar produto para edição
     const selecionarProduto = async (id) => {
         try {
-            const response = await fetch(`/produtos/buscar?idProduto=${id}`);
+            const response = await fetch(`/produtos/buscar?id_produto=${id}`); 
             const produto = await response.json();
-            console.log('Produto retornado:', produto);
-            inputId.value = produto.idProduto ?? produto.id_produto ?? '';
-            inputNome.value = produto.nome ?? produto.nome_produto ?? '';
-            inputDescricao.value = produto.descricao ?? produto.descricao_produto ?? '';
+
+            
+            inputId.value = produto.id_produto ?? '';
+            inputNome.value = produto.nome ?? '';
+            inputDescricao.value = produto.descricao ?? '';
             inputCategoria.value = produto.categoria ?? '';
             inputMarca.value = produto.marca ?? '';
-            // Aplica desconto se houver promoção válida
+            
             let precoOriginal = parseFloat(produto.preco);
-            let precoFinal = precoOriginal;
-            let promocaoId = produto.idPromocao ?? produto.id_promocao ?? '';
+            let promocaoId = produto.id_promocao ?? '';
             let promocaoValida = false;
             if (promocaoId && mapaPromocoes[promocaoId]) {
                 // Checa se a promoção ainda está válida
@@ -238,8 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectPromocao.value = promocaoId;
                 inputPreco.value = precoFinal ? precoFinal.toFixed(2).replace('.', ',') : '';
             }
-            inputEstoque.value = produto.estoque ?? produto.qtd_estoque ?? 0;
-            selectDisponivel.value = produto.disponivel ?? produto.status ?? 1;
+            inputEstoque.value = produto.estoque ?? 0;
+            selectDisponivel.value = produto.disponivel ?? 1;
             produtoSelecionado = produto;
             btnCadastrarProduto.disabled = true;
             btnAtualizarProduto.disabled = false;
@@ -252,12 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Cadastrar produto
-    const cadastrarProduto = async (dados) => {
+    const cadastrarProduto = async (formData) => {
         try {
             const response = await fetch('/produtos/salvar', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dados)
+                body: formData // Envia o FormData
             });
             const result = await response.json();
             if (response.ok) {
@@ -271,17 +238,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Erro ao cadastrar produto:', error);
-            alert('Erro ao cadastrar produto');
         }
     };
 
     // Atualizar produto
-    const atualizarProduto = async (dados) => {
+    const atualizarProduto = async (formData) => {
         try {
             const response = await fetch('/produtos/atualizar', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dados)
+                body: formData // Envia o FormData
             });
             const result = await response.json();
             if (response.ok) {
@@ -295,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Erro ao atualizar produto:', error);
-            alert('Erro ao atualizar produto');
         }
     };
 
@@ -306,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/produtos/deletar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ idProduto: id })
+                body: new URLSearchParams({ id_produto: id }) // CORRIGIDO
             });
             const result = await response.json();
             if (response.ok) {
@@ -320,10 +284,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Erro ao deletar produto:', error);
-            alert('Erro ao deletar produto');
         }
     };
-
+    
     // Limpar formulário
     const limparFormulario = () => {
         formProduto.reset();
@@ -333,56 +296,58 @@ document.addEventListener('DOMContentLoaded', function() {
         btnCadastrarProduto.disabled = false;
         btnAtualizarProduto.disabled = true;
         btnExcluirProduto.disabled = true;
-        // Remove destaque de linha selecionada
         tabelaProdutos && tabelaProdutos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
     };
 
     // Event listener para o formulário
+    // Listener do Formulário (CORRIGIDO para FormData e snake_case)
     formProduto.addEventListener('submit', function(e) {
         e.preventDefault();
+        
         let idPromocaoValue = selectPromocao.value;
         if (idPromocaoValue === 'sem') idPromocaoValue = '';
-        const dados = {
-            nome: inputNome.value,
-            descricao: inputDescricao.value,
-            preco: precoParaNumero(inputPreco.value),
-            marca: inputMarca.value,
-            categoria: inputCategoria.value,
-            idPromocao: idPromocaoValue,
-            estoque: inputEstoque.value || 0,
-            disponivel: selectDisponivel.value
-        };
+
+        const formData = new FormData();
+        
+        // Adiciona os campos de texto
+        formData.append('nome', inputNome.value);
+        formData.append('descricao', inputDescricao.value);
+        formData.append('preco', precoParaNumero(inputPreco.value));
+        formData.append('marca', inputMarca.value);
+        formData.append('categoria', inputCategoria.value);
+        formData.append('id_promocao', idPromocaoValue); // CORRIGIDO
+        formData.append('estoque', inputEstoque.value || 0);
+        formData.append('disponivel', selectDisponivel.value);
+        
+        // Adiciona o arquivo de imagem
+        const file = inputImagem.files[0];
+        if (file) {
+            formData.append('caminho_imagem', file); // CORRIGIDO
+        }
+
         if (produtoSelecionado) {
-            dados.idProduto = inputId.value;
-            atualizarProduto(dados);
+            formData.append('id_produto', inputId.value); // CORRIGIDO
+            atualizarProduto(formData);
         } else {
-            cadastrarProduto(dados);
+            cadastrarProduto(formData);
         }
     });
 
-    // Event listener do Botão Atualizar
+    // Os botões Cadastrar, Atualizar, Excluir têm listeners separados no seu HTML
+    
+    btnCadastrarProduto.addEventListener('click', function(e) {
+        // Se o botão for type="submit", ele dispara o evento 'submit' do formulário
+        // A lógica principal já está no listener 'submit' do formProduto
+    });
+
     btnAtualizarProduto.addEventListener('click', function() {
         if (!produtoSelecionado) {
             alert('Selecione um produto primeiro');
             return;
         }
-        let idPromocaoValue = selectPromocao.value;
-        if (idPromocaoValue === 'sem') idPromocaoValue = '';
-        const dados = {
-            idProduto: inputId.value,
-            nome: inputNome.value,
-            descricao: inputDescricao.value,
-            preco: precoParaNumero(inputPreco.value),
-            marca: inputMarca.value,
-            categoria: inputCategoria.value,
-            idPromocao: idPromocaoValue,
-            estoque: inputEstoque.value || 0,
-            disponivel: selectDisponivel.value
-        };
-        atualizarProduto(dados);
+        formProduto.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     });
 
-    // Event listener do Botão Excluir
     btnExcluirProduto.addEventListener('click', function() {
         if (!produtoSelecionado) {
             alert('Selecione um produto primeiro');
@@ -391,12 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
         deletarProduto(inputId.value);
     });
 
-    // Botão Limpar
     formProduto.addEventListener('reset', function() {
         limparFormulario();
     });
 
-    // Desabilitar/Habilitar botões inicialmente
+    // --- INICIALIZAÇÃO ---
     btnCadastrarProduto.disabled = false;
     btnAtualizarProduto.disabled = true;
     btnExcluirProduto.disabled = true;

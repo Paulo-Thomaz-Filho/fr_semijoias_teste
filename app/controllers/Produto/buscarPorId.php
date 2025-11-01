@@ -4,11 +4,10 @@ header('Content-Type: application/json; charset=utf-8');
 // Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
 
-$idProduto = $_GET['id'] ?? $_GET['idProduto'] ?? null;
+$idProduto = $_GET['id'] ?? $_GET['id_produto'] ?? null;
 
 if (!$idProduto) {
     http_response_code(400);

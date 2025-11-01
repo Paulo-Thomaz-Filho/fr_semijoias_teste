@@ -17,30 +17,31 @@ class ProdutoDAO {
 
     public function __construct(){
         $this->conn = (new DBConnection())->getConn();
+        $colunas = 'id_produto, nome, descricao, preco, marca, categoria, id_promocao, caminho_imagem, estoque, disponivel';
+        
         $this->dbQuery = new DBQuery(
             'produtos',
-            'id_produto, nome, descricao, preco, marca, categoria, id_promocao, imagem, estoque, disponivel',
+            $colunas,
             'id_produto'
         );
     }
 
     public function getAll(){
         $dados = $this->dbQuery->select();
-
         $produtos = [];
         foreach($dados as $row){
-            $produto = new Produto(
-                $row['id_produto'],
-                $row['nome'],
-                $row['descricao'],
-                $row['preco'],
-                $row['marca'],
-                $row['categoria'],
-                $row['id_promocao'],
-                $row['imagem'],
-                $row['estoque'],
-                $row['disponivel']
-            );
+            // Criando o objeto com setters para maior clareza
+            $produto = new Produto();
+            $produto->set_id_produto($row['id_produto']);
+            $produto->set_nome($row['nome']);
+            $produto->set_descricao($row['descricao']);
+            $produto->set_preco($row['preco']);
+            $produto->set_marca($row['marca']);
+            $produto->set_categoria($row['categoria']);
+            $produto->set_id_promocao($row['id_promocao']);
+            $produto->set_caminho_imagem($row['caminho_imagem']); // CORRIGIDO
+            $produto->set_estoque($row['estoque']);
+            $produto->set_disponivel($row['disponivel']);
             $produtos[] = $produto;
         }
         return $produtos;
@@ -76,52 +77,52 @@ class ProdutoDAO {
 
         if($dados){
             $row = $dados[0];
-            return new Produto(
-                $row['id_produto'],
-                $row['nome'],
-                $row['descricao'],
-                $row['preco'],
-                $row['marca'],
-                $row['categoria'],
-                $row['id_promocao'],
-                $row['imagem'],
-                $row['estoque'],
-                $row['disponivel']
-            );
+            $produto = new Produto();
+            $produto->set_id_produto($row['id_produto']);
+            $produto->set_nome($row['nome']);
+            $produto->set_descricao($row['descricao']);
+            $produto->set_preco($row['preco']);
+            $produto->set_marca($row['marca']);
+            $produto->set_categoria($row['categoria']);
+            $produto->set_id_promocao($row['id_promocao']);
+            $produto->set_caminho_imagem($row['caminho_imagem']); // CORRIGIDO
+            $produto->set_estoque($row['estoque']);
+            $produto->set_disponivel($row['disponivel']);
+            return $produto;
         }
-
         return null;
     }
 
     public function insert(Produto $produto){
+        // A classe DBQuery->insert espera um array numérico na ordem das colunas do construtor
         $dados = [
-            null, // IdProduto (auto increment)
-            $produto->getNome(),
-            $produto->getDescricao(),
-            $produto->getPreco(),
-            $produto->getMarca(),
-            $produto->getCategoria(),
-            $produto->getIdPromocao(),
-            null,
-            $produto->getEstoque(),
-            $produto->getDisponivel()
+            null, // id_produto
+            $produto->get_nome(),
+            $produto->get_descricao(),
+            $produto->get_preco(),
+            $produto->get_marca(),
+            $produto->get_categoria(),
+            $produto->get_id_promocao(),
+            $produto->get_caminho_imagem(), // CORRIGIDO: usa o getter correto
+            $produto->get_estoque(),
+            $produto->get_disponivel()
         ];
         return $this->dbQuery->insert($dados);
     }
 
     public function update(Produto $produto){
-        // Preparamos o array de dados com os nomes corretos das colunas (snake_case do DB)
+        // A classe DBQuery->update espera um array associativo
         $dados = [
-            'id_produto'      => $produto->getIdProduto(), 
-            'nome'            => $produto->getNome(),
-            'descricao'       => $produto->getDescricao(),
-            'preco'           => $produto->getPreco(),
-            'marca'           => $produto->getMarca(),
-            'categoria'       => $produto->getCategoria(),
-            'id_promocao'     => $produto->getIdPromocao(),
-            'imagem'          => null,
-            'estoque'         => $produto->getEstoque(),
-            'disponivel'      => $produto->getDisponivel()
+            'id_produto'      => $produto->get_id_produto(), 
+            'nome'            => $produto->get_nome(),
+            'descricao'       => $produto->get_descricao(),
+            'preco'           => $produto->get_preco(),
+            'marca'           => $produto->get_marca(),
+            'categoria'       => $produto->get_categoria(),
+            'id_promocao'     => $produto->get_id_promocao(),
+            'caminho_imagem'  => $produto->get_caminho_imagem(), 
+            'estoque'         => $produto->get_estoque(),
+            'disponivel'      => $produto->get_disponivel()
         ];
         return $this->dbQuery->update($dados);
     }

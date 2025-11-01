@@ -108,7 +108,7 @@
     "login": {
         "path": "public/views/login.html"
     },
-    "dashboard": {
+    "inicio": {
         "path": "public/views/dashboard.html",
         "sessionKey": [
             {
