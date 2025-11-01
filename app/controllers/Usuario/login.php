@@ -41,8 +41,9 @@ try {
         $_SESSION['usuario_id'] = $usuarioExistente->getIdUsuario();
         $_SESSION['usuario_nome'] = $usuarioExistente->getNome();
         $_SESSION['usuario_acesso'] = $usuarioExistente->getAcesso();
+        $_SESSION['usuario_nivel'] = $usuarioExistente->getIdNivel();
 
-        $isAdmin = ($usuarioExistente->getAcesso() === 'admin');
+        $isAdmin = ($usuarioExistente->getIdNivel() == 1);
 
         echo json_encode([
             'sucesso' => true,

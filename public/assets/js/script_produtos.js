@@ -1,11 +1,40 @@
-// Script completo para gerenciamento de produtos
+// =============================================================================
+// SCRIPT DE GERENCIAMENTO DE PRODUTOS
+// =============================================================================
+
+// Carregar informações do usuário logado
+const carregarUsuarioLogado = () => {
+    const nomeCompleto = sessionStorage.getItem('usuario_nome') || 'Usuário';
+    const primeiroNome = nomeCompleto.split(' ')[0];
+    
+    const elementoNomeCompleto = document.getElementById('usuario-nome-completo');
+    if (elementoNomeCompleto) {
+        elementoNomeCompleto.textContent = nomeCompleto;
+    }
+    
+    const elementoPrimeiroNome = document.getElementById('usuario-primeiro-nome');
+    if (elementoPrimeiroNome) {
+        elementoPrimeiroNome.textContent = primeiroNome;
+    }
+};
+
+// =============================================================================
+// INICIALIZAÇÃO
+// =============================================================================
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Atualiza promoções/produtos ao receber evento global
+    // Carregar nome do usuário
+    carregarUsuarioLogado();
+    
+    // Atualizar quando promoções forem modificadas
     window.addEventListener('promocaoAtualizada', async function() {
         await carregarPromocoes();
         await carregarProdutos();
     });
-    // Referências aos elementos do DOM
+    
+    // -------------------------------------------------------------------------
+    // ELEMENTOS DO DOM
+    // -------------------------------------------------------------------------
     const formProduto = document.getElementById('form-produto');
     const inputId = document.getElementById('produto_id');
     const inputNome = document.getElementById('nome_produto');

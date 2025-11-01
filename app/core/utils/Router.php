@@ -106,10 +106,10 @@ class Router {
     }
     
     private function redirectToErrorPage($route) {
-        global $rootPath;
-        $errorPath = $rootPath . '/' . $route['errorPath'];
-        if (isset($route['errorPath']) && file_exists($errorPath)) {
-            require $errorPath;
+        if (isset($route['errorPath'])) {
+            // Redireciona para a rota especificada em errorPath
+            header('Location: /' . $route['errorPath']);
+            exit;
         } else {
             $this->notFound();
         }

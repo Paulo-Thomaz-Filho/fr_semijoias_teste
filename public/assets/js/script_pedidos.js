@@ -1,13 +1,38 @@
-﻿// Script completo para gerenciamento de pedidos
+﻿// =============================================================================
+// SCRIPT DE GERENCIAMENTO DE PEDIDOS
+// =============================================================================
+
+// Carregar informações do usuário logado
+const carregarUsuarioLogado = () => {
+    const nomeCompleto = sessionStorage.getItem('usuario_nome') || 'Usuário';
+    const primeiroNome = nomeCompleto.split(' ')[0];
+    
+    const elementoNomeCompleto = document.getElementById('usuario-nome-completo');
+    if (elementoNomeCompleto) {
+        elementoNomeCompleto.textContent = nomeCompleto;
+    }
+    
+    const elementoPrimeiroNome = document.getElementById('usuario-primeiro-nome');
+    if (elementoPrimeiroNome) {
+        elementoPrimeiroNome.textContent = primeiroNome;
+    }
+};
+
+// =============================================================================
+// INICIALIZAÇÃO
+// =============================================================================
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializa o array de itens vazio ao carregar a página
-    // Sempre recarrega clientes quando houver alteração global
+    carregarUsuarioLogado();
+    
+    // Atualizar clientes quando houver alteração global
     window.addEventListener('clientesAtualizados', function() {
         carregarClientesPedido();
     });
-    // Mapa de idCliente para nome
-    let clientesMap = {};
-    // Referências aos elementos do DOM
+    
+    // -------------------------------------------------------------------------
+    // ELEMENTOS DO DOM
+    // -------------------------------------------------------------------------
     const formPedido = document.getElementById('form-pedido');
     // Seleciona o tbody da tabela principal de pedidos pelo id
     const tabelaPedidos = document.querySelector('#tabelaPedidos tbody');
@@ -24,9 +49,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAtualizarPedido = document.getElementById('btnAtualizarPedido');
     const btnExcluirPedido = document.getElementById('btnExcluirPedido');
     
+    // -------------------------------------------------------------------------
+    // VARIÁVEIS DE ESTADO
+    // -------------------------------------------------------------------------
+    
     let pedidoSelecionado = null;
-
-    // Formatar input de preço enquanto digita (padrão brasileiro com vírgula automática)
+    let clientesMap = {};
+    
+    // -------------------------------------------------------------------------
+    // FUNÇÕES UTILITÁRIAS
+    // -------------------------------------------------------------------------
+    
+    // Converter valor formatado (com vírgula) para número
+    const precoParaNumero = (valorFormatado) => {
+        if (!valorFormatado) return 0;
+        return parseFloat(valorFormatado.replace(',', '.'));
+    };
+    
+    // -------------------------------------------------------------------------
+    // EVENTOS DE FORMATAÇÃO
+    // -------------------------------------------------------------------------
+    
+    // Formatar input de preço enquanto digita
     inputValor.addEventListener('input', function(e) {
         let valor = e.target.value;
         
@@ -46,12 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = numero.toFixed(2).replace('.', ',');
     });
     
-    // Função para converter valor formatado (com vírgula) para número
-    const precoParaNumero = (valorFormatado) => {
-        if (!valorFormatado) return 0;
-        return parseFloat(valorFormatado.replace(',', '.'));
-    };
-
+    // -------------------------------------------------------------------------
+    // FUNÇÕES DE CARREGAMENTO DE DADOS
+    // -------------------------------------------------------------------------
+    
     // Carregar produtos no select
     const carregarProdutos = async () => {
         try {
@@ -124,6 +166,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar pedidos na tabela
     const carregarPedidos = async () => {
         tabelaPedidos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Carregando pedidos...</td></tr>';
+        
+        // Garantir que os clientes estejam carregados antes de exibir os pedidos
+        if (Object.keys(clientesMap).length === 0) {
+            await carregarClientesPedido();
+        }
+        
         try {
             // Corrige para buscar da porta correta
             const response = await fetch('http://localhost:8000/pedidos');
@@ -382,8 +430,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar
     if (selectProduto) carregarProdutos();
     if (selectStatus) carregarStatus();
-    if (inputCliente) carregarClientesPedido();
-    if (tabelaPedidos) carregarPedidos();
+    
+    // Carregar clientes primeiro, depois pedidos
+    async function inicializar() {
+        if (inputCliente) await carregarClientesPedido();
+        if (tabelaPedidos) await carregarPedidos();
+    }
+    inicializar();
 
     // Exportar funções globais para os botões onclick do HTML
     window.editarPedido = selecionarPedido;

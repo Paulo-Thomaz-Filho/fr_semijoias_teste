@@ -1,26 +1,34 @@
-﻿// Carregar informações do usuário logado
+﻿// =============================================================================
+// SCRIPT DO DASHBOARD
+// =============================================================================
+
+// Carregar informações do usuário logado
 const carregarUsuarioLogado = () => {
     const nomeCompleto = sessionStorage.getItem('usuario_nome') || 'Usuário';
     const primeiroNome = nomeCompleto.split(' ')[0];
     
-    // Atualizar o nome completo no dropdown
     const elementoNomeCompleto = document.getElementById('usuario-nome-completo');
     if (elementoNomeCompleto) {
         elementoNomeCompleto.textContent = nomeCompleto;
     }
     
-    // Atualizar o primeiro nome no header
     const elementoPrimeiroNome = document.getElementById('usuario-primeiro-nome');
     if (elementoPrimeiroNome) {
         elementoPrimeiroNome.textContent = primeiroNome;
     }
 };
 
+// Função global para atualizar dashboard
 window.atualizarDashboard = async function() {
     await carregarEstatisticas();
     await carregarPedidosRecentes();
 };
 
+// =============================================================================
+// FUNÇÕES DE CARREGAMENTO DE DADOS
+// =============================================================================
+
+// Carregar estatísticas dos cards
 const carregarEstatisticas = async () => {
     try {
         const response = await fetch('/dashboard/estatisticas');
@@ -30,7 +38,10 @@ const carregarEstatisticas = async () => {
         const totalGanhos = document.getElementById('total-ganhos');
         if (totalGanhos) {
             const ganhos = parseFloat(dados.total_ganhos || 0);
-            totalGanhos.textContent = ganhos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            totalGanhos.textContent = ganhos.toLocaleString('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL' 
+            });
         }
         
         // Card 2: Total de Usuários Cadastrados
@@ -54,75 +65,115 @@ const carregarEstatisticas = async () => {
         }
         
     } catch (error) {
-        console.error('Erro estatísticas:', error);
+        console.error('Erro ao carregar estatísticas:', error);
     }
 };
 
+// Carregar pedidos recentes pendentes
 const carregarPedidosRecentes = async () => {
     try {
         const tbody = document.querySelector('#tabelaPedidosRecentes tbody');
         if (!tbody) return;
+        
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3">Carregando...</td></tr>';
-        // Carregar lista de status para mapear idStatus -> nome
+        
+        // Carregar mapeamento de status
         let statusMap = {};
         try {
             const statusResp = await fetch('/status');
             const statusList = await statusResp.json();
             if (Array.isArray(statusList)) {
-                statusList.forEach(s => { statusMap[s.id_status] = s.nome; });
+                statusList.forEach(s => { 
+                    statusMap[s.id_status] = s.nome; 
+                });
             }
-        } catch {}
-        // Carregar lista de clientes para mapear idCliente -> nome
+        } catch (error) {
+            console.error('Erro ao carregar status:', error);
+        }
+        
+        // Carregar mapeamento de clientes
         let clientesMap = {};
         try {
             const clientesResp = await fetch('/usuario');
             const clientesList = await clientesResp.json();
             if (Array.isArray(clientesList)) {
-                clientesList.forEach(c => { clientesMap[c.idUsuario] = c.nome; });
+                clientesList.forEach(c => { 
+                    clientesMap[c.idUsuario] = c.nome; 
+                });
             }
-        } catch {}
+        } catch (error) {
+            console.error('Erro ao carregar clientes:', error);
+        }
+        // Carregar pedidos
         const response = await fetch('/pedidos');
         let pedidos = await response.json();
-        // Verificar se houve erro no servidor
+        
         if (!response.ok || !Array.isArray(pedidos)) {
             console.error('Erro ao carregar pedidos:', pedidos);
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar pedidos</td></tr>';
             return;
         }
-        // Limita aos 10 mais recentes (mais novos primeiro) e filtra por status textual
-        pedidos = pedidos.filter(p => {
-            const statusNome = statusMap[p.idStatus] ? statusMap[p.idStatus].toLowerCase() : '';
-            return statusNome === 'pendente';
-        }).reverse().slice(0, 10);
+        
+        // Filtrar apenas pedidos pendentes e limitar aos 10 mais recentes
+        pedidos = pedidos
+            .filter(p => {
+                const statusNome = statusMap[p.idStatus] ? statusMap[p.idStatus].toLowerCase() : '';
+                return statusNome === 'pendente';
+            })
+            .reverse()
+            .slice(0, 10);
+        
         if (pedidos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">Nenhum pedido pendente</td></tr>';
             return;
         }
+        // Renderizar tabela
         tbody.innerHTML = pedidos.map(p => {
-            // Calcular valor total (preco * quantidade)
             const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
-            const valor = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const valor = valorTotal.toLocaleString('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL' 
+            });
             const data = p.dataPedido ? new Date(p.dataPedido).toLocaleDateString('pt-BR') : 'N/A';
             const status = statusMap[p.idStatus] || 'N/A';
             const endereco = p.endereco || '-';
             const clienteNome = clientesMap[p.idCliente] || 'N/A';
-            // Mapear status para classe CSS dos badges
+            
+            // Mapear status para classe CSS
             let statusClass = status.toLowerCase().replace(/\s+/g, '-');
             if (statusClass === 'pendente') statusClass = 'pending';
             if (statusClass === 'enviado') statusClass = 'sent';
             if (statusClass === 'concluído' || statusClass === 'concluido') statusClass = 'green';
             if (statusClass === 'cancelado') statusClass = 'danger';
-            const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + status + '</span>';
-            return '<tr class="border-bottom border-light"><td class="py-3 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-3 text-dark">' + clienteNome + '</td><td class="py-3 text-dark">' + endereco + '</td><td class="py-3 text-dark">' + valor + '</td><td class="py-3 text-dark">' + data + '</td><td class="py-3">' + statusBadge + '</td></tr>';
+            
+            const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;
+            
+            return `
+                <tr class="border-bottom border-light">
+                    <td class="py-3 text-dark">${p.produtoNome || 'N/A'}</td>
+                    <td class="py-3 text-dark">${clienteNome}</td>
+                    <td class="py-3 text-dark">${endereco}</td>
+                    <td class="py-3 text-dark">${valor}</td>
+                    <td class="py-3 text-dark">${data}</td>
+                    <td class="py-3">${statusBadge}</td>
+                </tr>
+            `;
         }).join('');
+        
     } catch (error) {
-        console.error('Erro pedidos recentes:', error);
+        console.error('Erro ao carregar pedidos recentes:', error);
         const tbody = document.querySelector('#tabelaPedidosRecentes tbody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar</td></tr>';
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar</td></tr>';
+        }
     }
 };
 
+// =============================================================================
+// INICIALIZAÇÃO
+// =============================================================================
+
 document.addEventListener('DOMContentLoaded', async function() {
-    carregarUsuarioLogado(); // Carregar nome do usuário primeiro
+    carregarUsuarioLogado();
     await atualizarDashboard();
 });

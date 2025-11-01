@@ -29,8 +29,8 @@
     "api/usuario/login": {
         "path": "app/controllers/Usuario/login.php"
     },
-    "api/usuario/registrar": {
-        "path": "app/controllers/Usuario/salvar.php"
+    "api/usuario/logout": {
+        "path": "app/controllers/Usuario/logout.php"
     },
 
 
@@ -108,7 +108,54 @@
     "login": {
         "path": "public/views/login.html"
     },
-    "inicio": {
-        "path": "public/views/inicio.html"
+    "dashboard": {
+        "path": "public/views/dashboard.html",
+        "sessionKey": [
+            {
+                "user_logged_in": true,
+                "usuario_nivel": [1]
+            }
+        ],
+        "errorPath": "login"
+    },
+    "cliente": {
+        "path": "public/views/cliente.html",
+        "sessionKey": [
+            {
+                "user_logged_in": true,
+                "usuario_nivel": [1]
+            }
+        ],
+        "errorPath": "login"
+    },
+    "produto": {
+        "path": "public/views/produto.html",
+        "sessionKey": [
+            {
+                "user_logged_in": true,
+                "usuario_nivel": [1]
+            }
+        ],
+        "errorPath": "login"
+    },
+    "pedido": {
+        "path": "public/views/pedido.html",
+        "sessionKey": [
+            {
+                "user_logged_in": true,
+                "usuario_nivel": [1]
+            }
+        ],
+        "errorPath": "login"
+    },
+    "promocao": {
+        "path": "public/views/promocao.html",
+        "sessionKey": [
+            {
+                "user_logged_in": true,
+                "usuario_nivel": [1]
+            }
+        ],
+        "errorPath": "login"
     }
 }

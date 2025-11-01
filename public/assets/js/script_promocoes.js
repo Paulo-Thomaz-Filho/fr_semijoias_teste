@@ -1,23 +1,33 @@
-// Script padronizado para CRUD de promoções
-// Adaptado para funcionar com os IDs e campos do HTML de inicio.html
+// =============================================================================
+// SCRIPT DE GERENCIAMENTO DE PROMOÇÕES
+// =============================================================================
+
+// Carregar informações do usuário logado
+const carregarUsuarioLogado = () => {
+    const nomeCompleto = sessionStorage.getItem('usuario_nome') || 'Usuário';
+    const primeiroNome = nomeCompleto.split(' ')[0];
+    
+    const elementoNomeCompleto = document.getElementById('usuario-nome-completo');
+    if (elementoNomeCompleto) {
+        elementoNomeCompleto.textContent = nomeCompleto;
+    }
+    
+    const elementoPrimeiroNome = document.getElementById('usuario-primeiro-nome');
+    if (elementoPrimeiroNome) {
+        elementoPrimeiroNome.textContent = primeiroNome;
+    }
+};
+
+// =============================================================================
+// INICIALIZAÇÃO
+// =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Preenche o select de tipo de desconto com os valores do backend
-    function carregarTipoDesconto() {
-        // Os valores possíveis do banco
-        const tipos = [
-            { value: 'percentual', label: '%' },
-            { value: 'valor', label: 'R$' }
-        ];
-        selectTipoDesconto.innerHTML = '<option value="" selected disabled>Selecione um tipo de desconto</option>';
-        tipos.forEach(tipo => {
-            const option = document.createElement('option');
-            option.value = tipo.value;
-            option.textContent = tipo.label;
-            selectTipoDesconto.appendChild(option);
-        });
-    }
-    // Elementos do DOM
+    carregarUsuarioLogado();
+    
+    // -------------------------------------------------------------------------
+    // ELEMENTOS DO DOM
+    // -------------------------------------------------------------------------
     const formPromocao = document.getElementById('form-promocoes');
     const inputId = document.getElementById('promocao_id');
     const inputNome = document.getElementById('nome_promocao');
@@ -31,10 +41,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAtualizar = document.getElementById('btnAtualizarPromocao');
     const btnExcluir = document.getElementById('btnExcluirPromocao');
     const tabelaCorpo = document.querySelector('#tabelaPromocoes tbody');
-
+    
+    // -------------------------------------------------------------------------
+    // VARIÁVEIS DE ESTADO
+    // -------------------------------------------------------------------------
+    
     let promocaoSelecionada = null;
-
-    // Limpa e reseta o formulário
+    
+    // -------------------------------------------------------------------------
+    // FUNÇÕES UTILITÁRIAS
+    // -------------------------------------------------------------------------
+    
+    // Preencher select de tipo de desconto
+    function carregarTipoDesconto() {
+        const tipos = [
+            { value: 'percentual', label: '%' },
+            { value: 'valor', label: 'R$' }
+        ];
+        selectTipoDesconto.innerHTML = '<option value="" selected disabled>Selecione um tipo de desconto</option>';
+        tipos.forEach(tipo => {
+            const option = document.createElement('option');
+            option.value = tipo.value;
+            option.textContent = tipo.label;
+            selectTipoDesconto.appendChild(option);
+        });
+    }
+    
+    // Carregar status possíveis
+    function carregarStatus() {
+        selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
+        selectStatus.innerHTML += '<option value="1">Ativo</option>';
+        selectStatus.innerHTML += '<option value="0">Inativo</option>';
+    }
+    
+    // -------------------------------------------------------------------------
+    // FUNÇÕES DE INTERFACE
+    // -------------------------------------------------------------------------
+    
+    // Limpar e resetar o formulário
     function limparFormulario() {
         formPromocao.reset();
         inputId.value = 'Auto';
@@ -45,15 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
         tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
         carregarTipoDesconto();
     }
-
-    // Carrega status possíveis
-    function carregarStatus() {
-    selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
-    selectStatus.innerHTML += '<option value="1">Ativo</option>';
-    selectStatus.innerHTML += '<option value="0">Inativo</option>';
-    }
-
-    // Carrega promoções na tabela
+    
+    // -------------------------------------------------------------------------
+    // FUNÇÕES DE CARREGAMENTO DE DADOS
+    // -------------------------------------------------------------------------
+    
+    // Carregar promoções na tabela
     async function carregarPromocoes() {
         tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Carregando promoções...</td></tr>';
         try {

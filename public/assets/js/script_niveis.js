@@ -1,5 +1,4 @@
 // Popula o dropdown de nível de acesso com dados do backend
-
 document.addEventListener('DOMContentLoaded', function() {
     const selectNivel = document.getElementById('nivel_cliente');
     if (!selectNivel) return;

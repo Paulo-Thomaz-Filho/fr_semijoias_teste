@@ -22,8 +22,8 @@ try {
     $stmtUsuarios->execute();
     $totalUsuarios = $stmtUsuarios->fetch(\PDO::FETCH_ASSOC)['total_usuarios'];
 
-    // 3. Vendas do Mês Atual
-    $sqlVendasMes = "SELECT COUNT(*) as vendas_mes FROM pedidos WHERE MONTH(data_pedido) = MONTH(CURRENT_DATE()) AND YEAR(data_pedido) = YEAR(CURRENT_DATE())";
+    // 3. Vendas do Mês Atual (últimos 30 dias)
+    $sqlVendasMes = "SELECT COUNT(*) as vendas_mes FROM pedidos WHERE data_pedido >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
     $stmtVendasMes = $conn->prepare($sqlVendasMes);
     $stmtVendasMes->execute();
     $vendasMes = $stmtVendasMes->fetch(\PDO::FETCH_ASSOC)['vendas_mes'];
