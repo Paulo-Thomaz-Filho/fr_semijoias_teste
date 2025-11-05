@@ -27,7 +27,9 @@ class UsuarioDAO {
 				$row['cpf'],
 				$row['endereco'],
 				$row['data_nascimento'],
-				$row['id_nivel']
+				$row['id_nivel'],
+				$row['status'],         // <-- ADICIONADO
+    			$row['token_ativacao']  // <-- ADICIONADO
 			);
 		}
 		return null;
@@ -40,7 +42,7 @@ class UsuarioDAO {
 
 			$this->dbQuery = new DBQuery(
 				'usuarios',
-				'id_usuario, nome, email, senha, telefone, cpf, endereco, data_nascimento, id_nivel',
+				'id_usuario, nome, email, senha, telefone, cpf, endereco, data_nascimento, id_nivel, status, token_ativacao',
 				'id_usuario'
 			);
 		}
@@ -59,7 +61,9 @@ class UsuarioDAO {
 				    $row['cpf'],
 				    $row['endereco'],
 				    $row['data_nascimento'],
-				    $row['id_nivel']
+				    $row['id_nivel'],
+					$row['status'],         // <-- ADICIONADO
+    				$row['token_ativacao']  // <-- ADICIONADO
 				);
 				$usuarios[] = $usuario;
 			}
@@ -83,7 +87,9 @@ class UsuarioDAO {
 				    $row['cpf'],
 				    $row['endereco'],
 				    $row['data_nascimento'],
-				    $row['id_nivel']
+				    $row['id_nivel'],
+					$row['status'],         // <-- ADICIONADO
+					$row['token_ativacao']  // <-- ADICIONADO
 				);
 			}
         
@@ -100,7 +106,9 @@ class UsuarioDAO {
 						$usuario->getCpf(),
 						$usuario->getEndereco(),
 						$usuario->getDataNascimento(),
-						$usuario->getIdNivel()
+						$usuario->getIdNivel(),
+						$usuario->getStatus(),         // <-- ADICIONADO
+    					$usuario->getTokenAtivacao()   // <-- ADICIONADO
 				];
 				return $this->dbQuery->insert($dados);
 		}
@@ -115,7 +123,9 @@ class UsuarioDAO {
 						'cpf'             => $usuario->getCpf(),
 						'endereco'        => $usuario->getEndereco(),
 						'data_nascimento' => $usuario->getDataNascimento(),
-						'id_nivel'        => $usuario->getIdNivel()
+						'id_nivel'        => $usuario->getIdNivel(),
+						'status'         => $usuario->getStatus(),         // <-- ADICIONADO
+						'token_ativacao'  => $usuario->getTokenAtivacao()   // <-- ADICIONADO
 				];
 
 				return $this->dbQuery->update($dados);
@@ -133,4 +143,21 @@ class UsuarioDAO {
 					throw new \Exception('Erro ao deletar usuário: ' . $e->getMessage());
 				}
 		}
+
+		public function getByToken($token){
+			$where = new Where();
+			$where->addCondition('AND', 'token_ativacao', '=', $token);
+			$dados = $this->dbQuery->selectFiltered($where);
+
+			if($dados){
+				$row = $dados[0];
+				return new Usuario(
+					$row['id_usuario'], $row['nome'], $row['email'], $row['senha'],
+					$row['telefone'], $row['cpf'], $row['endereco'],
+					$row['data_nascimento'], $row['id_nivel'],
+					$row['status'], $row['token_ativacao']
+				);
+			}
+        return null;
+    }
 }

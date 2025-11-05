@@ -105,6 +105,9 @@
 
 
 
+    "ativar": {
+        "path": "app/controllers/Usuario/ativar.php"
+    },
     "login": {
         "path": "public/views/login.html"
     },

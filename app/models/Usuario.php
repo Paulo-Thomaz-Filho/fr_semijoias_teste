@@ -12,8 +12,10 @@ class Usuario {
     private $endereco;
     private $dataNascimento;
     private $idNivel;
+    private $status;         // <-- ADICIONADO
+    private $token_ativacao; // <-- ADICIONADO
 
-    public function __construct($idUsuario = null, $nome = null, $email = null, $senha = null, $telefone = null, $cpf = null, $endereco = null, $dataNascimento = null, $idNivel = null) {
+    public function __construct($idUsuario = null, $nome = null, $email = null, $senha = null, $telefone = null, $cpf = null, $endereco = null, $dataNascimento = null, $idNivel = null, $status = null, $token_ativacao = null){ // <-- ADICIONADO) {
         $this->idUsuario = $idUsuario;
         $this->nome = $nome;
         $this->email = $email;
@@ -23,6 +25,8 @@ class Usuario {
         $this->endereco = $endereco;
         $this->dataNascimento = $dataNascimento;
         $this->idNivel = $idNivel;
+        $this->status = $status;             // <-- ADICIONADO
+        $this->token_ativacao = $token_ativacao; // <-- ADICIONADO
     }
 
     // --- Getters ---
@@ -35,6 +39,8 @@ class Usuario {
     public function getEndereco()       { return $this->endereco; }
     public function getDataNascimento() { return $this->dataNascimento; }
     public function getIdNivel()        { return $this->idNivel; }
+    public function getStatus()         { return $this->status; }         // <-- ADICIONADO
+    public function getTokenAtivacao()  { return $this->token_ativacao; } // <-- ADICIONADO
 
     // --- Setters ---
     public function setIdUsuario($id)                  { $this->idUsuario = $id; }
@@ -46,6 +52,8 @@ class Usuario {
     public function setEndereco($endereco)             { $this->endereco = $endereco; }
     public function setDataNascimento($dataNascimento) { $this->dataNascimento = $dataNascimento; }
     public function setIdNivel($idNivel)               { $this->idNivel = $idNivel; }
+    public function setStatus($status)                 { $this->status = $status; }         // <-- ADICIONADO
+    public function setTokenAtivacao($token_ativacao)  { $this->token_ativacao = $token_ativacao; } // <-- ADICIONADO
 
     // Retorna o tipo de acesso do usuário
     public function getAcesso() {
@@ -59,7 +67,7 @@ class Usuario {
     // Verifica se a senha informada confere com a senha do usuário
     public function verificarSenha($senhaInformada) {
         // Senha no banco está em md5
-        return md5($senhaInformada) === $this->senha;
+        return password_verify($senhaInformada, $this->senha);
     }
 
     public function toArray() {

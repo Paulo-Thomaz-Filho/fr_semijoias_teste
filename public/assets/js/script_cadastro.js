@@ -29,7 +29,7 @@ $(document).ready(function(){
         console.log('Enviando dados do cadastro via JSON');
 
         $.ajax({
-            url: '/api/usuario/registrar',
+            url: 'usuario/salvar',
             type: 'POST',
             contentType: 'application/json', // INFORMA que estamos enviando JSON
             data: JSON.stringify(cadastroData), // CONVERTE o objeto para uma string JSON

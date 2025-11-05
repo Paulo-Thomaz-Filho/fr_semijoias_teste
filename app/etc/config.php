@@ -27,6 +27,8 @@
  * - A sessão PHP deve estar iniciada antes de utilizar este arquivo.
  */
 
+
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -47,6 +49,8 @@ $uriArray    = array_values(
 
 $ultimaPastaDir = basename($rootPath);
 $primeiraPastaUri = isset($uriArray[0]) ? $uriArray[0] : '';
+
+
 
 $rootPathUrl = $dominio;
 if ($ultimaPastaDir === $primeiraPastaUri) {

@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
 :root {
-    --gold: #D4AF37;
-    --mid-gold: #fbd671;
-    --light-gold: #ffefc4; 
+    --gold: #d49537;
+    --mid-gold: #ede064;
+    --light-gold: #f5ffc4; 
     --gold-hover: #B8941F;
     --dark-gray: #2C2C2C;
     --medium-gray: #6C757D;
     --light-gray: #F8F9FA;
     --white: #FFFFFF;
-    --roxo: #ffcbdb;
+    --roxo: #575757;
 }
 
 * {
@@ -87,8 +87,8 @@ outline: none;
 }
 
 button.ghost {
-background-color: #743e34;
-border-color: #743e34;
+background-color: #FF4B2B;
+border-color: #FF4B2B;
 border-radius: 200px;
 }
 

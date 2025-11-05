@@ -1,9 +1,6 @@
 <?php
 define('APP_ENV', 'development');
 
-error_reporting(0); 
-ini_set('display_errors', 0);
-
 header('Content-Type: application/json; charset=utf-8');
 
 // Configurar o ambiente
@@ -36,7 +33,19 @@ try {
     $usuarioDAO = new \app\models\UsuarioDAO();
     $usuarioExistente = $usuarioDAO->getByEmail($data->email);
 
+    // Verifica se o usuário existe E se a senha está correta
     if ($usuarioExistente && $usuarioExistente->verificarSenha($data->senha)) {
+        
+        // --- VERIFICAÇÃO DE STATUS ADICIONADA ---
+        // Verifica se a conta do usuário já foi ativada
+        if ($usuarioExistente->getStatus() !== 'ativo') {
+            http_response_code(401); // Não autorizado
+            echo json_encode(['erro' => 'Sua conta ainda não foi ativada. Por favor, verifique seu e-mail.'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        // --- FIM DA VERIFICAÇÃO ---
+
+        // Se passou em ambas as verificações, cria a sessão
         $_SESSION['user_logged_in'] = true;
         $_SESSION['usuario_id'] = $usuarioExistente->getIdUsuario();
         $_SESSION['usuario_nome'] = $usuarioExistente->getNome();
@@ -50,7 +59,9 @@ try {
             'isAdmin' => $isAdmin,
             'usuario_nome' => $usuarioExistente->getNome()
         ], JSON_UNESCAPED_UNICODE);
+        
     } else {
+        // Se o usuário não existe OU a senha está errada
         http_response_code(401);
         echo json_encode(['erro' => 'E-mail ou senha inválidos.'], JSON_UNESCAPED_UNICODE);
     }
