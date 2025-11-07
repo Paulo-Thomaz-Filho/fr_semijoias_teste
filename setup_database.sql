@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     marca VARCHAR(100),
     categoria VARCHAR(100),
     id_promocao INT NULL,
-    imagem VARCHAR(255),
+    caminho_imagem VARCHAR(255), -- ATUALIZADO (era 'imagem')
     estoque INT NOT NULL,
     disponivel BOOLEAN NOT NULL,
     FOREIGN KEY (id_promocao) REFERENCES promocoes(id_promocao) ON DELETE SET NULL
@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
     endereco VARCHAR(500),
     data_nascimento DATE,
     id_nivel INT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pendente', -- ADICIONADO
+    token_ativacao VARCHAR(255) DEFAULT NULL,       -- ADICIONADO
     FOREIGN KEY (id_nivel) REFERENCES nivel_acesso(id_nivel) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -89,6 +91,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 -- ==========================================
 -- POPULAÇÃO DAS TABELAS
+-- (Mantidos os dados originais do setup_database.sql por serem mais completos)
 -- ==========================================
 
 -- Datas
