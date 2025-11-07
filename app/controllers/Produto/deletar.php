@@ -4,7 +4,6 @@ header('Content-Type: application/json; charset=utf-8');
 // Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
 
@@ -14,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DEL
     exit;
 }
 
-$idProduto = $_GET['id'] ?? $_GET['idProduto'] ?? $_POST['id'] ?? $_POST['idProduto'] ?? null;
+$idProduto = $_GET['id_produto'] ?? $_GET['idProduto'] ?? $_POST['id_produto'] ?? $_POST['idProduto'] ?? null;
 
 if (!$idProduto) {
     http_response_code(400);

@@ -17,6 +17,9 @@
     "usuario/salvar": {
         "path": "app/controllers/Usuario/salvar.php"
     },
+    "usuario/salvarAdmin": {
+        "path": "app/controllers/Usuario/salvarAdmin.php"
+    },
     "usuario/buscar": {
         "path": "app/controllers/Usuario/buscarPorId.php"
     },
@@ -111,7 +114,7 @@
     "login": {
         "path": "public/views/login.html"
     },
-    "inicio": {
+    "dashboard": {
         "path": "public/views/dashboard.html",
         "sessionKey": [
             {

@@ -200,99 +200,120 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Salvar novo cliente
     const salvarCliente = async () => {
-        const dados = new FormData();
-        dados.append('nome', inputNome.value);
-        dados.append('email', inputEmail.value);
-        dados.append('senha', inputSenha.value);
-        dados.append('endereco', inputEndereco.value);
-        dados.append('telefone', inputTelefone.value);
-        dados.append('cpf', inputCpf.value);
-        dados.append('data_nascimento', inputNascimento.value);
-        dados.append('id_nivel', selectNivel.value);
-        
-        try {
-            const response = await fetch('/usuario/salvar', {
-                method: 'POST',
-                body: dados
-            });
-            const resultado = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(resultado.erro || 'Erro ao salvar.');
-            }
-            
-            alert('Cliente salvo com sucesso!');
-            limparFormulario();
-            carregarClientes();
-            window.dispatchEvent(new Event('clientesAtualizados'));
-            
-        } catch (error) {
-            console.error('Erro ao salvar cliente:', error);
-            alert(error.message);
-        }
+    // 1. Criar um objeto JS simples
+    const dadosCliente = {
+        nome: inputNome.value,
+        email: inputEmail.value,
+        senha: inputSenha.value,
+        endereco: inputEndereco.value,
+        telefone: inputTelefone.value,
+        cpf: inputCpf.value,
+        data_nascimento: inputNascimento.value,
+        id_nivel: selectNivel.value
     };
 
-    // Atualizar cliente existente
-    const atualizarCliente = async () => {
-        const dados = new FormData();
-        dados.append('idUsuario', clienteSelecionado);
-        dados.append('nome', inputNome.value);
-        dados.append('email', inputEmail.value);
-        dados.append('senha', inputSenha.value);
-        dados.append('endereco', inputEndereco.value);
-        dados.append('telefone', inputTelefone.value);
-        dados.append('cpf', inputCpf.value);
-        dados.append('data_nascimento', inputNascimento.value);
-        dados.append('id_nivel', selectNivel.value);
-        
-        try {
-            const response = await fetch('/usuario/atualizar', {
-                method: 'POST',
-                body: dados
-            });
-            const resultado = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(resultado.erro || 'Erro ao atualizar.');
-            }
-            
-            alert('Cliente atualizado com sucesso!');
-            limparFormulario();
-            carregarClientes();
-            window.dispatchEvent(new Event('clientesAtualizados'));
-            
-        } catch (error) {
-            console.error('Erro ao atualizar cliente:', error);
-            alert(error.message);
+    try {
+        const response = await fetch('/usuario/salvarAdmin', {
+            method: 'POST',
+            // 2. Definir o cabeçalho para JSON
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // 3. Enviar o objeto como string JSON
+            body: JSON.stringify(dadosCliente)
+        });
+        const resultado = await response.json();
+
+        if (!response.ok) {
+            throw new Error(resultado.erro || 'Erro ao salvar.');
         }
+
+        alert('Cliente salvo com sucesso!');
+        limparFormulario();
+        carregarClientes();
+        window.dispatchEvent(new Event('clientesAtualizados'));
+
+    } catch (error) {
+        console.error('Erro ao salvar cliente:', error);
+        alert(error.message);
+    }
+};
+
+// Atualizar cliente existente
+const atualizarCliente = async () => {
+    // 1. Criar um objeto JS simples
+    const dadosCliente = {
+        idUsuario: clienteSelecionado, // Incluir o ID
+        nome: inputNome.value,
+        email: inputEmail.value,
+        senha: inputSenha.value, // (O back-end deve tratar se a senha vier vazia)
+        endereco: inputEndereco.value,
+        telefone: inputTelefone.value,
+        cpf: inputCpf.value,
+        data_nascimento: inputNascimento.value,
+        id_nivel: selectNivel.value
     };
 
-    // Excluir cliente
-    const excluirCliente = async () => {
-        const dados = new FormData();
-        dados.append('idUsuario', clienteSelecionado);
-        
-        try {
-            const response = await fetch('/usuario/deletar', {
-                method: 'POST',
-                body: dados
-            });
-            const resultado = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(resultado.erro || 'Erro ao excluir.');
-            }
-            
-            alert('Cliente excluído com sucesso!');
-            limparFormulario();
-            carregarClientes();
-            window.dispatchEvent(new Event('clientesAtualizados'));
-            
-        } catch (error) {
-            console.error('Erro ao excluir cliente:', error);
-            alert(error.message);
+    try {
+        const response = await fetch('/usuario/atualizar', {
+            method: 'POST', // (Idealmente seria PUT ou PATCH, mas mantendo seu padrão)
+            // 2. Definir o cabeçalho para JSON
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // 3. Enviar o objeto como string JSON
+            body: JSON.stringify(dadosCliente)
+        });
+        const resultado = await response.json();
+
+        if (!response.ok) {
+            throw new Error(resultado.erro || 'Erro ao atualizar.');
         }
+
+        alert('Cliente atualizado com sucesso!');
+        limparFormulario();
+        carregarClientes();
+        window.dispatchEvent(new Event('clientesAtualizados'));
+
+    } catch (error) {
+        console.error('Erro ao atualizar cliente:', error);
+        alert(error.message);
+    }
+};
+
+// Excluir cliente
+const excluirCliente = async () => {
+    // 1. Criar um objeto JS simples
+    const dadosCliente = {
+        idUsuario: clienteSelecionado
     };
+
+    try {
+        const response = await fetch('/usuario/deletar', {
+            method: 'POST', // (Idealmente seria DELETE, mas mantendo seu padrão)
+            // 2. Definir o cabeçalho para JSON
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // 3. Enviar o objeto como string JSON
+            body: JSON.stringify(dadosCliente)
+        });
+        const resultado = await response.json();
+
+        if (!response.ok) {
+            throw new Error(resultado.erro || 'Erro ao excluir.');
+        }
+
+        alert('Cliente excluído com sucesso!');
+        limparFormulario();
+        carregarClientes();
+        window.dispatchEvent(new Event('clientesAtualizados'));
+
+    } catch (error) {
+        console.error('Erro ao excluir cliente:', error);
+        alert(error.message);
+    }
+};
 
     // -------------------------------------------------------------------------
     // EVENTOS

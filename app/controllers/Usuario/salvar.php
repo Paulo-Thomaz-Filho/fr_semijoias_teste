@@ -19,10 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $json_data = file_get_contents('php://input');
 $data = json_decode($json_data);
 
-$nome = $data->nome ?? null;
-$email = $data->email ?? null;
-$senha = $data->senha ?? null;
-$id_nivel = 2; // Padrão para cliente
+$nome            = $data->nome            ?? null;
+$email           = $data->email           ?? null;
+$senha           = $data->senha           ?? null;
+$id_nivel        = $data->id_nivel        ?? 2;    // 2 para novos clientes
 
 // --- CORREÇÃO 2: Ajustar a validação para os campos que realmente vêm do JS ---
 if (!$nome || !$email || !$senha) {

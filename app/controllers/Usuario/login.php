@@ -54,6 +54,12 @@ try {
 
         $isAdmin = ($usuarioExistente->getIdNivel() == 1);
 
+        if ($isAdmin) {
+            $_SESSION['isAdmin'] = true;
+        } else {
+            $_SESSION['isAdmin'] = false;
+        }
+
         echo json_encode([
             'sucesso' => true,
             'isAdmin' => $isAdmin,

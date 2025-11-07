@@ -39,7 +39,11 @@ $(document).ready(function() {
                         sessionStorage.setItem('usuario_nome', response.usuario_nome);
                     }
                     alert('Login bem-sucedido!');
-                    window.location.href = '/inicio'; 
+                    if (response.isAdmin) {
+                        window.location.href = '/dashboard'; 
+                    } else {
+                        window.location.href = '/inicio'; 
+                    }
                 } else {
                     alert('Falha no login: ' + (response.erro || 'Credenciais inválidas.'));
                 }

@@ -8,13 +8,20 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+// Aceita POST (pois o JS envia POST)
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$idUsuario = $_GET['id'] ?? $_GET['idUsuario'] ?? $_POST['id'] ?? $_POST['idUsuario'] ?? null;
+// =================================================================
+// CORREÇÃO: Lendo o ID a partir do corpo JSON
+// =================================================================
+$json_data = file_get_contents('php://input');
+$data = json_decode($json_data);
+$idUsuario = $data->idUsuario ?? null;
+// =================================================================
 
 if (!$idUsuario) {
     http_response_code(400);
@@ -36,9 +43,11 @@ try {
         echo json_encode(['sucesso' => 'Usuário excluído com sucesso.'], JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
-        echo json_encode(['erro' => 'Erro ao excluir o usuário.'], JSON_UNESCAPED_UNICODE);
+        // Este é o erro que você está vendo
+        echo json_encode(['erro' => 'Erro ao excluir o usuário. (Possível restrição de chave estrangeira, ex: usuário com pedidos existentes)'], JSON_UNESCAPED_UNICODE);
     }
 } catch (\Throwable $e) {
     http_response_code(500);
+    // Se a restrição de FK não for tratada e gerar uma exceção
     echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
