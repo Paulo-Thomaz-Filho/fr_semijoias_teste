@@ -109,6 +109,11 @@
 
 
     "ativar": {
+        "path": "public/views/ativar.html"
+    },
+
+    
+    "usuario/ativar": {
         "path": "app/controllers/Usuario/ativar.php"
     },
     "login": {

@@ -1,12 +1,6 @@
 $(document).ready(function() {
 
-    $('#signUp').on('click', function() {
-        $('#container').addClass('right-panel-active');
-    });
-
-    $('#signIn').on('click', function() {
-        $('#container').removeClass('right-panel-active');
-    });
+    // Código de toggle removido - agora é feito inline no HTML
 
     $('#loginForm').on('submit', function(event){
         event.preventDefault();

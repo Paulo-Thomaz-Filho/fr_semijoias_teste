@@ -1,30 +1,22 @@
 <?php
-// Define o namespace que você já iniciou
-namespace app\controllers\Usuario;
-
-// --- CONFIGURAÇÃO E INCLUDES ---
 header('Content-Type: application/json; charset=utf-8');
 
+// Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
+
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
-// Não precisamos do Mail.php ou CodeGenerator.php aqui
 
-// --- VERIFICAÇÃO DO MÉTODO ---
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['erro' => 'Método não permitido.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// --- LEITURA DOS DADOS (JSON) ---
 $json_data = file_get_contents('php://input');
 $data = json_decode($json_data);
 
-// =================================================================
-// DIFERENÇA 1: Lendo todos os campos do formulário de admin
-// =================================================================
 $nome            = $data->nome            ?? null;
 $email           = $data->email           ?? null;
 $senha           = $data->senha           ?? null;
@@ -34,19 +26,9 @@ $telefone        = $data->telefone        ?? null;
 $cpf             = $data->cpf             ?? null;
 $data_nascimento = $data->data_nascimento ?? null;
 
-// --- VALIDAÇÃO ---
-// No admin, o nível também é obrigatório
 if (!$nome || !$email || !$senha || !$id_nivel) {
     http_response_code(400);
     echo json_encode(['erro' => 'Dados incompletos. Nome, email, senha e nível de acesso são obrigatórios.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Validação de senha forte (opcional para o admin, mas recomendado)
-$senhaForteRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).{8,}$/";
-if (!preg_match($senhaForteRegex, $senha)) {
-    http_response_code(400);
-    echo json_encode(['erro' => 'A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula e um caractere especial.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -63,18 +45,12 @@ try {
     $novoUsuario->setEmail($email);
     $novoUsuario->setSenha(password_hash($senha, PASSWORD_DEFAULT));
     $novoUsuario->setIdNivel($id_nivel);
-    
-    // Setando os campos adicionais
     $novoUsuario->setEndereco($endereco);
     $novoUsuario->setTelefone($telefone);
     $novoUsuario->setCpf($cpf);
-    $novoUsuario->setdataNascimento($data_nascimento); // Verifique se o nome do setter está correto
-    
-    // =================================================================
-    // DIFERENÇA 2 e 3: Status 'ativo' e sem envio de e-mail
-    // =================================================================
+    $novoUsuario->setDataNascimento($data_nascimento);
     $novoUsuario->setStatus('ativo'); 
-    $novoUsuario->setTokenAtivacao(null); // Não precisa de token
+    $novoUsuario->setTokenAtivacao(null);
     
     $idInserido = $usuarioDAO->insert($novoUsuario);
     

@@ -14,15 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$idUsuario = $_POST['idUsuario'] ?? null;
-$nome = $_POST['nome'] ?? null;
-$email = $_POST['email'] ?? null;
-$senha = $_POST['senha'] ?? null;
-$telefone = $_POST['telefone'] ?? null;
-$cpf = $_POST['cpf'] ?? null;
-$endereco = $_POST['endereco'] ?? null;
-$data_nascimento = $_POST['data_nascimento'] ?? null;
-$id_nivel = $_POST['id_nivel'] ?? null;
+$json_data = file_get_contents('php://input');
+$data = json_decode($json_data);
+
+$idUsuario = $data->idUsuario ?? null;
+$nome = $data->nome ?? null;
+$email = $data->email ?? null;
+$senha = $data->senha ?? null;
+$telefone = $data->telefone ?? null;
+$cpf = $data->cpf ?? null;
+$endereco = $data->endereco ?? null;
+$data_nascimento = $data->data_nascimento ?? null;
+$id_nivel = $data->id_nivel ?? null;
 
 if (!$idUsuario) {
     http_response_code(400);
@@ -53,7 +56,7 @@ try {
     $usuarioExistente->setDataNascimento($data_nascimento);
     $usuarioExistente->setIdNivel($id_nivel);
     if (!empty($senha)) {
-    $usuarioExistente->setSenha(md5($senha));
+        $usuarioExistente->setSenha(password_hash($senha, PASSWORD_BCRYPT));
     }
 
     if ($usuarioDAO->update($usuarioExistente)) {

@@ -7,8 +7,9 @@ require_once $rootPath . '/app/etc/config.php';
 // --- ARQUIVOS NECESSÁRIOS ---
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
-require_once $rootPath . '/app/core/utils/CodeGenerator.php'; // <-- SUA CLASSE
-require_once $rootPath . '/app/core/utils/Mail.php';          // <-- SUA CLASSE
+require_once $rootPath . '/app/core/utils/CodeGenerator.php';
+require_once $rootPath . '/app/core/utils/Mail.php';
+require_once $rootPath . '/app/core/utils/EmailTemplate.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -32,14 +33,6 @@ if (!$nome || !$email || !$senha) {
     exit;
 }
 // --- Fim da Correção 2 ---
-
-// Validação de senha forte (seu código já estava correto)
-$senhaForteRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).{8,}$/";
-if (!preg_match($senhaForteRegex, $senha)) {
-    http_response_code(400);
-    echo json_encode(['erro' => 'A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula e um caractere especial.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
 
 try {
     $usuarioDAO = new \app\models\UsuarioDAO();
@@ -66,28 +59,33 @@ try {
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {
-        // 3. SE SALVOU NO BANCO, ENVIAR O E-MAIL
-        // ATENÇÃO: Altere 'localhost/FR_Semijoias' para o seu domínio real
-        $linkDeAtivacao = "http://localhost/FR_Semijoias/public/ativar.php?token=" . $token;
+        // 3. SE SALVOU NO BANCO, ENVIAR O E-MAIL DE ATIVAÇÃO
+        // URL base do sistema (ajuste conforme seu ambiente)
+        $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+        $linkDeAtivacao = $baseUrl . "/ativar?token=" . $token;
         
-        $corpoEmail = "
-            <h1>Bem-vindo à FR Semijoias, {$nome}!</h1>
-            <p>Seu cadastro foi realizado. Por favor, clique no botão abaixo para ativar sua conta:</p>
-            <a href='{$linkDeAtivacao}' 
-               style='background-color: #0d6efd; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
-               Ativar Minha Conta
-            </a>
-            <br><br>
-            <small>Se o botão não funcionar, copie e cole este link no seu navegador: {$linkDeAtivacao}</small>
-        ";
+        // Gerar o HTML do email usando o template profissional
+        $corpoEmail = app\core\utils\EmailTemplate::emailAtivacaoConta($nome, $linkDeAtivacao, $token);
         
-        // Use sua classe Mail
-        $mail = new app\core\utils\Mail($email, 'Ative sua conta - FR Semijoias', $corpoEmail);
-        $mail->addHeader('From: paulinhothomazfilho@gmail.com'); // Mude para seu e-mail
-        $mail->send();
-
-        http_response_code(201);
-        echo json_encode(['sucesso' => 'Cadastro realizado! Por favor, verifique seu e-mail para ativar a conta.'], JSON_UNESCAPED_UNICODE);
+        // Enviar email usando PHPMailer
+        try {
+            $mail = new app\core\utils\Mail($email, 'Ative sua conta - FR Semijoias', $corpoEmail);
+            $mail->send();
+            
+            http_response_code(201);
+            echo json_encode([
+                'sucesso' => 'Cadastro realizado com sucesso!', 
+                'mensagem' => 'Enviamos um email para ' . $email . ' com as instruções para ativar sua conta.'
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            // Mesmo que o email falhe, o usuário foi cadastrado
+            http_response_code(201);
+            echo json_encode([
+                'sucesso' => 'Cadastro realizado!',
+                'aviso' => 'Não foi possível enviar o email de ativação. Entre em contato com o suporte.',
+                'erro_email' => $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
     } else {
         http_response_code(500);
         echo json_encode(['erro' => 'Erro ao cadastrar o usuário.'], JSON_UNESCAPED_UNICODE);

@@ -1,0 +1,19 @@
+{
+    "name": "fr_semijoias/teste",
+    "description": "Sistema de gerenciamento para loja de semijoias",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

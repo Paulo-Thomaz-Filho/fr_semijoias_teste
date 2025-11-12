@@ -1,21 +1,26 @@
 services:
   # Servidor PHP com Apache
   php-apache:
-    image: php:8.2-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: fr_semijoias_app
     ports:
       - "8000:80"
     volumes:
       - ./:/var/www/html
+      - /var/www/html/vendor
     working_dir: /var/www/html
+    environment:
+      # Configurações SMTP
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-noreply@frsemijoias.com}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-FR Semijoias}
     depends_on:
       - mysql
-    command: >-
-      bash -c "\
-        docker-php-ext-install pdo pdo_mysql mysqli && \
-        a2enmod rewrite && \
-        echo 'ServerName localhost' >> /etc/apache2/apache2.conf && \
-        apache2-foreground"
     networks:
       - fr_semijoias_network
 

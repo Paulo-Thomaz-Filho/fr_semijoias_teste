@@ -1,0 +1,30 @@
+# Dependências do Composer
+/vendor/
+composer.lock
+
+# Arquivos de ambiente
+.env
+
+# Logs
+*.log
+
+# Cache
+/cache/
+/tmp/
+
+# Uploads temporários
+/app/uploads/tmp/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+.docker/

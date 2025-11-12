@@ -66,7 +66,7 @@ class Usuario {
     }
     // Verifica se a senha informada confere com a senha do usuário
     public function verificarSenha($senhaInformada) {
-        // Senha no banco está em md5
+        // Verifica senha usando password_verify (BCRYPT)
         return password_verify($senhaInformada, $this->senha);
     }
 
@@ -80,7 +80,8 @@ class Usuario {
             'cpf'            => $this->cpf,
             'endereco'       => $this->endereco,
             'dataNascimento' => $this->dataNascimento,
-            'idNivel'        => $this->idNivel
+            'idNivel'        => $this->idNivel,
+            'status'         => $this->status
         ];
     }
 }

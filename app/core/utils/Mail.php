@@ -1,107 +1,138 @@
 <?php
 namespace app\core\utils;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
- * Classe para envio de e-mails usando a função mail() nativa do PHP.
- * Suporta HTML e múltiplos anexos (de arquivos ou Base64).
+ * Classe para envio de e-mails usando PHPMailer.
+ * Suporta HTML, múltiplos anexos (de arquivos ou Base64) e SMTP.
  */
 class Mail {
     
-    private $to = "";
-    private $subject = "";
-    private $body = "";
-    private $headers = [];
+    private $mailer;
     private $attachments = [];
     
+    /**
+     * Construtor da classe Mail
+     * @param string $to Destinatário do e-mail
+     * @param string $subject Assunto do e-mail
+     * @param string $body Corpo do e-mail (HTML)
+     */
     public function __construct($to, $subject, $body) {
-        $this->to = $to;
-        $this->subject = $subject;
-        $this->body = $body;
+        $this->mailer = new PHPMailer(true);
         
-        // Configuração dos cabeçalhos padrão
-        $this->headers[] = "MIME-Version: 1.0";
-        // O Content-Type será definido no 'send()'
-    }
-     
-    public function addHeader($header) {
-        $this->headers[] = $header;
+        try {
+            // Configurações do servidor SMTP
+            $this->mailer->isSMTP();
+            $this->mailer->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+            $this->mailer->SMTPAuth   = true;
+            $this->mailer->Username   = $_ENV['SMTP_USERNAME'] ?? '';
+            $this->mailer->Password   = $_ENV['SMTP_PASSWORD'] ?? '';
+            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $this->mailer->Port       = $_ENV['SMTP_PORT'] ?? 587;
+            $this->mailer->CharSet    = 'UTF-8';
+            
+            // Configurações do remetente
+            $fromEmail = $_ENV['SMTP_FROM_EMAIL'] ?? $_ENV['SMTP_USERNAME'] ?? 'noreply@example.com';
+            $fromName  = $_ENV['SMTP_FROM_NAME'] ?? 'FR Semijoias';
+            $this->mailer->setFrom($fromEmail, $fromName);
+            
+            // Configurações do destinatário
+            $this->mailer->addAddress($to);
+            
+            // Configurações do conteúdo
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = $subject;
+            $this->mailer->Body    = $body;
+            $this->mailer->AltBody = strip_tags($body); // Versão texto puro
+            
+        } catch (Exception $e) {
+            error_log("Erro ao configurar PHPMailer: {$e->getMessage()}");
+        }
     }
     
+    /**
+     * Adiciona um cabeçalho customizado ao e-mail
+     * @param string $header Cabeçalho no formato "Nome: Valor"
+     */
+    public function addHeader($header) {
+        if (strpos($header, ':') !== false) {
+            list($name, $value) = explode(':', $header, 2);
+            $this->mailer->addCustomHeader(trim($name), trim($value));
+        }
+    }
+    
+    /**
+     * Adiciona um anexo de arquivo ao e-mail
+     * @param string $file Caminho completo do arquivo
+     */
     public function addAttachment($file) {
         if (file_exists($file)) {
-            $filename = basename($file);
             $this->attachments[] = [
                 'type' => 'file',
                 'path' => $file,
-                'filename' => $filename,
-                'mime_type' => mime_content_type($file)
+                'filename' => basename($file)
             ];
         }
     }
 
+    /**
+     * Adiciona um anexo Base64 ao e-mail
+     * @param string $filename Nome do arquivo
+     * @param string $data Dados em Base64
+     * @param string $type Tipo MIME do arquivo
+     */
     public function addAttachmentBase64($filename, $data, $type = 'application/octet-stream') {
         $this->attachments[] = [
             'type' => 'base64',
-            'content' => $data, // Armazena os dados base64
+            'content' => $data,
             'filename' => $filename,
             'mime_type' => $type
         ];
     }
-        
+    
+    /**
+     * Envia o e-mail
+     * @return bool True se enviado com sucesso, False caso contrário
+     */
     public function send() {
-        $to = $this->to;
-        $subject = $this->subject;
-        $body = $this->body;
-        
-        // Gera um limite (boundary) único para separar as partes do e-mail
-        $boundary = "----=_Separador_Parte_" . md5(time());
-        
-        // Se não houver anexos, envia um e-mail HTML simples
-        if (count($this->attachments) == 0) {
-            $this->headers[] = "Content-type: text/html; charset=UTF-8";
-            $headers = implode("\r\n", $this->headers);
-            return mail($to, $subject, $body, $headers);
-        }
-
-        // --- Se houver anexos, monta um e-mail complexo (multipart/mixed) ---
-        
-        $this->headers[] = "Content-Type: multipart/mixed; boundary=\"" . $boundary . "\"";
-        $headers = implode("\r\n", $this->headers);
-
-        // 1. Inicia o corpo da mensagem com a parte HTML
-        $message_body = "--" . $boundary . "\r\n";
-        $message_body .= "Content-Type: text/html; charset=\"utf-8\"\r\n";
-        $message_body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-        $message_body .= $body . "\r\n\r\n";
-
-        // 2. Adiciona cada anexo
-        foreach ($this->attachments as $attachment) {
-            $filename = $attachment['filename'];
-            $mime_type = $attachment['mime_type'];
-            
-            // Pega o conteúdo (seja do arquivo ou da string base64)
-            if ($attachment['type'] == 'file') {
-                $content = file_get_contents($attachment['path']);
-            } else {
-                $content = base64_decode($attachment['content']);
+        try {
+            // Adiciona os anexos
+            foreach ($this->attachments as $attachment) {
+                if ($attachment['type'] == 'file') {
+                    // Anexo de arquivo
+                    $this->mailer->addAttachment(
+                        $attachment['path'], 
+                        $attachment['filename']
+                    );
+                } else {
+                    // Anexo Base64
+                    $content = base64_decode($attachment['content']);
+                    $this->mailer->addStringAttachment(
+                        $content,
+                        $attachment['filename'],
+                        'base64',
+                        $attachment['mime_type']
+                    );
+                }
             }
             
-            // Codifica o conteúdo em base64 para o e-mail
-            $content_base64 = chunk_split(base64_encode($content));
+            // Envia o e-mail
+            return $this->mailer->send();
             
-            // Adiciona a parte do anexo
-            $message_body .= "--" . $boundary . "\r\n";
-            $message_body .= "Content-Type: " . $mime_type . "; name=\"" . $filename . "\"\r\n";
-            $message_body .= "Content-Transfer-Encoding: base64\r\n";
-            $message_body .= "Content-Disposition: attachment; filename=\"" . $filename . "\"\r\n\r\n";
-            $message_body .= $content_base64 . "\r\n\r\n";
+        } catch (Exception $e) {
+            error_log("Erro ao enviar e-mail: {$this->mailer->ErrorInfo}");
+            return false;
         }
-        
-        // 3. Fecha o corpo do e-mail
-        $message_body .= "--" . $boundary . "--";
-        
-        // Envia o e-mail completo
-        return mail($to, $subject, $message_body, $headers);
+    }
+    
+    /**
+     * Retorna a última mensagem de erro
+     * @return string Mensagem de erro
+     */
+    public function getError() {
+        return $this->mailer->ErrorInfo;
     }
 }
 ?>

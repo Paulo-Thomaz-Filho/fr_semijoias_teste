@@ -6,24 +6,28 @@ $(document).ready(function(){
         const nome = $('#cadastroNome').val();
         const email = $('#cadastroEmail').val();
         const senha = $('#cadastroSenha').val();
+        const telefone = $('#cadastroTelefone').val();
+        const cpf = $('#cadastroCpf').val();
+        const endereco = $('#cadastroEndereco').val();
 
-
-        if (!nome || !email || !senha) {
+        if (!nome || !email || !senha || !telefone || !cpf || !endereco) {
             alert('Por favor, preencha todos os campos de cadastro');
             return;
         }
 
-        // Validação de senha forte
-        const senhaForteRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-        if (!senhaForteRegex.test(senha)) {
-            alert('A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula e um caractere especial.');
+        // Validação básica de senha
+        if (senha.length < 6) {
+            alert('A senha deve ter no mínimo 6 caracteres');
             return;
         }
 
         const cadastroData = {
             nome: nome,
             email: email,
-            senha: senha
+            senha: senha,
+            telefone: telefone,
+            cpf: cpf,
+            endereco: endereco
         }
 
         console.log('Enviando dados do cadastro via JSON');
@@ -38,8 +42,11 @@ $(document).ready(function(){
                 console.log('Resposta do servidor:', response);
                 // O salvar.php retorna {sucesso: "mensagem", id: ...} ou {erro: "mensagem"}
                 if (response.sucesso) { 
-                    alert('Cadastro realizado com sucesso!');
-                    window.location.href = '/login'; 
+                    alert('Cadastro realizado com sucesso! Você já pode fazer login.');
+                    // Limpar formulário
+                    $('#formCadastro')[0].reset();
+                    // Voltar para o login
+                    $('#signIn').click();
                 } else {
                     alert('Erro ao cadastrar: ' + (response.erro || 'Verifique os dados e tente novamente.'));
                 }

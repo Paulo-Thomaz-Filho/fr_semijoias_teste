@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     marca VARCHAR(100),
     categoria VARCHAR(100),
     id_promocao INT NULL,
-    caminho_imagem VARCHAR(255), -- ATUALIZADO (era 'imagem')
+    caminho_imagem VARCHAR(255),
     estoque INT NOT NULL,
     disponivel BOOLEAN NOT NULL,
     FOREIGN KEY (id_promocao) REFERENCES promocoes(id_promocao) ON DELETE SET NULL
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
     endereco VARCHAR(500),
     data_nascimento DATE,
     id_nivel INT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'pendente', -- ADICIONADO
-    token_ativacao VARCHAR(255) DEFAULT NULL,       -- ADICIONADO
+    status VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    token_ativacao VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (id_nivel) REFERENCES nivel_acesso(id_nivel) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -91,13 +91,9 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 -- ==========================================
 -- POPULAÇÃO DAS TABELAS
--- (Mantidos os dados originais do setup_database.sql por serem mais completos)
 -- ==========================================
 
--- Datas
--- Hoje: 2025-10-18
--- Ontem: 2025-10-17
--- Daqui 2 meses: 2025-12-18
+-- PROMOÇÕES
 INSERT INTO promocoes (id_promocao, nome, desconto, tipo_desconto, data_inicio, data_fim, status, descricao) VALUES
 (1, 'Promoção Percentual', 15.00, 'percentual', '2025-10-17', '2025-12-18', 1, '15% de desconto por tempo limitado.'),
 (2, 'Promoção Valor Fixo', 25.00, 'valor', '2025-10-17', '2025-12-18', 1, 'R$25 de desconto em produtos selecionados.'),
@@ -131,13 +127,17 @@ INSERT INTO nivel_acesso (id_nivel, tipo) VALUES
 (1, 'Administrador'),
 (2, 'Cliente');
 
-INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, data_nascimento, id_nivel) VALUES
-(1, 'Fernanda Cristina', 'admin@frsemijoias.com', MD5('admin123'), '111.111.111-11', '(11) 99999-9999', 'Rua das Flores, 100 - São Paulo, SP', '1990-01-01', 1),
-(2, 'Maria Silva', 'maria.silva@email.com', MD5('123456'), '222.222.222-22', '(11) 98888-8888', 'Avenida Brasil, 200 - São Paulo, SP', '1985-05-15', 2),
-(3, 'João Santos', 'joao.santos@email.com', MD5('123456'), '333.333.333-33', '(11) 97777-7777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2),
-(4, 'Ana Costa', 'ana.costa@email.com', MD5('123456'), '444.444.444-44', '(11) 96666-6666', 'Praça Central, 400 - São Paulo, SP', '1988-12-10', 2),
-(5, 'Pedro Oliveira', 'pedro.oliveira@email.com', MD5('123456'), '555.555.555-55', '(11) 95555-5555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2),
-(6, 'Carla Mendes', 'carla.mendes@email.com', MD5('123456'), '666.666.666-66', '(11) 94444-4444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2);
+-- Senhas com password_hash (BCRYPT - seguro):
+-- admin123 -> $2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u
+-- 123456   -> $2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW
+
+INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, data_nascimento, id_nivel, status) VALUES
+(1, 'Fernanda Cristina', 'admin@frsemijoias.com', '$2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u', '111.111.111-11', '(11) 99999-9999', 'Rua das Flores, 100 - São Paulo, SP', '1990-01-01', 1, 'ativo'),
+(2, 'Maria Silva', 'maria.silva@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '222.222.222-22', '(11) 98888-8888', 'Avenida Brasil, 200 - São Paulo, SP', '1985-05-15', 2, 'ativo'),
+(3, 'João Santos', 'joao.santos@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '333.333.333-33', '(11) 97777-7777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2, 'ativo'),
+(4, 'Ana Costa', 'ana.costa@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '444.444.444-44', '(11) 96666-6666', 'Praça Central, 400 - São Paulo, SP', '1988-12-10', 2, 'ativo'),
+(5, 'Pedro Oliveira', 'pedro.oliveira@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '555.555.555-55', '(11) 95555-5555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2, 'ativo'),
+(6, 'Carla Mendes', 'carla.mendes@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '666.666.666-66', '(11) 94444-4444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2, 'ativo');
 
 -- STATUS
 INSERT INTO status (nome) VALUES

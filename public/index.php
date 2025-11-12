@@ -4,7 +4,10 @@
 // 1. Define o caminho raiz do projeto.
 $rootPath = dirname(__DIR__);
 
-// 2. Inclui os arquivos essenciais do framework.
+// 2. Carrega o autoloader do Composer (PHPMailer e outras dependências)
+require_once $rootPath . '/vendor/autoload.php';
+
+// 3. Inclui os arquivos essenciais do framework.
 require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/core/utils/Router.php';
 require_once $rootPath . '/app/core/utils/Sanitize.php';

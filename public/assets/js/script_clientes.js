@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------------------------------------------------------------------------
     const formCliente = document.getElementById('form-cliente');
     const inputId = document.getElementById('cliente_id');
+    const inputStatus = document.getElementById('status_cliente');
     const inputNome = document.getElementById('nome_cliente');
     const inputEmail = document.getElementById('email_cliente');
     const inputSenha = document.getElementById('senha_cliente');
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const limparFormulario = () => {
         formCliente.reset();
         inputId.value = 'Auto';
+        inputStatus.value = 'Pendente';
         clienteSelecionado = null;
         
         // Atualizar estado dos botões
@@ -166,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Preencher formulário
             inputId.value = cliente.idUsuario;
+            inputStatus.value = cliente.status ? cliente.status.charAt(0).toUpperCase() + cliente.status.slice(1) : 'Pendente';
             inputNome.value = cliente.nome;
             inputEmail.value = cliente.email;
             inputSenha.value = cliente.senha || '';

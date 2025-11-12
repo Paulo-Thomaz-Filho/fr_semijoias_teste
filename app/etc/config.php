@@ -47,7 +47,7 @@ $uriArray    = array_values(
                     )
                );
 
-$ultimaPastaDir = basename($rootPath);
+$ultimaPastaDir = $rootPath ? basename($rootPath) : '';
 $primeiraPastaUri = isset($uriArray[0]) ? $uriArray[0] : '';
 
 
