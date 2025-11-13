@@ -177,21 +177,41 @@ document.addEventListener('DOMContentLoaded', function() {
             inputMarca.value = produto.marca ?? '';
             
             let precoOriginal = parseFloat(produto.preco);
+            let precoFinal = precoOriginal;
             let promocaoId = produto.id_promocao ?? '';
             let promocaoValida = false;
+            
             if (promocaoId && mapaPromocoes[promocaoId]) {
                 // Checa se a promoção ainda está válida
                 const promocoesValidas = Object.keys(mapaPromocoes);
                 if (promocoesValidas.includes(promocaoId.toString())) {
                     promocaoValida = true;
                     const texto = mapaPromocoes[promocaoId];
-                    const match = texto.match(/([\d]+)(%|R\$)/);
-                    if (match) {
-                        const valorDesconto = parseInt(match[1]);
-                        const tipo = match[2];
-                        if (tipo === '%') {
+                    
+                    // Verifica se é percentual ou valor fixo
+                    let valorDesconto = 0;
+                    let tipoDesconto = '';
+                    
+                    if (texto.includes('%')) {
+                        // Desconto percentual: "25%"
+                        const matchPercent = texto.match(/([\d]+)%/);
+                        if (matchPercent) {
+                            valorDesconto = parseInt(matchPercent[1]);
+                            tipoDesconto = 'percentual';
+                        }
+                    } else if (texto.includes('R$')) {
+                        // Desconto em valor: "R$ 25"
+                        const matchValor = texto.match(/R\$\s*([\d]+)/);
+                        if (matchValor) {
+                            valorDesconto = parseInt(matchValor[1]);
+                            tipoDesconto = 'valor';
+                        }
+                    }
+                    
+                    if (tipoDesconto && valorDesconto > 0) {
+                        if (tipoDesconto === 'percentual') {
                             precoFinal = precoOriginal * (1 - valorDesconto / 100);
-                        } else if (tipo === 'R$') {
+                        } else if (tipoDesconto === 'valor') {
                             precoFinal = precoOriginal - valorDesconto;
                         }
                         if (precoFinal < 0) precoFinal = 0;

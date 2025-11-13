@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let pedidoSelecionado = null;
     let clientesMap = {};
+    let promocoesArray = [];
     
     // -------------------------------------------------------------------------
     // FUNÇÕES UTILITÁRIAS
@@ -94,9 +95,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // FUNÇÕES DE CARREGAMENTO DE DADOS
     // -------------------------------------------------------------------------
     
+    // Carregar promoções
+    const carregarPromocoes = async () => {
+        try {
+            const response = await fetch('/promocoes');
+            promocoesArray = await response.json();
+        } catch (error) {
+            console.error('Erro ao carregar promoções:', error);
+            promocoesArray = [];
+        }
+    };
+    
+    // Calcular preço com desconto de promoção
+    const calcularPrecoComPromocao = (precoOriginal, idPromocao) => {
+        if (!idPromocao) return precoOriginal;
+        
+        const promocao = promocoesArray.find(p => p.idPromocao == idPromocao);
+        if (!promocao) return precoOriginal;
+        
+        // Verifica se a promoção está ativa e dentro do período
+        const hoje = new Date();
+        const inicio = new Date(promocao.dataInicio);
+        const fim = new Date(promocao.dataFim);
+        
+        if (promocao.status != 1 || inicio > hoje || fim < hoje) {
+            return precoOriginal;
+        }
+        
+        let precoFinal = precoOriginal;
+        const desconto = parseFloat(promocao.desconto);
+        
+        if (promocao.tipo_desconto === 'percentual') {
+            precoFinal = precoOriginal * (1 - desconto / 100);
+        } else if (promocao.tipo_desconto === 'valor') {
+            precoFinal = precoOriginal - desconto;
+        }
+        
+        return precoFinal < 0 ? 0 : precoFinal;
+    };
+    
     // Carregar produtos no select
     const carregarProdutos = async () => {
         try {
+            // Garantir que as promoções estejam carregadas
+            if (promocoesArray.length === 0) {
+                await carregarPromocoes();
+            }
+            
             const response = await fetch('/produtos');
             const produtos = await response.json();
             selectProduto.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
@@ -106,7 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const option = document.createElement('option');
                     option.value = produto.idProduto;
                     option.textContent = produto.nome;
-                    option.dataset.preco = produto.preco;
+                    
+                    // Calcular preço com promoção se houver
+                    const precoOriginal = parseFloat(produto.preco);
+                    const precoFinal = calcularPrecoComPromocao(precoOriginal, produto.id_promocao);
+                    option.dataset.preco = precoFinal;
+                    
                     selectProduto.appendChild(option);
                 });
             }
@@ -453,14 +503,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const produtoId = selectProduto.value;
                 const produtoNome = selectProduto.options[selectProduto.selectedIndex]?.text || '';
                 const quantidade = parseInt(inputQuantidade.value);
-                const preco = precoParaNumero(inputValor.value);
+                const valorTotal = precoParaNumero(inputValor.value);
+                
+                // Calcular preço unitário
+                const precoUnitario = valorTotal / quantidade;
+                
                 // Só adiciona se todos os campos forem válidos
-                if (!produtoId || produtoId === '' || produtoNome === 'Selecione um produto' || !quantidade || quantidade <= 0 || !preco || preco <= 0) {
+                if (!produtoId || produtoId === '' || produtoNome === 'Selecione um produto' || !quantidade || quantidade <= 0 || !valorTotal || valorTotal <= 0) {
                     alert('Selecione um produto, quantidade e preço válidos.');
                     return;
                 }
                 // Garante que nunca será adicionado item inválido
-                itensPedido.push({ produtoId, produtoNome, quantidade, preco });
+                itensPedido.push({ produtoId, produtoNome, quantidade, preco: precoUnitario });
                 // Remove qualquer item inválido do array imediatamente
                 itensPedido = itensPedido.filter(item => item.produtoNome !== 'Selecione um produto' && item.quantidade > 0 && item.preco > 0);
                 atualizarTabelaItensPedido();

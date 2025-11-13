@@ -14,6 +14,7 @@
   --color-danger-text: #dc3545;
   --color-primary: #e3e7fd;
   --color-primary-text: #3b5bfd;
+  --color-focus: #003d82;
 }
 
 .gap-6 {
@@ -65,6 +66,28 @@ textarea {
 
 .table th:hover svg {
   stroke: var(--color-black) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-select:focus {
+  border-color: var(--color-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 61, 130, 0.25) !important;
+  outline: none !important;
+}
+
+.login-container input:focus,
+.login-container textarea:focus,
+.login-container select:focus,
+.login-container input.form-control:focus,
+.login-container textarea.form-control:focus,
+.login-container select.form-select:focus {
+  border-color: var(--color-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 61, 130, 0.25) !important;
+  outline: none !important;
 }
 
 .chart-container-bar {
