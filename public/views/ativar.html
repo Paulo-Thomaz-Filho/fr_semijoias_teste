@@ -3,241 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ativar Conta - FR Semijoias</title>
+    <link
+      rel="shortcut icon"
+      href="assets/images/logo.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="../assets/css/style.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../assets/css/style_login.css" />
-    <style>
-      .ativacao-container {
-        max-width: 500px;
-        margin: 100px auto;
-        padding: 40px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      }
-      .logo {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .logo h1 {
-        color: #667eea;
-        font-weight: 700;
-        font-size: 32px;
-      }
-      .success-icon {
-        text-align: center;
-        font-size: 80px;
-        color: #28a745;
-        margin-bottom: 20px;
-      }
-      .error-icon {
-        text-align: center;
-        font-size: 80px;
-        color: #dc3545;
-        margin-bottom: 20px;
-      }
-      .loading-icon {
-        text-align: center;
-        font-size: 60px;
-        margin-bottom: 20px;
-      }
-      .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-      .token-input {
-        text-align: center;
-        font-size: 24px;
-        letter-spacing: 5px;
-        font-family: "Courier New", monospace;
-        text-transform: uppercase;
-      }
-    </style>
+    <title>FR Semijoias - Ativar Conta</title>
   </head>
   <body class="bg-light">
-    <div class="ativacao-container">
-      <div class="logo">
-        <h1>✨ FR Semijoias</h1>
-      </div>
-
-      <!-- Loading -->
-      <div id="loading" style="display: none">
-        <div class="spinner"></div>
-        <p class="text-center text-muted">Ativando sua conta...</p>
-      </div>
-
-      <!-- Sucesso -->
-      <div id="success" style="display: none">
-        <div class="success-icon">✅</div>
-        <h3 class="text-center mb-3">Conta Ativada!</h3>
-        <p class="text-center text-muted mb-4">
-          Sua conta foi ativada com sucesso. Agora você pode fazer login e
-          aproveitar todos os recursos.
-        </p>
-        <div class="d-grid">
-          <a href="/login" class="btn btn-primary btn-lg"> 🔐 Fazer Login </a>
+    <div class="container" style="max-width: 500px; margin-top: 100px">
+      <div class="bg-white rounded-4 shadow p-5">
+        <div class="text-center mb-4 ativacao-logo">
+          <h1 class="fw-bold fs-2">✨ FR Semijoias</h1>
         </div>
-      </div>
 
-      <!-- Erro -->
-      <div id="error" style="display: none">
-        <div class="error-icon">❌</div>
-        <h3 class="text-center mb-3">Erro na Ativação</h3>
-        <p class="text-center text-muted mb-4" id="error-message">
-          Token inválido ou expirado. Por favor, solicite um novo email de
-          ativação.
-        </p>
-        <div class="d-grid gap-2">
-          <a href="/login" class="btn btn-outline-primary"> Ir para o Login </a>
-          <button onclick="mostrarFormulario()" class="btn btn-primary">
-            Tentar Outro Código
-          </button>
+        <!-- Loading -->
+        <div id="loading" class="d-none">
+          <div class="spinner"></div>
+          <p class="text-center text-muted">Ativando sua conta...</p>
         </div>
-      </div>
 
-      <!-- Formulário para digitar token manualmente -->
-      <div id="form-token" style="display: none">
-        <h3 class="text-center mb-4">Digite o Código de Ativação</h3>
-        <p class="text-center text-muted small mb-4">
-          Digite o código de 6 caracteres que você recebeu por email.
-        </p>
-        <form id="formAtivacao">
-          <div class="mb-3">
-            <input
-              type="text"
-              class="form-control token-input"
-              id="token"
-              name="token"
-              placeholder="A1B2C3"
-              maxlength="6"
-              required
-            />
+        <!-- Sucesso -->
+        <div id="success" class="d-none">
+          <div class="text-center text-success mb-3 ativacao-icon">✅</div>
+          <h3 class="text-center mb-3">Conta Ativada!</h3>
+          <p class="text-center text-muted mb-4">
+            Sua conta foi ativada com sucesso. Agora você pode fazer login e
+            aproveitar todos os recursos.
+          </p>
+          <div class="d-grid">
+            <a href="/login" class="btn btn-primary btn-lg"> 🔐 Fazer Login </a>
           </div>
+        </div>
+
+        <!-- Erro -->
+        <div id="error" class="d-none">
+          <div class="text-center text-danger mb-3 ativacao-icon">❌</div>
+          <h3 class="text-center mb-3">Erro na Ativação</h3>
+          <p class="text-center text-muted mb-4" id="error-message">
+            Token inválido ou expirado. Por favor, solicite um novo email de
+            ativação.
+          </p>
           <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-lg">
-              Ativar Conta
-            </button>
-            <a href="/login" class="btn btn-outline-secondary">
-              Voltar para o Login
+            <a href="/login" class="btn btn-outline-primary">
+              Ir para o Login
             </a>
+            <button onclick="mostrarFormulario()" class="btn btn-primary">
+              Tentar Outro Código
+            </button>
           </div>
-        </form>
+        </div>
+
+        <!-- Formulário para digitar token manualmente -->
+        <div id="form-token" class="d-none">
+          <h3 class="text-center mb-4">Digite o Código de Ativação</h3>
+          <p class="text-center text-muted small mb-4">
+            Digite o código de 6 caracteres que você recebeu por email.
+          </p>
+          <form id="formAtivacao">
+            <div class="mb-3">
+              <input
+                type="text"
+                class="form-control token-input"
+                id="token"
+                name="token"
+                placeholder="A1B2C3"
+                maxlength="6"
+                required
+              />
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Ativar Conta
+              </button>
+              <a href="/login" class="btn btn-outline-secondary">
+                Voltar para o Login
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
-    <script>
-      // Verificar se tem token na URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get("token");
-
-      function mostrarLoading() {
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("success").style.display = "none";
-        document.getElementById("error").style.display = "none";
-        document.getElementById("form-token").style.display = "none";
-      }
-
-      function mostrarSucesso() {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("success").style.display = "block";
-        document.getElementById("error").style.display = "none";
-        document.getElementById("form-token").style.display = "none";
-      }
-
-      function mostrarErro(mensagem) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("success").style.display = "none";
-        document.getElementById("error").style.display = "block";
-        document.getElementById("form-token").style.display = "none";
-        if (mensagem) {
-          document.getElementById("error-message").textContent = mensagem;
-        }
-      }
-
-      function mostrarFormulario() {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("success").style.display = "none";
-        document.getElementById("error").style.display = "none";
-        document.getElementById("form-token").style.display = "block";
-      }
-
-      async function ativarConta(tokenAtivacao) {
-        mostrarLoading();
-
-        try {
-          const response = await fetch("/usuario/ativar", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: tokenAtivacao }),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            mostrarSucesso();
-            // Redirecionar após 3 segundos
-            setTimeout(() => {
-              window.location.href = "/login";
-            }, 3000);
-          } else {
-            mostrarErro(data.erro || "Token inválido ou expirado.");
-          }
-        } catch (error) {
-          console.error("Erro:", error);
-          mostrarErro(
-            "Erro ao processar a ativação. Tente novamente mais tarde."
-          );
-        }
-      }
-
-      // Se tem token na URL, ativar automaticamente
-      if (token && token.length === 6) {
-        ativarConta(token);
-      } else {
-        // Senão, mostrar formulário
-        mostrarFormulario();
-      }
-
-      // Handler do formulário manual
-      document
-        .getElementById("formAtivacao")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const tokenInput = document
-            .getElementById("token")
-            .value.trim()
-            .toUpperCase();
-
-          if (tokenInput.length !== 6) {
-            alert("O código deve ter 6 caracteres.");
-            return;
-          }
-
-          ativarConta(tokenInput);
-        });
-
-      // Converter input para maiúsculas automaticamente
-      document.getElementById("token").addEventListener("input", (e) => {
-        e.target.value = e.target.value.toUpperCase();
-      });
-    </script>
+    <!-- Scripts -->
+    <script src="../assets/js/script_ativacao.js"></script>
   </body>
 </html>
