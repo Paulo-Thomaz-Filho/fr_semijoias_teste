@@ -5,48 +5,37 @@ namespace app\core\utils;
 use app\core\utils\UploadedCtrl;
 use core\utils\Base64Files;
 
-/**
- * O script para manipulação de upload de arquivo.
- * Converter o arquivo enviado para base64 e salva.
- * Registrar o arquivo no banco de dados.
- */
 
-$uploadPathDir = __DIR__."/../../../"."app/uploads/";
-$uploader = new UploadedCtrl();
+// Diretório para salvar os arquivos enviados
+$uploadPathDir = __DIR__."/../../../public/assets/images"; // Diretório para salvar os arquivos enviados
+$uploader = new UploadedCtrl(); // Instancia a classe UploadedCtrl
 
-/**
- * Checa se um arquivo foi enviado.
- * Se sim, ele manipula o upload e o registro do arquivo.
- */
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Checa se arquivo foi enviado
-    if (!isset($_FILES['file'])) {
-        echo "No file sent";
+// Verifica se o método de requisição é POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica se o método de requisição é POST
+    if (!isset($_FILES['file'])) {  // Verifica se o arquivo foi enviado
+        echo "No file sent"; // Retorna mensagem de erro
         exit;
     }
 
-    $file = $_FILES['file'];
-    $accessCtrl = $_POST['accessCtrl'] ?? 0; // Default para público se não definido
+    // Processa o arquivo enviado
+    $file = $_FILES['file'];                  // Obtém o arquivo enviado
+    $accessCtrl = $_POST['accessCtrl'] ?? 0;  // Default para público se não definido
     $shareMails = $_POST['shareMails'] ?? ""; // Default para nenhum email se não definido
 
-    $tempPath = $file['tmp_name'];
-    $fileName = $file['name'];
-    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
-    $fileBase64Name = "up" . date('YmdHisv') . ".{$fileExtension}.base64";
+    $tempPath = $file['tmp_name'];            // Caminho temporário do arquivo enviado
+    $fileName = $file['name'];                // Nome original do arquivo
 
-    /**
-     * Instancia a classe Base64Files.
-     * Converter o arquivo para base64.
-     * Salvar o arquivo base64 no diretório especificado.
-     */
-    $base64Files = new Base64Files();
-    $fileContent = $base64Files->fileToBase64($tempPath);
-    $base64Files->base64ToFile($fileContent, $uploadPathDir . $fileBase64Name);
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);              // Extensão do arquivo
+    $fileBase64Name = "up" . date('YmdHisv') . ".{$fileExtension}.base64"; // Nome do arquivo em base64 com timestamp único
+
+    $base64Files = new Base64Files(); // Instancia a classe Base64Files
+    $fileContent = $base64Files->fileToBase64($tempPath); // Converte o arquivo para base64
+    $base64Files->base64ToFile($fileContent, $uploadPathDir . $fileBase64Name); // Salva o arquivo em base64 no diretório de upload
 
     // Registrar o arquivo
-    $owner = $_SESSION["idUsuario"];
-    $filePath = $uploadPathDir . $fileBase64Name;
-    $uploader->registerUploadedfile($owner, $filePath, $accessCtrl, $shareMails);
+    $owner = $_SESSION["idUsuario"]; // Obtém o ID do usuário logado
+    $filePath = $uploadPathDir . $fileBase64Name; // Caminho completo do arquivo salvo
+    $uploader->registerUploadedfile($owner, $filePath, $accessCtrl, $shareMails); // Registra o arquivo no banco de dados
 
     // Retornar o nome do arquivo para o cliente
     echo $fileBase64Name;

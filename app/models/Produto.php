@@ -38,7 +38,6 @@ class Produto {
     public function set_estoque($e) { $this->estoque = $e; }
     public function set_disponivel($d) { $this->disponivel = $d; }
 
-
     public function toArray() {
         return [
             'id_produto'     => $this->id_produto,

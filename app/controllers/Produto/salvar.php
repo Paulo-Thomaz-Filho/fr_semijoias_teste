@@ -34,7 +34,7 @@ $caminho_imagem_salva = null;
 if (isset($_FILES['caminho_imagem']) && $_FILES['caminho_imagem']['error'] == 0) {
     try {
         $file = $_FILES['caminho_imagem'];
-        $uploadPathDir = $rootPath . '/app/uploads/'; // Caminho para sua pasta
+        $uploadPathDir = $rootPath . '/public/assets/images/'; // Caminho para sua pasta
         
         $tempPath = $file['tmp_name'];
         $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);

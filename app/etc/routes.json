@@ -26,6 +26,18 @@
     "usuario/atualizar": {
         "path": "app/controllers/Usuario/atualizar.php"
     },
+    "usuario/atualizar-dados": {
+        "path": "app/controllers/Usuario/atualizarDados.php"
+    },
+    "usuario/atualizar-endereco": {
+        "path": "app/controllers/Usuario/atualizarEndereco.php"
+    },
+    "usuario/obter-endereco": {
+        "path": "app/controllers/Usuario/buscarEndereco.php"
+    },
+    "usuario/obter-dados": {
+        "path": "app/controllers/Usuario/buscarDados.php"
+    },
     "usuario/deletar": {
         "path": "app/controllers/Usuario/deletar.php"
     },
@@ -43,12 +55,17 @@
     },
 
 
-    
     "produtos": {
         "path": "app/controllers/Produto/listar.php"
     },
+    "imagem": {
+        "path": "app/controllers/Produto/imagem.php"
+    },
     "produtos/buscar": {
         "path": "app/controllers/Produto/buscarPorId.php"
+    },
+    "produtos/obter-nome": {
+        "path": "app/controllers/Produto/buscarPorNome.php"
     },
     "produtos/salvar": {
         "path": "app/controllers/Produto/salvar.php"
@@ -112,13 +129,27 @@
         "path": "public/views/ativar.html"
     },
 
-    
+    "carrinho": {
+        "path": "public/views/carrinho.html"
+    },
+
     "usuario/ativar": {
         "path": "app/controllers/Usuario/ativar.php"
+    },
+    "inicio": {
+        "path": "public/views/inicio.html"
     },
     "login": {
         "path": "public/views/login.html"
     },
+    "dados_user": {
+        "path": "public/views/dados_user.html"
+    },
+    "local_user": {
+        "path": "public/views/local_user.html"
+    },
+
+
     "dashboard": {
         "path": "public/views/dashboard.html",
         "sessionKey": [
@@ -169,4 +200,10 @@
         ],
         "errorPath": "login"
     }
+
+
+
+
+
 }
+
