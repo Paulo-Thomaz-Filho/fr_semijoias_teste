@@ -34,6 +34,10 @@
   height: auto;
 }
 
+.logo-login {
+  width: 130px;
+}
+
 a {
   transition: all 0.3s ease;
 
@@ -956,4 +960,43 @@ body.bg-light {
 /* Botões de toggle mobile */
 .mobile-toggle-buttons {
   z-index: 1000;
+}
+
+/* =============================================================================
+   PÁGINA DE ATIVAÇÃO DE CONTA
+   ============================================================================= */
+
+.ativacao-logo h1 {
+  color: #667eea;
+}
+
+.ativacao-icon {
+  font-size: 80px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.token-input {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 5px;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
 }

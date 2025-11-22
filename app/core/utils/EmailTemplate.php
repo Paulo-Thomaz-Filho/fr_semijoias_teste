@@ -45,8 +45,8 @@ class EmailTemplate {
                         <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
                             <!-- Header -->
                             <tr>
-                                <td style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);'>✨ FR Semijoias</h1>
+                                <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);'>✨ FR Semijoias</h1>
                                 </td>
                             </tr>
                             
@@ -67,7 +67,7 @@ class EmailTemplate {
                                     <table role='presentation' style='width: 100%; margin: 32px 0;'>
                                         <tr>
                                             <td align='center'>
-                                                <a href='{$linkAtivacao}' style='display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.4);'>
+                                                <a href='{$linkAtivacao}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);'>
                                                     🔓 Ativar Minha Conta
                                                 </a>
                                             </td>
@@ -151,8 +151,8 @@ class EmailTemplate {
                         <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
                             <!-- Header -->
                             <tr>
-                                <td style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
                                 </td>
                             </tr>
                             
@@ -173,7 +173,7 @@ class EmailTemplate {
                                     <table role='presentation' style='width: 100%; margin: 32px 0;'>
                                         <tr>
                                             <td align='center'>
-                                                <a href='{$linkLogin}' style='display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
+                                                <a href='{$linkLogin}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
                                                     🔐 Fazer Login
                                                 </a>
                                             </td>
@@ -218,8 +218,8 @@ class EmailTemplate {
                         <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
                             <!-- Header -->
                             <tr>
-                                <td style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
                                 </td>
                             </tr>
                             
@@ -240,7 +240,7 @@ class EmailTemplate {
                                     <table role='presentation' style='width: 100%; margin: 32px 0;'>
                                         <tr>
                                             <td align='center'>
-                                                <a href='{$linkRecuperacao}' style='display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
+                                                <a href='{$linkRecuperacao}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
                                                     🔓 Redefinir Senha
                                                 </a>
                                             </td>
@@ -310,8 +310,8 @@ class EmailTemplate {
                         <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
                             <!-- Header -->
                             <tr>
-                                <td style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
                                 </td>
                             </tr>
                             
@@ -332,7 +332,7 @@ class EmailTemplate {
                                     <table role='presentation' style='width: 100%; margin: 32px 0;'>
                                         <tr>
                                             <td align='center'>
-                                                <a href='{$linkPedido}' style='display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
+                                                <a href='{$linkPedido}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
                                                     📦 Ver Detalhes do Pedido
                                                 </a>
                                             </td>
