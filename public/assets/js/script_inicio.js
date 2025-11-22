@@ -248,28 +248,49 @@ $(document).ready(function() {
             
             // Popula Catálogo Completo (GRID)
             // ⬇️ Esta função será reutilizada para exibir os resultados da busca
-            function renderizarCatalogo(produtos, termoBusca = null) {
+            function renderizarCatalogo(produtos, termoBuscaBruto = null) {
+                const $catalogoWrapper = $('#catalogo-completo-wrapper');
                 $catalogoWrapper.empty();
                 
-                const tituloCatalogo = $('.container h2:contains("Catálogo Completo")');
-                const tituloResultados = $(`#titulo-resultados`);
-
-                if (termoBusca) {
-                    // Esconde o catálogo original e mostra a seção de busca
-                    $('.carousel-container').hide();
-                    tituloCatalogo.text(`Resultados da Busca para: "${termoBusca}"`).attr('id', 'titulo-resultados');
-                } else {
-                    // Retorna ao estado original
-                    $('.carousel-container').show();
-                    if (tituloResultados.length) tituloResultados.text('Catálogo Completo').removeAttr('id');
+                // 1. Tenta selecionar o H2 que já tem o ID de resultados (prioridade)
+                let $tituloH2 = $('#titulo-resultados');
+                
+                if ($tituloH2.length === 0) {
+                    // 2. Se o ID não existe (primeira pesquisa ou catálogo completo),
+                    //    seleciona o H2 que contém o texto padrão "Catálogo Completo".
+                    $tituloH2 = $('.container h2').filter(function() {
+                        // Usa .trim() para garantir a correspondência exata do texto
+                        return $(this).text().trim() === 'Catálogo Completo';
+                    }).first();
                 }
+                
+                // Verifica se o elemento foi encontrado antes de tentar manipular
+                if ($tituloH2.length === 0) {
+                    console.error("Erro: Elemento H2 do catálogo não encontrado.");
+                    return; 
+                }
+
+                if (termoBuscaBruto) {
+                    // MODO BUSCA: Usa o elemento encontrado para atualizar o texto e garantir o ID
+                    $('.carousel-container').hide();
+                    $tituloH2.text(`Resultados da Busca para: "${termoBuscaBruto}"`).attr('id', 'titulo-resultados');
+                } else {
+                    // MODO CATÁLOGO COMPLETO: Reverte o estado
+                    $('.carousel-container').show();
+                    // Reverte o texto e remove o ID de busca
+                    $tituloH2.text('Catálogo Completo').removeAttr('id');
+                }
+
+                // --------------------------------------------------------------------------
+                // O restante da lógica de renderização dos produtos permanece inalterado
+                // --------------------------------------------------------------------------
 
                 if (produtos.length > 0) {
                     produtos.forEach(product => { 
                         $catalogoWrapper.append(criarCardCatalogoHtml(product)); 
                     });
                 } else { 
-                    $catalogoWrapper.html(`<div class="col-12"><p class="text-center fs-5">Nenhum produto encontrado${termoBusca ? ` com o nome "${termoBusca}"` : ' no catálogo'}.</p></div>`); 
+                    $catalogoWrapper.html(`<div class="col-12"><p class="text-center fs-5">Nenhum produto encontrado${termoBuscaBruto ? ` com o nome "${termoBuscaBruto}"` : ' no catálogo'}.</p></div>`); 
                 }
             }
 
@@ -293,9 +314,7 @@ $(document).ready(function() {
 
             // Inicia o gerenciador do modal 
             const catalogPage = new CatalogPage('#productModal', '[data-bs-toggle="modal"]', productDatabase);
-            
-            // --- NOVO EVENTO DE BUSCA ---
-            
+                        
             // 1. Interceptar o envio do formulário de busca
             $('form.d-flex').submit(function(event) {
                 event.preventDefault(); // Impede o recarregamento da página
