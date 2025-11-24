@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let precoOriginal = parseFloat(p.preco);
                 let precoFinal = precoOriginal;
                 let promocao = 'N/A';
-                let promocaoId = p.id_promocao; 
+                let promocaoId = p.idPromocao; 
                 let promocaoObj = null;
                 if (promocaoId) {
                     promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == promocaoId);
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ? '<span class="status-badge status-green">• Sim</span>' 
                     : '<span class="status-badge status-danger">• Não</span>';
                 return '<tr class="border-bottom border-light">'
-                    + '<td class="py-4 text-dark">' + p.id_produto + '</td>' 
+                    + '<td class="py-4 text-dark">' + p.idProduto + '</td>' 
                     + '<td class="py-4 text-dark">' + (p.nome || 'N/A') + '</td>'
                     + '<td class="py-4 text-dark">' + precoFormatado + '</td>'
                     + '<td class="py-4 text-dark">' + (p.marca || 'N/A') + '</td>'
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     + '<td class="py-4 text-dark">' + (p.estoque || 0) + '</td>'
                     + '<td class="py-4">' + disponivelBadge + '</td>'
                     + '<td class="py-4 text-dark">' + promocao + '</td>'
-                    + '<td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-produto" data-id="' + p.id_produto + '">Selecionar</button></td>'
+                    + '<td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-produto" data-id="' + p.idProduto + '">Selecionar</button></td>'
                     + '</tr>';
             }).join('');
                 document.querySelectorAll('.btn-selecionar-produto').forEach(btnSelecionarProduto => {
@@ -166,32 +166,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Selecionar produto para edição
     const selecionarProduto = async (id) => {
         try {
-            const response = await fetch(`/produtos/buscar?id_produto=${id}`); 
+            const response = await fetch(`/produtos/buscar?idProduto=${id}`); 
             const produto = await response.json();
 
-            
-            inputId.value = produto.id_produto ?? '';
+            inputId.value = produto.idProduto ?? '';
             inputNome.value = produto.nome ?? '';
             inputDescricao.value = produto.descricao ?? '';
             inputCategoria.value = produto.categoria ?? '';
             inputMarca.value = produto.marca ?? '';
-            
+
             let precoOriginal = parseFloat(produto.preco);
             let precoFinal = precoOriginal;
-            let promocaoId = produto.id_promocao ?? '';
+            let promocaoId = produto.idPromocao ?? '';
             let promocaoValida = false;
-            
+
             if (promocaoId && mapaPromocoes[promocaoId]) {
                 // Checa se a promoção ainda está válida
                 const promocoesValidas = Object.keys(mapaPromocoes);
                 if (promocoesValidas.includes(promocaoId.toString())) {
                     promocaoValida = true;
                     const texto = mapaPromocoes[promocaoId];
-                    
+
                     // Verifica se é percentual ou valor fixo
                     let valorDesconto = 0;
                     let tipoDesconto = '';
-                    
+
                     if (texto.includes('%')) {
                         // Desconto percentual: "25%"
                         const matchPercent = texto.match(/([\d]+)%/);
@@ -207,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             tipoDesconto = 'valor';
                         }
                     }
-                    
+
                     if (tipoDesconto && valorDesconto > 0) {
                         if (tipoDesconto === 'percentual') {
                             precoFinal = precoOriginal * (1 - valorDesconto / 100);

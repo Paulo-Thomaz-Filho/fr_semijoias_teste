@@ -12,28 +12,6 @@ include_once __DIR__.'/../core/database/Where.php';
 include_once __DIR__.'/Usuario.php';
 
 class UsuarioDAO {
-	public function getByEmail($email){
-		$where = new Where();
-		$where->addCondition('AND', 'email', '=', $email);
-		$dados = $this->dbQuery->selectFiltered($where);
-		if($dados){
-			$row = $dados[0];
-			return new Usuario(
-				$row['id_usuario'],
-				$row['nome'],
-				$row['email'],
-				$row['senha'],
-				$row['telefone'],
-				$row['cpf'],
-				$row['endereco'],
-				$row['data_nascimento'],
-				$row['id_nivel'],
-				$row['status'],         // <-- ADICIONADO
-    			$row['token_ativacao']  // <-- ADICIONADO
-			);
-		}
-		return null;
-	}
 		private $dbQuery;
 		private $conn;
 
@@ -62,8 +40,8 @@ class UsuarioDAO {
 				    $row['endereco'],
 				    $row['data_nascimento'],
 				    $row['id_nivel'],
-					$row['status'],         // <-- ADICIONADO
-    				$row['token_ativacao']  // <-- ADICIONADO
+						$row['status'],
+    				$row['token_ativacao']
 				);
 				$usuarios[] = $usuario;
 			}
@@ -88,11 +66,57 @@ class UsuarioDAO {
 				    $row['endereco'],
 				    $row['data_nascimento'],
 				    $row['id_nivel'],
-					$row['status'],         // <-- ADICIONADO
-					$row['token_ativacao']  // <-- ADICIONADO
+						$row['status'],
+						$row['token_ativacao']
 				);
 			}
         
+			return null;
+		}
+
+		public function getByCpf($cpf){
+			$where = new Where();
+			$where->addCondition('AND', 'cpf', '=', $cpf);
+			$dados = $this->dbQuery->selectFiltered($where);
+			if($dados){
+				$row = $dados[0];
+				return new Usuario(
+					$row['id_usuario'],
+					$row['nome'],
+					$row['email'],
+					$row['senha'],
+					$row['telefone'],
+					$row['cpf'],
+					$row['endereco'],
+					$row['data_nascimento'],
+					$row['id_nivel'],
+					$row['status'],
+					$row['token_ativacao']
+				);
+			}
+			return null;
+		}
+		
+		public function getByEmail($email){
+			$where = new Where();
+			$where->addCondition('AND', 'email', '=', $email);
+			$dados = $this->dbQuery->selectFiltered($where);
+			if($dados){
+				$row = $dados[0];
+				return new Usuario(
+					$row['id_usuario'],
+					$row['nome'],
+					$row['email'],
+					$row['senha'],
+					$row['telefone'],
+					$row['cpf'],
+					$row['endereco'],
+					$row['data_nascimento'],
+					$row['id_nivel'],
+					$row['status'],
+					$row['token_ativacao']
+				);
+			}
 			return null;
 		}
 
@@ -107,8 +131,8 @@ class UsuarioDAO {
 						$usuario->getEndereco(),
 						$usuario->getDataNascimento(),
 						$usuario->getIdNivel(),
-						$usuario->getStatus(),         // <-- ADICIONADO
-    					$usuario->getTokenAtivacao()   // <-- ADICIONADO
+						$usuario->getStatus(),
+    				$usuario->getTokenAtivacao()
 				];
 				return $this->dbQuery->insert($dados);
 		}
@@ -124,8 +148,8 @@ class UsuarioDAO {
 						'endereco'        => $usuario->getEndereco(),
 						'data_nascimento' => $usuario->getDataNascimento(),
 						'id_nivel'        => $usuario->getIdNivel(),
-						'status'         => $usuario->getStatus(),         // <-- ADICIONADO
-						'token_ativacao'  => $usuario->getTokenAtivacao()   // <-- ADICIONADO
+						'status'          => $usuario->getStatus(),
+						'token_ativacao'  => $usuario->getTokenAtivacao()
 				];
 
 				return $this->dbQuery->update($dados);
@@ -152,10 +176,17 @@ class UsuarioDAO {
 			if($dados){
 				$row = $dados[0];
 				return new Usuario(
-					$row['id_usuario'], $row['nome'], $row['email'], $row['senha'],
-					$row['telefone'], $row['cpf'], $row['endereco'],
-					$row['data_nascimento'], $row['id_nivel'],
-					$row['status'], $row['token_ativacao']
+					$row['id_usuario'],
+					$row['nome'],
+					$row['email'],
+					$row['senha'],
+					$row['telefone'],
+					$row['cpf'],
+					$row['endereco'],
+					$row['data_nascimento'],
+					$row['id_nivel'],
+					$row['status'],
+					$row['token_ativacao']
 				);
 			}
         return null;

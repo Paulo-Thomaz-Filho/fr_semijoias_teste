@@ -1,7 +1,7 @@
 <?php
-// Em: app/core/utils/imagem.php
+header('Content-Type: application/json; charset=utf-8');
 
-// 1. Define o caminho raiz (app/core/utils/../../../ -> fr_semijoias_teste)
+// 1. Define o caminho raiz
 $rootPath = dirname(dirname(dirname(__DIR__)));
 
 // 2. Pega e sanitiza o nome do arquivo

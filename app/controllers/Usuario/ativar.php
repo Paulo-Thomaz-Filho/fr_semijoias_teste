@@ -4,7 +4,6 @@ header('Content-Type: application/json; charset=utf-8');
 // Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
 require_once $rootPath . '/app/core/utils/Mail.php';

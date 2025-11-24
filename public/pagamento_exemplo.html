@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exemplo de Pagamento Mercado Pago</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+    .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+    h1 { font-size: 1.3rem; margin-bottom: 16px; }
+    #walletBrick_container { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pagamento Mercado Pago</h1>
+    <p>Exemplo de integração do botão de pagamento usando o Checkout Pro.</p>
+    <div id="walletBrick_container"></div>
+  </div>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script>
+    // Substitua pela sua public key do Mercado Pago
+    // Exemplo: const publicKey = "TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+    const publicKey = "APP_USR-8267d9b9-b736-4a49-a6a6-552dcb7dbe49";
+
+    // Exemplo de dados do produto (pode ser dinâmico)
+    const dadosProduto = {
+      title: "Produto Teste",
+      quantity: 1,
+      unit_price: 10.00,
+      id_pedido: 123 // opcional, se quiser vincular ao seu pedido
+    };
+
+    // Faz uma requisição para o backend para criar a preferência
+    fetch("/criar_preferencia.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dadosProduto)
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.id && data.init_point) {
+          // Inicializa o SDK do Mercado Pago
+          const mp = new MercadoPago(publicKey);
+          const bricksBuilder = mp.bricks();
+          const renderWalletBrick = async (bricksBuilder) => {
+            await bricksBuilder.create("wallet", "walletBrick_container", {
+              initialization: {
+                preferenceId: data.id,
+              }
+            });
+          };
+          renderWalletBrick(bricksBuilder);
+        } else {
+          alert("Erro ao criar preferência: " + (data.error || "Desconhecido"));
+        }
+      })
+      .catch(error => {
+        alert("Erro na requisição: " + error);
+      });
+  </script>
+</body>
+</html>

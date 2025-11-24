@@ -1,4 +1,5 @@
 <?php
+
 namespace app\core\utils;
 
 use PHPMailer\PHPMailer\PHPMailer;

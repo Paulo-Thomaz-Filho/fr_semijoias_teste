@@ -1,13 +1,11 @@
 <?php
-// Em: app/controls/Produto/atualizar.php
 header('Content-Type: application/json; charset=utf-8');
 
-// --- 1. INCLUIR ARQUIVOS NECESSÁRIOS ---
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
-require_once $rootPath . '/app/core/utils/Base64Files.php'; // Sua classe de upload
+require_once $rootPath . '/app/core/utils/Base64Files.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -16,13 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // --- 2. RECEBER DADOS DO FORMULÁRIO (FormData) ---
-$id_produto = $_POST['id_produto'] ?? null; // CORRIGIDO
+$id_produto = $_POST['id_produto'] ?? null;
 $nome = $_POST['nome'] ?? null;
 $preco = $_POST['preco'] ?? null;
 $marca = $_POST['marca'] ?? null;
 $categoria = $_POST['categoria'] ?? null;
 $descricao = $_POST['descricao'] ?? '';
-$id_promocao = $_POST['id_promocao'] ?? null; // CORRIGIDO
+$id_promocao = $_POST['id_promocao'] ?? null;
 $estoque = $_POST['estoque'] ?? 0;
 $disponivel = $_POST['disponivel'] ?? 1;
 
@@ -75,15 +73,15 @@ try {
     }
 
     // --- 4. ATUALIZAR O OBJETO PRODUTO ---
-    $produtoExistente->set_nome($nome);
-    $produtoExistente->set_descricao($descricao);
-    $produtoExistente->set_preco($preco);
-    $produtoExistente->set_marca($marca);
-    $produtoExistente->set_categoria($categoria);
-    $produtoExistente->set_id_promocao($id_promocao ?: null);
-    $produtoExistente->set_caminho_imagem($caminho_imagem_salva); 
-    $produtoExistente->set_estoque($estoque);
-    $produtoExistente->set_disponivel($disponivel);
+    $produtoExistente->setNome($nome);
+    $produtoExistente->setDescricao($descricao);
+    $produtoExistente->setPreco($preco);
+    $produtoExistente->setMarca($marca);
+    $produtoExistente->setCategoria($categoria);
+    $produtoExistente->setIdPromocao($id_promocao ?: null);
+    $produtoExistente->setCaminhoImagem($caminho_imagem_salva); 
+    $produtoExistente->setEstoque($estoque);
+    $produtoExistente->setDisponivel($disponivel);
 
     // --- ATUALIZAR NO BANCO ---
     $produtoDAO->update($produtoExistente);

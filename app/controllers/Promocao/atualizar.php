@@ -48,7 +48,7 @@ try {
     $promocaoExistente->setDataFim($dataFim);
     $promocaoExistente->setDescricao($descricao);
     $promocaoExistente->setDesconto($desconto);
-        $promocaoExistente->setTipoDesconto($tipoDesconto);
+    $promocaoExistente->setTipoDesconto($tipoDesconto);
     $promocaoExistente->setStatus($status);
 
     if ($promocaoDAO->update($promocaoExistente)) {

@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (Array.isArray(statusList) && statusList.length > 0) {
                 selectStatus.innerHTML = '<option value="" disabled selected>Selecione um status</option>';
                 statusList.forEach(status => {
-                    window.statusMap[status.id_status] = status.nome;
+                    window.statusMap[status.idStatus] = status.nome;
                     const option = document.createElement('option');
-                    option.value = status.id_status;
+                    option.value = status.idStatus;
                     option.textContent = status.nome;
                     selectStatus.appendChild(option);
                 });

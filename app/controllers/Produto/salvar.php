@@ -4,9 +4,9 @@ header('Content-Type: application/json; charset=utf-8');
 // Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-require_once $rootPath . '/app/core/utils/Base64Files.php';
 require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
+require_once $rootPath . '/app/core/utils/Base64Files.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -58,15 +58,15 @@ if (isset($_FILES['caminho_imagem']) && $_FILES['caminho_imagem']['error'] == 0)
 
 try {
     $novoProduto = new \app\models\Produto();
-    $novoProduto->set_nome($nome);
-    $novoProduto->set_descricao($descricao);
-    $novoProduto->set_preco($preco);
-    $novoProduto->set_marca($marca);
-    $novoProduto->set_categoria($categoria);
-    $novoProduto->set_estoque($estoque);
-    $novoProduto->set_disponivel($disponivel);
-    $novoProduto->set_id_promocao($id_promocao ?: null); 
-    $novoProduto->set_caminho_imagem($caminho_imagem_salva); 
+    $novoProduto->setNome($nome);
+    $novoProduto->setDescricao($descricao);
+    $novoProduto->setPreco($preco);
+    $novoProduto->setMarca($marca);
+    $novoProduto->setCategoria($categoria);
+    $novoProduto->setEstoque($estoque);
+    $novoProduto->setDisponivel($disponivel);
+    $novoProduto->setIdPromocao($id_promocao ?: null); 
+    $novoProduto->setCaminhoImagem($caminho_imagem_salva); 
 
     $produtoDAO = new \app\models\ProdutoDAO();
     $idInserido = $produtoDAO->insert($novoProduto);

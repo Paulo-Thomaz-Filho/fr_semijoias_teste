@@ -84,7 +84,7 @@ const carregarPedidosRecentes = async () => {
             const statusList = await statusResp.json();
             if (Array.isArray(statusList)) {
                 statusList.forEach(s => { 
-                    statusMap[s.id_status] = s.nome; 
+                    statusMap[s.idStatus] = s.nome; 
                 });
             }
         } catch (error) {

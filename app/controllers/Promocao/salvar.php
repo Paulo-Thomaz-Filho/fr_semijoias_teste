@@ -16,8 +16,8 @@ $nome = $_POST['nome'] ?? null;
 $dataInicio = $_POST['data_inicio'] ?? null;
 $dataFim = $_POST['data_fim'] ?? null;
 $descricao = $_POST['descricao'] ?? '';
-    $desconto = $_POST['desconto'] ?? 0;
-    $tipoDesconto = $_POST['tipo_desconto'] ?? 'percentual';
+$desconto = $_POST['desconto'] ?? 0;
+$tipoDesconto = $_POST['tipo_desconto'] ?? 'percentual';
 $status = $_POST['status'] ?? 1;
 
 if (!$nome || !$dataInicio || !$dataFim || !$desconto) {
@@ -32,8 +32,8 @@ try {
     $novaPromocao->setDataInicio($dataInicio);
     $novaPromocao->setDataFim($dataFim);
     $novaPromocao->setDescricao($descricao);
-        $novaPromocao->setDesconto($desconto);
-        $novaPromocao->setTipoDesconto($tipoDesconto);
+    $novaPromocao->setDesconto($desconto);
+    $novaPromocao->setTipoDesconto($tipoDesconto);
     $novaPromocao->setStatus($status);
 
     $promocaoDAO = new \app\models\PromocaoDAO();

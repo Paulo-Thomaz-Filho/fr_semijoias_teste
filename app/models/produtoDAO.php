@@ -32,16 +32,16 @@ class ProdutoDAO {
         foreach($dados as $row){
             // Criando o objeto com setters para maior clareza
             $produto = new Produto();
-            $produto->set_id_produto($row['id_produto']);
-            $produto->set_nome($row['nome']);
-            $produto->set_descricao($row['descricao']);
-            $produto->set_preco($row['preco']);
-            $produto->set_marca($row['marca']);
-            $produto->set_categoria($row['categoria']);
-            $produto->set_id_promocao($row['id_promocao']);
-            $produto->set_caminho_imagem($row['caminho_imagem']); // CORRIGIDO
-            $produto->set_estoque($row['estoque']);
-            $produto->set_disponivel($row['disponivel']);
+            $produto->setIdProduto($row['id_produto']);
+            $produto->setNome($row['nome']);
+            $produto->setDescricao($row['descricao']);
+            $produto->setPreco($row['preco']);
+            $produto->setMarca($row['marca']);
+            $produto->setCategoria($row['categoria']);
+            $produto->setIdPromocao($row['id_promocao']);
+            $produto->setCaminhoImagem($row['caminho_imagem']);
+            $produto->setEstoque($row['estoque']);
+            $produto->setDisponivel($row['disponivel']);
             $produtos[] = $produto;
         }
         return $produtos;
@@ -78,16 +78,16 @@ class ProdutoDAO {
         if($dados){
             $row = $dados[0];
             $produto = new Produto();
-            $produto->set_id_produto($row['id_produto']);
-            $produto->set_nome($row['nome']);
-            $produto->set_descricao($row['descricao']);
-            $produto->set_preco($row['preco']);
-            $produto->set_marca($row['marca']);
-            $produto->set_categoria($row['categoria']);
-            $produto->set_id_promocao($row['id_promocao']);
-            $produto->set_caminho_imagem($row['caminho_imagem']); // CORRIGIDO
-            $produto->set_estoque($row['estoque']);
-            $produto->set_disponivel($row['disponivel']);
+            $produto->setIdProduto($row['id_produto']);
+            $produto->setNome($row['nome']);
+            $produto->setDescricao($row['descricao']);
+            $produto->setPreco($row['preco']);
+            $produto->setMarca($row['marca']);
+            $produto->setCategoria($row['categoria']);
+            $produto->setIdPromocao($row['id_promocao']);
+            $produto->setCaminhoImagem($row['caminho_imagem']);
+            $produto->setEstoque($row['estoque']);
+            $produto->setDisponivel($row['disponivel']);
             return $produto;
         }
         return null;
@@ -97,15 +97,15 @@ class ProdutoDAO {
         // A classe DBQuery->insert espera um array numérico na ordem das colunas do construtor
         $dados = [
             null, // id_produto
-            $produto->get_nome(),
-            $produto->get_descricao(),
-            $produto->get_preco(),
-            $produto->get_marca(),
-            $produto->get_categoria(),
-            $produto->get_id_promocao(),
-            $produto->get_caminho_imagem(), // CORRIGIDO: usa o getter correto
-            $produto->get_estoque(),
-            $produto->get_disponivel()
+            $produto->getNome(),
+            $produto->getDescricao(),
+            $produto->getPreco(),
+            $produto->getMarca(),
+            $produto->getCategoria(),
+            $produto->getIdPromocao(),
+            $produto->getCaminhoImagem(),
+            $produto->getEstoque(),
+            $produto->getDisponivel()
         ];
         return $this->dbQuery->insert($dados);
     }
@@ -113,16 +113,16 @@ class ProdutoDAO {
     public function update(Produto $produto){
         // A classe DBQuery->update espera um array associativo
         $dados = [
-            'id_produto'      => $produto->get_id_produto(), 
-            'nome'            => $produto->get_nome(),
-            'descricao'       => $produto->get_descricao(),
-            'preco'           => $produto->get_preco(),
-            'marca'           => $produto->get_marca(),
-            'categoria'       => $produto->get_categoria(),
-            'id_promocao'     => $produto->get_id_promocao(),
-            'caminho_imagem'  => $produto->get_caminho_imagem(), 
-            'estoque'         => $produto->get_estoque(),
-            'disponivel'      => $produto->get_disponivel()
+            'id_produto'      => $produto->getIdProduto(), 
+            'nome'            => $produto->getNome(),
+            'descricao'       => $produto->getDescricao(),
+            'preco'           => $produto->getPreco(),
+            'marca'           => $produto->getMarca(),
+            'categoria'       => $produto->getCategoria(),
+            'id_promocao'     => $produto->getIdPromocao(),
+            'caminho_imagem'  => $produto->getCaminhoImagem(), 
+            'estoque'         => $produto->getEstoque(),
+            'disponivel'      => $produto->getDisponivel()
         ];
         return $this->dbQuery->update($dados);
     }

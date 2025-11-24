@@ -12,13 +12,14 @@ services:
       - /var/www/html/vendor
     working_dir: /var/www/html
     environment:
-      # Configurações SMTP
+      # Configurações SMTP e Mercado Pago
       SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-noreply@frsemijoias.com}
       SMTP_FROM_NAME: ${SMTP_FROM_NAME:-FR Semijoias}
+      MERCADO_PAGO_ACCESS_TOKEN: "APP_USR-8846572080420296-112213-53c99619804b1cf7f417fa3933005e72-3007590737"
     depends_on:
       - mysql
     networks:

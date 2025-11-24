@@ -1,22 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-
-:root {
-  --color-black:        #000000;
-  --color-success:      #e9f7ef;
-  --color-success-text: #198754;
-  --color-warning:      #fff9e3;
-  --color-warning-text: #ffc107;
-  --color-danger:       #fdeaea;
-  --color-danger-text:  #dc3545;
-  --color-primary:      #e3e7fd;
-  --color-primary-text: #3b5bfd;
-  --color-focus:        #003d82;
-  --fonte-principal:    'Adamina', sans-serif;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
-* {
-  font-family: var(--fonte-principal);
+:root {
+  --color-black: #000000;
+  --color-success: #e9f7ef;
+  --color-success-text: #198754;
+  --color-warning: #fff9e3;
+  --color-warning-text: #ffc107;
+  --color-danger: #fdeaea;
+  --color-danger-text: #dc3545;
+  --color-primary: #e3e7fd;
+  --color-primary-text: #3b5bfd;
+  --color-focus: #003d82;
 }
 
 .gap-6 {
@@ -817,11 +815,13 @@ body.bg-light {
 }
 
 @keyframes show {
-  0%, 49.99% {
+  0%,
+  49.99% {
     opacity: 0;
     z-index: 1;
   }
-  50%, 100% {
+  50%,
+  100% {
     opacity: 1;
     z-index: 5;
   }

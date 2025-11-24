@@ -37,15 +37,15 @@ class Pedido {
     public function getDescricao()   { return $this->descricao; }
 
     // --- Setters ---
-    public function setIdPedido($id)       { $this->idPedido = $id; }
-    public function setProdutoNome($nome)  { $this->produtoNome = $nome; }
-    public function setIdCliente($id)      { $this->idCliente = $id; }
-    public function setPreco($preco)       {  $this->preco = $preco; }
-    public function setEndereco($end)      { $this->endereco = $end; }
-    public function setDataPedido($data)   { $this->dataPedido = $data; }
-    public function setQuantidade($qtd)    { $this->quantidade = $qtd; }
-    public function setIdStatus($idStatus) { $this->idStatus = $idStatus; }
-    public function setDescricao($desc)    { $this->descricao = $desc; }
+    public function setIdPedido($id)           { $this->idPedido = $id; }
+    public function setProdutoNome($nome)      { $this->produtoNome = $nome; }
+    public function setIdCliente($id)          { $this->idCliente = $id; }
+    public function setPreco($preco)           {  $this->preco = $preco; }
+    public function setEndereco($endereco)     { $this->endereco = $endereco; }
+    public function setDataPedido($dataPedido) { $this->dataPedido = $dataPedido; }
+    public function setQuantidade($quantidade) { $this->quantidade = $quantidade; }
+    public function setIdStatus($idStatus)     { $this->idStatus = $idStatus; }
+    public function setDescricao($descricao)   { $this->descricao = $descricao; }
 
     public function toArray() {
         return [

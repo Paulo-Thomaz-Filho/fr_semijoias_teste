@@ -4,7 +4,6 @@ header('Content-Type: application/json; charset=utf-8');
 // Configurar o ambiente
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
 require_once $rootPath . '/app/models/Pedido.php';
 require_once $rootPath . '/app/models/PedidoDAO.php';
 require_once $rootPath . '/app/models/StatusDAO.php';
@@ -15,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$idPedido = $_POST['idPedido'] ?? null;
+$id_pedido = $_POST['id_pedido'] ?? null;
 $produto_nome = $_POST['produto_nome'] ?? null;
 $id_cliente = $_POST['id_cliente'] ?? null;
 $preco = $_POST['preco'] ?? null;
@@ -25,7 +24,7 @@ $data_pedido = $_POST['data_pedido'] ?? null;
 $descricao = $_POST['descricao'] ?? '';
 $id_status = $_POST['status'] ?? null;
 
-if (!$idPedido) {
+if (!$id_pedido) {
     http_response_code(400);
     echo json_encode(['erro' => 'O idPedido é obrigatório para atualização.'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -39,7 +38,7 @@ if (!$produto_nome || !$id_cliente || !$preco || !$quantidade) {
 
 try {
     $pedidoDAO = new \app\models\PedidoDAO();
-    $pedidoArray = $pedidoDAO->getById($idPedido);
+    $pedidoArray = $pedidoDAO->getById($id_pedido);
 
     if (!$pedidoArray) {
         http_response_code(404);
@@ -63,7 +62,7 @@ try {
 
     // Reconstrói o objeto Pedido a partir do array
     $pedidoExistente = new \app\models\Pedido(
-        $pedidoArray['idPedido'],
+        $pedidoArray['id_pedido'],
         $produto_nome,
         $id_cliente,
         $preco,

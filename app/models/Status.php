@@ -3,25 +3,25 @@
 namespace app\models;
 
 class Status {
-    private $id_status;
+    private $idStatus;
     private $nome;
 
-    public function __construct($id_status = null, $nome = null) {
-        $this->id_status = $id_status;
+    public function __construct($idStatus = null, $nome = null) {
+        $this->idStatus = $idStatus;
         $this->nome = $nome;
     }
 
     // Getters
-    public function getIdStatus() { return $this->id_status; }
+    public function getIdStatus() { return $this->idStatus; }
     public function getNome()     { return $this->nome; }
 
     // Setters
-    public function setIdStatus($id_status) { $this->id_status = $id_status; }
-    public function setNome($nome)          { $this->nome = $nome; }
+    public function setIdStatus($idStatus) { $this->idStatus = $idStatus; }
+    public function setNome($nome)         { $this->nome = $nome; }
 
     public function toArray() {
         return [
-            'id_status' => $this->id_status,
+            'idStatus' => $this->idStatus,
             'nome' => $this->nome
         ];
     }

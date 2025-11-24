@@ -3,8 +3,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 $rootPath = dirname(dirname(dirname(__DIR__)));
 require_once $rootPath . '/app/etc/config.php';
-
-// --- ARQUIVOS NECESSÁRIOS ---
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
 require_once $rootPath . '/app/core/utils/CodeGenerator.php';
@@ -20,9 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $json_data = file_get_contents('php://input');
 $data = json_decode($json_data);
 
+
 $nome            = $data->nome            ?? null;
 $email           = $data->email           ?? null;
 $senha           = $data->senha           ?? null;
+$cpf             = $data->cpf             ?? null;
 $id_nivel        = $data->id_nivel        ?? 2;    // 2 para novos clientes
 
 // --- CORREÇÃO 2: Ajustar a validação para os campos que realmente vêm do JS ---
@@ -36,9 +36,15 @@ if (!$nome || !$email || !$senha) {
 
 try {
     $usuarioDAO = new \app\models\UsuarioDAO();
+
     if ($usuarioDAO->getByEmail($email)) {
         http_response_code(409);
         echo json_encode(['erro' => 'E-mail já cadastrado.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    if ($cpf && $usuarioDAO->getByCpf($cpf)) {
+        http_response_code(409);
+        echo json_encode(['erro' => 'CPF já cadastrado.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
@@ -46,16 +52,16 @@ try {
     $generator = new app\core\utils\CodeGenerator();
     $token = $generator->run(6); // Gera um código aleatório de 64 caracteres
 
+
     $novoUsuario = new \app\models\Usuario();
     $novoUsuario->setNome($nome);
     $novoUsuario->setEmail($email);
     $novoUsuario->setSenha(password_hash($senha, PASSWORD_DEFAULT));
+    $novoUsuario->setCpf($cpf);
     $novoUsuario->setIdNivel($id_nivel);
-    
     // 2. DEFINIR O STATUS COMO PENDENTE E SALVAR O TOKEN
     $novoUsuario->setStatus('pendente');
     $novoUsuario->setTokenAtivacao($token);
-    
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {

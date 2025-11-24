@@ -12,10 +12,10 @@ class Usuario {
     private $endereco;
     private $dataNascimento;
     private $idNivel;
-    private $status;         // <-- ADICIONADO
-    private $token_ativacao; // <-- ADICIONADO
+    private $status;
+    private $tokenAtivacao;
 
-    public function __construct($idUsuario = null, $nome = null, $email = null, $senha = null, $telefone = null, $cpf = null, $endereco = null, $dataNascimento = null, $idNivel = null, $status = null, $token_ativacao = null){ // <-- ADICIONADO) {
+    public function __construct($idUsuario = null, $nome = null, $email = null, $senha = null, $telefone = null, $cpf = null, $endereco = null, $dataNascimento = null, $idNivel = null, $status = null, $tokenAtivacao = null){
         $this->idUsuario = $idUsuario;
         $this->nome = $nome;
         $this->email = $email;
@@ -25,8 +25,8 @@ class Usuario {
         $this->endereco = $endereco;
         $this->dataNascimento = $dataNascimento;
         $this->idNivel = $idNivel;
-        $this->status = $status;             // <-- ADICIONADO
-        $this->token_ativacao = $token_ativacao; // <-- ADICIONADO
+        $this->status = $status;
+        $this->tokenAtivacao = $tokenAtivacao;
     }
 
     // --- Getters ---
@@ -39,8 +39,8 @@ class Usuario {
     public function getEndereco()       { return $this->endereco; }
     public function getDataNascimento() { return $this->dataNascimento; }
     public function getIdNivel()        { return $this->idNivel; }
-    public function getStatus()         { return $this->status; }         // <-- ADICIONADO
-    public function getTokenAtivacao()  { return $this->token_ativacao; } // <-- ADICIONADO
+    public function getStatus()         { return $this->status; }
+    public function getTokenAtivacao()  { return $this->tokenAtivacao; }
 
     // --- Setters ---
     public function setIdUsuario($id)                  { $this->idUsuario = $id; }
@@ -52,8 +52,8 @@ class Usuario {
     public function setEndereco($endereco)             { $this->endereco = $endereco; }
     public function setDataNascimento($dataNascimento) { $this->dataNascimento = $dataNascimento; }
     public function setIdNivel($idNivel)               { $this->idNivel = $idNivel; }
-    public function setStatus($status)                 { $this->status = $status; }         // <-- ADICIONADO
-    public function setTokenAtivacao($token_ativacao)  { $this->token_ativacao = $token_ativacao; } // <-- ADICIONADO
+    public function setStatus($status)                 { $this->status = $status; }
+    public function setTokenAtivacao($tokenAtivacao)   { $this->tokenAtivacao = $tokenAtivacao; }
 
     // Retorna o tipo de acesso do usuário
     public function getAcesso() {
@@ -81,7 +81,8 @@ class Usuario {
             'endereco'       => $this->endereco,
             'dataNascimento' => $this->dataNascimento,
             'idNivel'        => $this->idNivel,
-            'status'         => $this->status
+            'status'         => $this->status,
+            'tokenAtivacao'  => $this->tokenAtivacao
         ];
     }
 }
