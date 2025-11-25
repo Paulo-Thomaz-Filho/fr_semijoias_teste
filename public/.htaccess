@@ -1,8 +1,12 @@
 <IfModule mod_rewrite.c>
+    Options -MultiViews
     RewriteEngine On
+    RewriteBase /
 
+    # Se o arquivo ou diretﾃｳrio solicitado Nﾃグ existir...
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-
+    
+    # ...envie a requisiﾃｧﾃ｣o para o index.php
     RewriteRule ^(.*)$ index.php?module=$1 [QSA,L]
 </IfModule>

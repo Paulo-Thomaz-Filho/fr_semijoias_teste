@@ -15,7 +15,7 @@ $(document).ready(function() {
             precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
         
-        const imagemSrc = 'assets/images/' + product.caminho_imagem; 
+        const imagemSrc = 'assets/images/' + product.caminhoImagem; 
 
         return `
             <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
@@ -38,7 +38,7 @@ $(document).ready(function() {
                             <button class="btn btn-outline-dark w-100"
                                     data-bs-toggle="modal"
                                     data-bs-target="#productModal"
-                                    data-product-id="${product.id_produto}">
+                                    data-product-id="${product.idProduto}">
                                 Ver Detalhes
                             </button>
                         </div>
@@ -56,7 +56,7 @@ $(document).ready(function() {
             precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
         
-        const imagemSrc = 'assets/images/' + product.caminho_imagem;
+        const imagemSrc = 'assets/images/' + product.caminhoImagem;
 
         return `
             <li class="swiper-slide d-flex flex-column">
@@ -68,7 +68,7 @@ $(document).ready(function() {
                         <button class="btn btn-outline-dark w-100"
                                 data-bs-toggle="modal"
                                 data-bs-target="#productModal"
-                                data-product-id="${product.id_produto}">
+                                data-product-id="${product.idProduto}">
                             Ver Detalhes
                         </button>
                     </div>
@@ -157,16 +157,16 @@ $(document).ready(function() {
             }
 
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingItem = cart.find(item => item.id == product.id_produto); 
+            let existingItem = cart.find(item => item.id == product.idProduto); 
 
             if (existingItem) {
                 existingItem.quantity += quantityToAdd;
             } else {
                 cart.push({
-                    id: product.id_produto,
+                    id: product.idProduto,
                     nome: product.nome,
                     preco: product.preco,
-                    imagem: product.caminho_imagem,
+                    imagem: product.caminhoImagem,
                     quantity: quantityToAdd
                 });
             }
@@ -186,7 +186,7 @@ $(document).ready(function() {
         }
         
         findProductById(id) {
-            return this.database.find(product => product.id_produto == id);
+            return this.database.find(product => product.idProduto == id);
         }
 
         populateModal(product) {
@@ -198,7 +198,7 @@ $(document).ready(function() {
                 precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             }
             this.modalTitle.text(product.nome);
-            this.modalImage.attr('src', 'assets/images/' + product.caminho_imagem); 
+            this.modalImage.attr('src', 'assets/images/' + product.caminhoImagem); 
             this.modalDescription.text(product.descricao); 
             this.modalPrice.text(precoFormatado);
             this.modalMaterial.text(product.marca); 
@@ -215,10 +215,9 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(productDatabase) {
             
-            globalProductDatabase = productDatabase; // ⬅️ Armazena o banco de dados carregado
+            globalProductDatabase = productDatabase; 
             
-            // ... (Seu código existente para filtrar promoções/lançamentos) ...
-            const produtosPromocoes = productDatabase.filter(p => p.id_promocao > 0); 
+            const produtosPromocoes = productDatabase.filter(p => p.idPromocao > 0); 
             const $promocoesWrapper = $('#promocoes-wrapper');
             const $catalogoWrapper = $('#catalogo-completo-wrapper');
             
