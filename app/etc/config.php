@@ -66,10 +66,10 @@ if ($showErrors){
     error_reporting(E_ALL);
 }
 
-$config['database']['host']		= '40.160.64.65';
-$config['database']['schema']	= 'hostdeprojetos_fr_db';
-$config['database']['user']		= 'hostdeprojetos_fr';
-$config['database']['pass']		= '9988110958Pl.';
+$config['database']['host']		= 'mysql';
+$config['database']['schema']	= 'fr_semijoias';
+$config['database']['user']		= 'root';
+$config['database']['pass']		= 'root';
 $config['database']['port']		= '3306';
 
 $config['email']['host']	    = 'smtp.mydomain.com';
