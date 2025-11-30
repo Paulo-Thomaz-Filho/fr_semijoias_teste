@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         } catch (error) {
-            tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar promoções.</td></tr>';
+            tabelaCorpo.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar as promoções</td></tr>';
         }
     }
 

@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Corrige para buscar da porta correta
-            const response = await fetch('http://localhost:8000/pedidos');
+            const response = await fetch('/pedidos');
             const pedidos = await response.json();
             if (!Array.isArray(pedidos) || pedidos.length === 0) {
                 tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">Nenhum pedido cadastrado</td></tr>';
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } catch (error) {
             console.error('Erro:', error);
-            tabelaPedidos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar pedidos</td></tr>';
+            tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Erro ao carregar os pedidos</td></tr>';
         }
     };
 

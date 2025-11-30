@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 msgDiv.className = 'text-danger text-center mt-3';
                 msgDiv.style.display = 'block';
             }
-            tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center text-danger">Erro ao carregar lista.</td></tr>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Erro ao carregar os clientes</td></tr>`;
         }
     };
 

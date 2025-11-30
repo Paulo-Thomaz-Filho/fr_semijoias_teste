@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } catch (error) {
             console.error('Erro:', error);
-            tabelaProdutos.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Erro ao carregar produtos</td></tr>';
+            tabelaProdutos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Erro ao carregar os produtos</td></tr>';
         }
     };
 
