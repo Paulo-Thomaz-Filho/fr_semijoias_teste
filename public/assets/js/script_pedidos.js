@@ -23,6 +23,22 @@ const carregarUsuarioLogado = () => {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
+        // Função para exibir mensagem
+        function exibirMensagemPedido(msg, tipo = 'success') {
+            const msgDiv = document.getElementById('pedidoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = msg;
+                msgDiv.className = `text-center mt-3 text-${tipo === 'success' ? 'success' : 'danger'}`;
+                msgDiv.style.display = 'block';
+            }
+        }
+        function limparMensagemPedido() {
+            const msgDiv = document.getElementById('pedidoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = '';
+                msgDiv.style.display = 'none';
+            }
+        }
     carregarUsuarioLogado();
     
     // Atualizar clientes quando houver alteração global
@@ -281,24 +297,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cadastrar pedido
     const cadastrarPedido = async (dados) => {
         try {
-            console.log('Enviando dados:', dados); // Debug
             const response = await fetch('/pedidos/salvar', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: new URLSearchParams(dados)
             });
-            console.log('Response status:', response.status); // Debug
             const resultado = await response.json();
-            console.log('Resultado:', resultado); // Debug
+            const msgDiv = document.getElementById('pedidoMsg');
             if (response.status === 201 && resultado.sucesso) {
-                // Sucesso: nunca mostra erro
+                if (msgDiv) {
+                    msgDiv.textContent = 'Pedido cadastrado com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                    }
+                }, 1500);
                 return { sucesso: resultado.sucesso, id: resultado.id };
             } else {
-                // Só mostra erro se realmente não cadastrou
+                if (msgDiv) {
+                    msgDiv.textContent = resultado.erro || resultado.error || 'Erro desconhecido';
+                    msgDiv.className = 'text-danger text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
                 return { erro: resultado.erro || resultado.error || 'Erro desconhecido' };
             }
         } catch (error) {
-            console.error('Erro completo:', error);
+            const msgDiv = document.getElementById('pedidoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao cadastrar pedido: ' + error.message;
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
             return { erro: 'Erro ao cadastrar pedido: ' + error.message };
         }
     };
@@ -312,19 +346,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new URLSearchParams(dados)
             });
             const resultado = await response.json();
+            const msgDiv = document.getElementById('pedidoMsg');
             if (resultado.sucesso) {
-                alert('Pedido atualizado com sucesso!');
-                limparFormulario();
+                if (msgDiv) {
+                    msgDiv.textContent = 'Pedido atualizado com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                    }
+                }, 1500);
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
-                alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+                if (msgDiv) {
+                    msgDiv.textContent = 'Erro: ' + (resultado.erro || 'Desconhecido');
+                    msgDiv.className = 'text-danger text-center mt-3';
+                    msgDiv.style.display = 'block';
+                } else {
+                    alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+                }
             }
         } catch (error) {
+            const msgDiv = document.getElementById('pedidoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao atualizar pedido';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
             console.error('Erro:', error);
-            alert('Erro ao atualizar pedido');
         }
     };
 
@@ -338,19 +394,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new URLSearchParams({idPedido: id})
             });
             const resultado = await response.json();
+            const msgDiv = document.getElementById('pedidoMsg');
             if (resultado.sucesso) {
-                alert('Pedido excluído com sucesso!');
-                limparFormulario();
+                if (msgDiv) {
+                    msgDiv.textContent = 'Pedido excluído com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                        msgDiv.className = 'text-center mt-3';
+                    }
+                }, 1500);
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
-                alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+                if (msgDiv) {
+                    msgDiv.textContent = 'Erro: ' + (resultado.erro || 'Desconhecido');
+                    msgDiv.className = 'text-danger text-center mt-3';
+                    msgDiv.style.display = 'block';
+                } else {
+                    alert('Erro: ' + (resultado.erro || 'Desconhecido'));
+                }
             }
         } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro ao deletar pedido');
+            const msgDiv = document.getElementById('pedidoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao deletar pedido';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
         }
     };
 
@@ -571,9 +649,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (formPedido) {
             formPedido.addEventListener('submit', function(e) {
                 e.preventDefault();
+                limparMensagemPedido();
                 // Validação dos campos principais
                 if (!inputCliente.value || !inputEndereco.value.trim() || !selectStatus.value || !inputData.value) {
-                    alert('Preencha todos os campos obrigatórios do pedido.');
+                    exibirMensagemPedido('Preencha todos os campos obrigatórios do pedido.', 'danger');
                     return;
                 }
                 // Limpa o array de itens antes do envio
@@ -581,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return item.produtoNome && item.produtoNome !== 'Selecione um produto' && item.quantidade && item.quantidade > 0 && item.preco && item.preco > 0;
                 });
                 if (itensPedido.length === 0) {
-                    alert('Adicione pelo menos um item válido ao pedido.');
+                    exibirMensagemPedido('Adicione pelo menos um item válido ao pedido.', 'danger');
                     return;
                 }
                 // Pega o nome do status selecionado
@@ -603,9 +682,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Verifica o resultado de cada item
                     const sucessoCount = resultados.filter(r => r && typeof r.sucesso === 'string' && r.sucesso.toLowerCase().includes('sucesso')).length;
                     if (sucessoCount > 0) {
-                        alert('Pedido cadastrado com sucesso!');
+                        exibirMensagemPedido('Pedido cadastrado com sucesso!', 'success');
                     } else {
-                        alert('Erro: Dados incompletos. Produto, Cliente, Quantidade e Preço são obrigatórios.');
+                        exibirMensagemPedido('Erro: Dados incompletos. Produto, Cliente, Quantidade e Preço são obrigatórios.', 'danger');
                     }
                     // Limpa o array de itens para garantir que não fique resíduo
                     itensPedido = [];

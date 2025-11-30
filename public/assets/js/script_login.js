@@ -35,14 +35,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const data = await response.json();
-            console.log('Resposta do servidor:', data);
-            
+
+            // Esconde mensagem de erro antes de processar
+            const emailError = document.getElementById('loginEmailError');
+            if (emailError) {
+                emailError.style.display = 'none';
+                emailError.textContent = '';
+            }
+
             if (data.sucesso) {
                 // Salvar dados do usuário na sessionStorage
                 if (data.usuario_nome) {
                     sessionStorage.setItem('usuario_nome', data.usuario_nome);
                 }
-                
                 // Redirecionar conforme tipo de usuário
                 if (data.isAdmin) {
                     window.location.href = '/dashboard'; 
@@ -50,7 +55,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = '/inicio'; 
                 }
             } else {
-                alert('Falha no login: ' + (data.erro || 'Credenciais inválidas.'));
+                if (emailError) {
+                    emailError.textContent = data.erro || 'Credenciais inválidas.';
+                    emailError.style.display = 'block';
+                }
             }
             
         } catch (error) {

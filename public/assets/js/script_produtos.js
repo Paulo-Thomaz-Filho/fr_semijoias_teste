@@ -246,16 +246,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData // Envia o FormData
             });
             const result = await response.json();
+            const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
-                alert('Produto cadastrado com sucesso!');
-                limparFormulario();
+                if (msgDiv) {
+                    msgDiv.textContent = 'Produto cadastrado com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                    }
+                }, 1500);
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
             } else {
-                alert(result.erro || 'Erro ao cadastrar produto');
+                if (msgDiv) {
+                    msgDiv.textContent = result.erro || 'Erro ao cadastrar produto';
+                    msgDiv.className = 'text-danger text-center mt-3';
+                    msgDiv.style.display = 'block';
+                } else {
+                    alert(result.erro || 'Erro ao cadastrar produto');
+                }
             }
         } catch (error) {
+            const msgDiv = document.getElementById('produtoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao cadastrar produto';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
             console.error('Erro ao cadastrar produto:', error);
         }
     };
@@ -268,16 +291,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData // Envia o FormData
             });
             const result = await response.json();
+            const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
-                alert('Produto atualizado com sucesso!');
-                limparFormulario();
+                if (msgDiv) {
+                    msgDiv.textContent = 'Produto atualizado com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                    }
+                }, 1500);
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
             } else {
-                alert(result.erro || 'Erro ao atualizar produto');
+                if (msgDiv) {
+                    msgDiv.textContent = result.erro || 'Erro ao atualizar produto';
+                    msgDiv.className = 'text-danger text-center mt-3';
+                    msgDiv.style.display = 'block';
+                } else {
+                    alert(result.erro || 'Erro ao atualizar produto');
+                }
             }
         } catch (error) {
+            const msgDiv = document.getElementById('produtoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao atualizar produto';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
             console.error('Erro ao atualizar produto:', error);
         }
     };
@@ -289,20 +335,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/produtos/deletar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ id_produto: id }) // CORRIGIDO
+                body: new URLSearchParams({ idProduto: id })
             });
             const result = await response.json();
+            const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
-                alert('Produto excluído com sucesso!');
-                limparFormulario();
+                if (msgDiv) {
+                    msgDiv.textContent = 'Produto excluído com sucesso!';
+                    msgDiv.className = 'text-success text-center mt-3';
+                    msgDiv.style.display = 'block';
+                }
+                setTimeout(() => {
+                    limparFormulario();
+                    if (msgDiv) {
+                        msgDiv.style.display = 'none';
+                        msgDiv.textContent = '';
+                        msgDiv.className = 'text-center mt-3';
+                    }
+                }, 1500);
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
             } else {
-                alert(result.erro || 'Erro ao excluir produto');
+                exibirMensagemProduto(result.erro || 'Erro ao excluir produto', 'danger');
             }
         } catch (error) {
-            console.error('Erro ao deletar produto:', error);
+            const msgDiv = document.getElementById('produtoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao excluir produto';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
         }
     };
     
@@ -345,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (produtoSelecionado) {
-            formData.append('id_produto', inputId.value); // CORRIGIDO
+            formData.append('idProduto', inputId.value);
             atualizarProduto(formData);
         } else {
             cadastrarProduto(formData);

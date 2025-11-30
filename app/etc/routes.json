@@ -17,7 +17,7 @@
     "usuario/salvar": {
         "path": "app/controllers/Usuario/salvar.php"
     },
-    "usuario/salvarAdmin": {
+    "usuario/salvar-admin": {
         "path": "app/controllers/Usuario/salvarAdmin.php"
     },
     "usuario/buscar": {
@@ -32,10 +32,10 @@
     "usuario/atualizar-endereco": {
         "path": "app/controllers/Usuario/atualizarEndereco.php"
     },
-    "usuario/obter-endereco": {
+    "usuario/buscar-endereco": {
         "path": "app/controllers/Usuario/buscarEndereco.php"
     },
-    "usuario/obter-dados": {
+    "usuario/buscar-dados": {
         "path": "app/controllers/Usuario/buscarDados.php"
     },
     "usuario/deletar": {
@@ -53,6 +53,7 @@
     "niveis": {
         "path": "app/controllers/NivelAcesso/listar.php"
     },
+
 
 
     "produtos": {
@@ -133,6 +134,8 @@
         "path": "public/views/carrinho.html"
     },
 
+
+
     "usuario/ativar": {
         "path": "app/controllers/Usuario/ativar.php"
     },
@@ -148,6 +151,7 @@
     "local_user": {
         "path": "public/views/local_user.html"
     },
+
 
 
     "dashboard": {
@@ -199,11 +203,19 @@
             }
         ],
         "errorPath": "login"
+    },
+
+
+
+    "sucesso": {
+        "path": "public/views/sucesso.html"
+    },
+
+    "pendente": {
+        "path": "public/views/pendente.html"
+    },
+
+    "cancelado": {
+        "path": "public/views/cancelado.html"
     }
-
-
-
-
-
 }
-

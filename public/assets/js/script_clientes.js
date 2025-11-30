@@ -99,14 +99,19 @@ document.addEventListener('DOMContentLoaded', function() {
         inputId.value = 'Auto';
         inputStatus.value = 'Pendente';
         clienteSelecionado = null;
-        
         // Atualizar estado dos botões
         btnCadastrarCliente.disabled = false;
         btnAtualizarCliente.disabled = true;
         btnExcluirCliente.disabled = true;
-        
         // Remover seleção da tabela
         tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+        // Esconder mensagem
+        const msgDiv = document.getElementById('clienteMsg');
+        if (msgDiv) {
+            msgDiv.style.display = 'none';
+            msgDiv.textContent = '';
+            msgDiv.className = 'text-center mt-3';
+        }
     };
 
     // -------------------------------------------------------------------------
@@ -120,16 +125,13 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/usuario');
             const clientes = await response.json();
-            
             if (!Array.isArray(clientes) || clientes.length === 0) {
                 tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center">Nenhum cliente cadastrado.</td></tr>`;
                 return;
             }
-
             tabelaCorpo.innerHTML = clientes.map(cliente => {
                 const dataFormatada = formatarDataBR(cliente.dataNascimento);
                 const badge = gerarBadgeNivel(cliente.idNivel);
-                
                 return `
                     <tr class="border-bottom border-light" data-id="${cliente.idUsuario}">
                         <td class="py-4 text-dark">${cliente.idUsuario ?? ''}</td>
@@ -145,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 `;
             }).join('');
-            
             // Adicionar eventos aos botões de seleção
             document.querySelectorAll('.btn-selecionar-cliente').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -153,9 +154,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     selecionarCliente(this.dataset.id, linha);
                 });
             });
-            
         } catch (error) {
-            console.error('Erro ao carregar clientes:', error);
+            const msgDiv = document.getElementById('clienteMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Erro ao carregar lista de clientes.';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
             tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center text-danger">Erro ao carregar lista.</td></tr>`;
         }
     };
@@ -165,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch(`/usuario/buscar?idUsuario=${id}`);
             const cliente = await response.json();
-            
             // Preencher formulário
             inputId.value = cliente.idUsuario;
             inputStatus.value = cliente.status ? cliente.status.charAt(0).toUpperCase() + cliente.status.slice(1) : 'Pendente';
@@ -177,23 +181,23 @@ document.addEventListener('DOMContentLoaded', function() {
             inputCpf.value = cliente.cpf || '';
             inputNascimento.value = cliente.dataNascimento || '';
             selectNivel.value = String(cliente.idNivel || '');
-            
             // Atualizar estado
             clienteSelecionado = cliente.idUsuario;
             btnCadastrarCliente.disabled = true;
             btnAtualizarCliente.disabled = false;
             btnExcluirCliente.disabled = false;
-            
             // Destacar linha selecionada
             tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
             linhaSelecionada.classList.add('table-active');
-            
             // Scroll para o formulário
             formCliente.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
         } catch (error) {
-            console.error('Erro ao selecionar cliente:', error);
-            alert('Não foi possível carregar os dados do cliente.');
+            const msgDiv = document.getElementById('clienteMsg');
+            if (msgDiv) {
+                msgDiv.textContent = 'Não foi possível carregar os dados do cliente.';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
         }
     };
 
@@ -218,27 +222,50 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         const response = await fetch('/usuario/salvarAdmin', {
             method: 'POST',
-            // 2. Definir o cabeçalho para JSON
             headers: {
                 'Content-Type': 'application/json'
             },
-            // 3. Enviar o objeto como string JSON
             body: JSON.stringify(dadosCliente)
         });
         const resultado = await response.json();
-
+        const msgDiv = document.getElementById('clienteMsg');
         if (!response.ok) {
-            throw new Error(resultado.erro || 'Erro ao salvar.');
+            if (msgDiv) {
+                msgDiv.textContent = resultado.erro || 'Erro ao salvar.';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
+            return;
         }
-
-        alert('Cliente salvo com sucesso!');
-        limparFormulario();
+        if (msgDiv) {
+            msgDiv.textContent = 'Cliente salvo com sucesso!';
+            msgDiv.className = 'text-success text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
+        setTimeout(() => {
+            formCliente.reset();
+            inputId.value = 'Auto';
+            inputStatus.value = 'Pendente';
+            clienteSelecionado = null;
+            btnCadastrarCliente.disabled = false;
+            btnAtualizarCliente.disabled = true;
+            btnExcluirCliente.disabled = true;
+            tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+            if (msgDiv) {
+                msgDiv.style.display = 'none';
+                msgDiv.textContent = '';
+                msgDiv.className = 'text-center mt-3';
+            }
+        }, 1500);
         carregarClientes();
         window.dispatchEvent(new Event('clientesAtualizados'));
-
     } catch (error) {
-        console.error('Erro ao salvar cliente:', error);
-        alert(error.message);
+        const msgDiv = document.getElementById('clienteMsg');
+        if (msgDiv) {
+            msgDiv.textContent = error.message || 'Erro ao salvar cliente.';
+            msgDiv.className = 'text-danger text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
     }
 };
 
@@ -259,28 +286,44 @@ const atualizarCliente = async () => {
 
     try {
         const response = await fetch('/usuario/atualizar', {
-            method: 'POST', // (Idealmente seria PUT ou PATCH, mas mantendo seu padrão)
-            // 2. Definir o cabeçalho para JSON
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            // 3. Enviar o objeto como string JSON
             body: JSON.stringify(dadosCliente)
         });
         const resultado = await response.json();
-
+        const msgDiv = document.getElementById('clienteMsg');
         if (!response.ok) {
-            throw new Error(resultado.erro || 'Erro ao atualizar.');
+            if (msgDiv) {
+                msgDiv.textContent = resultado.erro || 'Erro ao atualizar.';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
+            return;
         }
-
-        alert('Cliente atualizado com sucesso!');
-        limparFormulario();
+        if (msgDiv) {
+            msgDiv.textContent = 'Cliente atualizado com sucesso!';
+            msgDiv.className = 'text-success text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
+        setTimeout(() => {
+            limparFormulario();
+            if (msgDiv) {
+                msgDiv.style.display = 'none';
+                msgDiv.textContent = '';
+                msgDiv.className = 'text-center mt-3';
+            }
+        }, 1500);
         carregarClientes();
         window.dispatchEvent(new Event('clientesAtualizados'));
-
     } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
-        alert(error.message);
+        const msgDiv = document.getElementById('clienteMsg');
+        if (msgDiv) {
+            msgDiv.textContent = error.message || 'Erro ao atualizar cliente.';
+            msgDiv.className = 'text-danger text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
     }
 };
 
@@ -293,28 +336,44 @@ const excluirCliente = async () => {
 
     try {
         const response = await fetch('/usuario/deletar', {
-            method: 'POST', // (Idealmente seria DELETE, mas mantendo seu padrão)
-            // 2. Definir o cabeçalho para JSON
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            // 3. Enviar o objeto como string JSON
             body: JSON.stringify(dadosCliente)
         });
         const resultado = await response.json();
-
+        const msgDiv = document.getElementById('clienteMsg');
         if (!response.ok) {
-            throw new Error(resultado.erro || 'Erro ao excluir.');
+            if (msgDiv) {
+                msgDiv.textContent = resultado.erro || 'Erro ao excluir.';
+                msgDiv.className = 'text-danger text-center mt-3';
+                msgDiv.style.display = 'block';
+            }
+            return;
         }
-
-        alert('Cliente excluído com sucesso!');
-        limparFormulario();
+        if (msgDiv) {
+            msgDiv.textContent = 'Cliente excluído com sucesso!';
+            msgDiv.className = 'text-success text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
+        setTimeout(() => {
+            limparFormulario();
+            if (msgDiv) {
+                msgDiv.style.display = 'none';
+                msgDiv.textContent = '';
+                msgDiv.className = 'text-center mt-3';
+            }
+        }, 1500);
         carregarClientes();
         window.dispatchEvent(new Event('clientesAtualizados'));
-
     } catch (error) {
-        console.error('Erro ao excluir cliente:', error);
-        alert(error.message);
+        const msgDiv = document.getElementById('clienteMsg');
+        if (msgDiv) {
+            msgDiv.textContent = error.message || 'Erro ao excluir cliente.';
+            msgDiv.className = 'text-danger text-center mt-3';
+            msgDiv.style.display = 'block';
+        }
     }
 };
 

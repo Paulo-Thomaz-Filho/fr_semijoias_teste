@@ -23,9 +23,9 @@ try {
             ]
         ],
         "back_urls" => [
-            "success" => "https://google.com/sucesso",
-            "failure" => "https://google.com/erro",
-            "pending" => "https://google.com/pendente"
+            "success" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/sucesso",
+            "failure" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/erro",
+            "pending" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/pendente"
         ],
         "auto_return" => "approved",
         "external_reference" => $id_pedido

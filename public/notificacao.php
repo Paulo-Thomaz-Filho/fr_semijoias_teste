@@ -14,7 +14,7 @@ $xSignature = $_SERVER['HTTP_X_SIGNATURE'] ?? null;
 $xRequestId = $_SERVER['HTTP_X_REQUEST_ID'] ?? null;
 $queryParams = $_GET;
 $dataID = isset($queryParams['data.id']) ? $queryParams['data.id'] : '';
-$parts = explode(',', $xSignature);
+$parts = explode(',', (string)$xSignature);
 $ts = null;
 $hash = null;
 foreach ($parts as $part) {
@@ -30,12 +30,19 @@ foreach ($parts as $part) {
 	}
 }
 // Coloque sua chave secreta do Mercado Pago abaixo:
-$secret = "SUA_CHAVE_SECRETA_AQUI";
+$secret = "c57a532165415bca8fc2508e4d47b9c1f774ef5fb5de4d627226bfbaacd3838b";
 $manifest = "id:$dataID;request-id:$xRequestId;ts:$ts;";
 $sha = hash_hmac('sha256', $manifest, $secret);
 if ($sha === $hash) {
 	file_put_contents(__DIR__ . '/notificacao_log.txt', "HMAC OK\n", FILE_APPEND);
 	// Notificação válida
+	try {
+		require_once __DIR__ . '/../app/core/utils/WebhookHandler.php';
+		\app\core\utils\WebhookHandler::atualizarPedidoPorPagamento($dataID);
+		file_put_contents(__DIR__ . '/notificacao_log.txt', "Pedido atualizado para pagamento $dataID\n", FILE_APPEND);
+	} catch (\Throwable $e) {
+		file_put_contents(__DIR__ . '/notificacao_log.txt', "Erro ao atualizar pedido: " . $e->getMessage() . "\n", FILE_APPEND);
+	}
 } else {
 	file_put_contents(__DIR__ . '/notificacao_log.txt', "HMAC FALHOU\n", FILE_APPEND);
 	// Notificação inválida

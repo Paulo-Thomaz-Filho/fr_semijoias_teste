@@ -3,158 +3,223 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
-    <link rel="stylesheet" href="assets/css/style_user.css"/>
-    <link rel="shortcut icon" href="assets/images/logo.svg" type="image/x-icon"/>
-    <link href="https://fonts.googleapis.com/css2?family=Adamina&display=swap" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="assets/css/style_user.css" />
+    <link
+      rel="shortcut icon"
+      href="assets/images/logo.svg"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Adamina&display=swap"
+      rel="stylesheet"
+    />
     <title>Localização de Entrega</title>
-    </head>
-<body>
+  </head>
+  <body>
     <div class="container-fluid my-4">
-        <div class="row">
-            <div class="col-md-3">
-                <nav class="sidebar-nav">
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="inicio"> <i class="bi bi-arrow-left"></i>
-                            Voltar
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="dados_user"> <i class="bi bi-person-circle"></i>
-                            Informações pessoais
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="local_user"> <i class="bi bi-geo-alt"></i>
-                            Localização de entrega
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <div>
-                                <a
-                                    href="javascript:void(0);"
-                                    class="d-flex align-items-center gap-3 text-black text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3"
-                                    onclick="fetch('/api/usuario/logout').then(() => { sessionStorage.clear(); window.location.href='/login'; });"
-                                    onmouseover="this.classList.add('bg-danger', 'text-white');"
-                                    onmouseout="this.classList.remove('bg-danger', 'text-white');"
-                                >
-                                    <svg
-                                    width="18"
-                                    height="18"
-                                    viewBox="0 0 600 600"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                    <path
-                                        d="M 130 0 C 58.672245 0 0 58.672245 0 130 L 0 470 C 0 541.32776 58.672245 600 130 600 L 301.57812 600 C 367.83331 600 423.13643 549.36696 430.67188 485 L 349.43555 485 C 343.32179 505.66026 324.7036 520 301.57812 520 L 130 520 C 101.60826 520 80 498.39174 80 470 L 80 130 C 80 101.60826 101.60826 80 130 80 L 301.57812 80 C 324.7036 80 343.32179 94.339739 349.43555 115 L 430.67188 115 C 423.13642 50.633038 367.83331 0 301.57812 0 L 130 0 z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="m 476.86328,179.99911 a 40,40 0 0 0 -28.28516,11.71484 40,40 0 0 0 0,56.57032 l 11.71485,11.71484 H 163.72656 a 40,40 0 0 0 -40,40 40,40 0 0 0 40,40 h 296.56641 l -11.71485,11.71484 a 40,40 0 0 0 0,56.57032 40,40 0 0 0 56.57032,0 l 72.79101,-72.79102 A 40,40 0 0 0 600,299.99911 40,40 0 0 0 577.5293,264.09481 l -72.38086,-72.38086 a 40,40 0 0 0 -28.28516,-11.71484 z"
-                                        fill="currentColor"
-                                    />
-                                    </svg>
-                                    Sair
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-
-            <div class="col-md-9 c">
-                <h2 class="mb-4">Localização de entrega</h2>
-                <div id="local_user_form">
-                    <div class="card mb-4">
-                        <div class="card-header fs-5">Endereço</div>
-                        <div class="card-body">
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputCEP" class="col-sm-3 col-form-label">CEP:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputCEP" name="cep"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputRua" class="col-sm-3 col-form-label">Rua/Avenida:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputRua" name="rua"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputNumero" class="col-sm-3 col-form-label">Número:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputNumero" name="numero"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputComplemento" class="col-sm-3 col-form-label" >Complemento:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputComplemento" name="complemento"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputBairro" class="col-sm-3 col-form-label">Bairro:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputBairro" name="bairro"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputCidade" class="col-sm-3 col-form-label">Cidade:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputCidade" name="cidade"/>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <label for="inputEstado" class="col-sm-3 col-form-label">Estado:</label>
-                                <div class="col-sm-9">
-                                    <select id="inputEstado" name="estado" class="form-select">
-                                        <option selected>Selecione...</option>
-                                        <option>AC</option>
-                                        <option>AP</option>
-                                        <option>AM</option>
-                                        <option>PA</option>
-                                        <option>RO</option>
-                                        <option>RR</option>
-                                        <option>TO</option>
-                                        <option>AL</option>
-                                        <option>BA</option>
-                                        <option>CE</option>
-                                        <option>MA</option>
-                                        <option>PB</option>
-                                        <option>PI</option>
-                                        <option>RN</option>
-                                        <option>SE</option>
-                                        <option>DF</option>
-                                        <option>GO</option>
-                                        <option>MT</option>
-                                        <option>MS</option>
-                                        <option>ES</option>
-                                        <option>MG</option>
-                                        <option>RJ</option>
-                                        <option>SP</option>
-                                        <option>SC</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button class="btn btn-lg px-4 btn-animado" id="btn-salvar-endereco">Salvar Endereço</button>
-                    </div>
+      <div class="row">
+        <div class="col-md-3">
+          <nav class="sidebar-nav">
+            <ul class="nav nav-pills flex-column">
+              <li class="nav-item">
+                <a class="nav-link" href="inicio">
+                  <i class="bi bi-arrow-left"></i>
+                  Voltar
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="dados_user">
+                  <i class="bi bi-person-circle"></i>
+                  Informações pessoais
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="local_user">
+                  <i class="bi bi-geo-alt"></i>
+                  Localização de entrega
+                </a>
+              </li>
+              <li class="nav-item">
+                <div>
+                  <a
+                    href="javascript:void(0);"
+                    class="d-flex align-items-center gap-3 text-black text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3"
+                    onclick="fetch('/api/usuario/logout').then(() => { sessionStorage.clear(); window.location.href='/login'; });"
+                    onmouseover="this.classList.add('bg-danger', 'text-white');"
+                    onmouseout="this.classList.remove('bg-danger', 'text-white');"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 600 600"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M 130 0 C 58.672245 0 0 58.672245 0 130 L 0 470 C 0 541.32776 58.672245 600 130 600 L 301.57812 600 C 367.83331 600 423.13643 549.36696 430.67188 485 L 349.43555 485 C 343.32179 505.66026 324.7036 520 301.57812 520 L 130 520 C 101.60826 520 80 498.39174 80 470 L 80 130 C 80 101.60826 101.60826 80 130 80 L 301.57812 80 C 324.7036 80 343.32179 94.339739 349.43555 115 L 430.67188 115 C 423.13642 50.633038 367.83331 0 301.57812 0 L 130 0 z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="m 476.86328,179.99911 a 40,40 0 0 0 -28.28516,11.71484 40,40 0 0 0 0,56.57032 l 11.71485,11.71484 H 163.72656 a 40,40 0 0 0 -40,40 40,40 0 0 0 40,40 h 296.56641 l -11.71485,11.71484 a 40,40 0 0 0 0,56.57032 40,40 0 0 0 56.57032,0 l 72.79101,-72.79102 A 40,40 0 0 0 600,299.99911 40,40 0 0 0 577.5293,264.09481 l -72.38086,-72.38086 a 40,40 0 0 0 -28.28516,-11.71484 z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Sair
+                  </a>
                 </div>
-            </div>
+              </li>
+            </ul>
+          </nav>
         </div>
+
+        <div class="col-md-9 c">
+          <h2 class="mb-4">Localização de entrega</h2>
+          <div id="local_user_form">
+            <div class="card mb-4">
+              <div class="card-header fs-5">Endereço</div>
+              <div class="card-body">
+                <div class="row mb-3 align-items-center">
+                  <label for="inputCEP" class="col-sm-3 col-form-label"
+                    >CEP:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputCEP"
+                      name="cep"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputRua" class="col-sm-3 col-form-label"
+                    >Rua/Avenida:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputRua"
+                      name="rua"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputNumero" class="col-sm-3 col-form-label"
+                    >Número:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputNumero"
+                      name="numero"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputComplemento" class="col-sm-3 col-form-label"
+                    >Complemento:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputComplemento"
+                      name="complemento"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputBairro" class="col-sm-3 col-form-label"
+                    >Bairro:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputBairro"
+                      name="bairro"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputCidade" class="col-sm-3 col-form-label"
+                    >Cidade:</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputCidade"
+                      name="cidade"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                  <label for="inputEstado" class="col-sm-3 col-form-label"
+                    >Estado:</label
+                  >
+                  <div class="col-sm-9">
+                    <select id="inputEstado" name="estado" class="form-select">
+                      <option selected>Selecione...</option>
+                      <option>AC</option>
+                      <option>AP</option>
+                      <option>AM</option>
+                      <option>PA</option>
+                      <option>RO</option>
+                      <option>RR</option>
+                      <option>TO</option>
+                      <option>AL</option>
+                      <option>BA</option>
+                      <option>CE</option>
+                      <option>MA</option>
+                      <option>PB</option>
+                      <option>PI</option>
+                      <option>RN</option>
+                      <option>SE</option>
+                      <option>DF</option>
+                      <option>GO</option>
+                      <option>MT</option>
+                      <option>MS</option>
+                      <option>ES</option>
+                      <option>MG</option>
+                      <option>RJ</option>
+                      <option>SP</option>
+                      <option>SC</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button
+                class="btn btn-lg px-4 btn-animado"
+                id="btn-salvar-endereco"
+              >
+                Salvar Endereço
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script_local_user.js"></script>
-</body>
+  </body>
 </html>

@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   font-family: "Poppins", sans-serif;
 }
@@ -79,7 +83,7 @@ input.form-control:focus,
 textarea.form-control:focus,
 select.form-select:focus {
   border-color: var(--color-focus) !important;
-  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 61, 130, 0.25) !important;
   outline: none !important;
 }
 
@@ -242,6 +246,13 @@ button:focus {
   max-width: 130px;
   display: block;
   padding-right: 0.5rem;
+}
+
+#mobileSignIn.btn-dark,
+#mobileSignUp.btn-dark {
+  background-color: #212529 !important;
+  color: #fff !important;
+  opacity: 1 !important;
 }
 
 /* =============================================================================
@@ -725,37 +736,6 @@ aside,
   will-change: transform, opacity;
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Focus visible para acessibilidade */
-*:focus-visible {
-  outline: 2px solid #0d6efd;
-  outline-offset: 2px;
-}
-
-/* Ajustes para dark mode (se necessário no futuro) */
-@media (prefers-color-scheme: dark) {
-  /* Preparado para dark mode */
-}
-
-/* Ajustes para motion reduzido (acessibilidade) */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  aside {
-    transition: none !important;
-  }
-}
-
 /* =============================================================================
    ESTILOS ESPECÍFICOS DA TELA DE LOGIN COM EFEITO SLIDE
    ============================================================================= */
@@ -780,6 +760,15 @@ body.bg-light {
   max-width: 100%;
   height: 90vh;
   max-height: 750px;
+}
+
+@media (max-width: 992px) {
+  .sign-up-container .form-content {
+    overflow-y: auto !important;
+    padding-top: 6rem !important;
+    max-height: calc(100vh - 80px);
+    padding-bottom: 8rem !important;
+  }
 }
 
 /* Containers dos formulários */
@@ -830,6 +819,15 @@ body.bg-light {
 /* Conteúdo dos formulários */
 .form-content {
   height: 100%;
+}
+
+@media (max-width: 992px) {
+  .form-content {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: visible !important;
+    padding-bottom: 6rem !important;
+  }
 }
 
 .form-content form {
@@ -965,11 +963,7 @@ body.bg-light {
 /* =============================================================================
    PÁGINA DE ATIVAÇÃO DE CONTA
    ============================================================================= */
-
-.ativacao-logo h1 {
-  color: #667eea;
-}
-
+   
 .ativacao-icon {
   font-size: 80px;
 }

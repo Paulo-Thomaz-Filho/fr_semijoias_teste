@@ -30,26 +30,66 @@ document.addEventListener('DOMContentLoaded', function() {
      * @returns {boolean} - True se válido, false se inválido
      */
     const validarCamposCadastro = () => {
-        const nome = inputNome.value;
-        const email = inputEmail.value;
+        const nome = inputNome.value.trim();
+        const email = inputEmail.value.trim();
         const senha = inputSenha.value;
-        const telefone = inputTelefone.value;
-        const cpf = inputCpf.value;
-        const endereco = inputEndereco.value;
-        
-        // Verificar se todos os campos estão preenchidos
+        const telefone = inputTelefone.value.trim();
+        const cpf = inputCpf.value.trim();
+        const endereco = inputEndereco.value.trim();
+
+        // Funções de validação
+        function validarEmail(email) {
+            // Regex simples para email
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        function validarTelefone(telefone) {
+            // Aceita formatos (00) 00000-0000 ou (00) 0000-0000
+            return /^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$/.test(telefone);
+        }
+        function validarCPF(cpf) {
+            // Remove caracteres não numéricos
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11 || /^([0-9])\1+$/.test(cpf)) return false;
+            let soma = 0, resto;
+            for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(9, 10))) return false;
+            soma = 0;
+            for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(10, 11))) return false;
+            return true;
+        }
+
+        // Mensagem de erro
+        let errorMsg = '';
         if (!nome || !email || !senha || !telefone || !cpf || !endereco) {
-            alert('Por favor, preencha todos os campos de cadastro');
-            return false;
+            errorMsg = 'Por favor, preencha todos os campos de cadastro.';
+        } else if (!validarEmail(email)) {
+            errorMsg = 'E-mail inválido.';
+        } else if (!validarTelefone(telefone)) {
+            errorMsg = 'Telefone inválido. Use o formato (00) 00000-0000.';
+        } else if (!validarCPF(cpf)) {
+            errorMsg = 'CPF inválido.';
+        } else if (senha.length < 6) {
+            errorMsg = 'A senha deve ter no mínimo 6 caracteres.';
         }
-        
-        // Validação de senha
-        if (senha.length < 6) {
-            alert('A senha deve ter no mínimo 6 caracteres');
+
+        const errorDiv = document.getElementById('cadastroErrorMsg');
+        if (errorMsg) {
+            if (errorDiv) {
+                errorDiv.textContent = errorMsg;
+                errorDiv.style.display = 'block';
+            } else {
+                alert(errorMsg);
+            }
             return false;
+        } else {
+            if (errorDiv) errorDiv.style.display = 'none';
+            return true;
         }
-        
-        return true;
     };
     
     // -------------------------------------------------------------------------

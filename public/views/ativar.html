@@ -5,21 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="shortcut icon"
-      href="assets/images/logo.svg"
+      href="../assets/images/logo.svg"
       type="image/x-icon"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-    rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
     />
     <title>FR Semijoias - Ativar Conta</title>
   </head>
-  <body class="bg-light">
-    <div class="container" style="max-width: 500px; margin-top: 100px">
-      <div class="bg-white rounded-4 shadow p-5">
-        <div class="text-center mb-4 ativacao-logo">
-          <h1 class="fw-bold fs-2">✨ FR Semijoias</h1>
+  <body>
+    <div
+      class="min-vh-100 d-flex align-items-center justify-content-center bg-light"
+    >
+      <div
+        class="bg-body-secondary rounded-4 shadow p-5 w-100"
+        style="max-width: 500px"
+      >
+        <div class="text-center mb-3">
+          <img
+            src="../assets/images/logo.svg"
+            alt="Logo FR Semijoias"
+            class="mb-2 logo-login"
+          />
         </div>
 
         <!-- Loading -->
@@ -37,7 +46,7 @@
             aproveitar todos os recursos.
           </p>
           <div class="d-grid">
-            <a href="/login" class="btn btn-primary btn-lg"> 🔐 Fazer Login </a>
+            <a href="/login" class="btn btn-primary btn-lg">🔐 Fazer Login </a>
           </div>
         </div>
 
@@ -69,7 +78,7 @@
             <div class="mb-3">
               <input
                 type="text"
-                class="form-control token-input"
+                class="form-control token-input rounded-3 py-2"
                 id="token"
                 name="token"
                 placeholder="A1B2C3"

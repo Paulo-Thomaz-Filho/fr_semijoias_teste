@@ -7,7 +7,7 @@ require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Produto.php';
 require_once $rootPath . '/app/models/ProdutoDAO.php';
 
-$idProduto = $_GET['id'] ?? $_GET['id_produto'] ?? null;
+$idProduto = $_GET['id'] ?? $_GET['idProduto'] ?? null;
 
 if (!$idProduto) {
     http_response_code(400);

@@ -23,6 +23,22 @@ const carregarUsuarioLogado = () => {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
+        // Função para exibir mensagem
+        function exibirMensagemPromocao(msg, tipo = 'success') {
+            const msgDiv = document.getElementById('promocaoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = msg;
+                msgDiv.className = `text-center mt-3 text-${tipo === 'success' ? 'success' : 'danger'}`;
+                msgDiv.style.display = 'block';
+            }
+        }
+        function limparMensagemPromocao() {
+            const msgDiv = document.getElementById('promocaoMsg');
+            if (msgDiv) {
+                msgDiv.textContent = '';
+                msgDiv.style.display = 'none';
+            }
+        }
     carregarUsuarioLogado();
     
     // -------------------------------------------------------------------------
@@ -182,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // SUBMIT cadastrar
     formPromocao.addEventListener('submit', async function(e) {
         e.preventDefault();
+        limparMensagemPromocao();
         // Garante que todos os campos obrigatórios sejam enviados
         const dados = new FormData();
         dados.append('nome', inputNome.value.trim());
@@ -202,13 +219,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(endpoint, { method: 'POST', body: dados });
             const resultado = await response.json();
             if (!response.ok) throw new Error(resultado.erro || 'Erro ao salvar promoção.');
-            alert(`Promoção ${promocaoSelecionada ? 'atualizada' : 'cadastrada'} com sucesso!`);
-            limparFormulario();
+            exibirMensagemPromocao(`Promoção ${promocaoSelecionada ? 'atualizada' : 'cadastrada'} com sucesso!`, 'success');
+            setTimeout(() => {
+                limparFormulario();
+                limparMensagemPromocao();
+            }, 1500);
             carregarPromocoes();
-            // Dispara evento global para atualizar produtos
             window.dispatchEvent(new Event('promocaoAtualizada'));
         } catch (error) {
-            alert(error.message);
+            exibirMensagemPromocao(error.message, 'danger');
         }
     });
 
@@ -229,13 +248,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/promocoes/deletar', { method: 'POST', body: dados });
             const resultado = await response.json();
             if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir promoção.');
-            alert('Promoção excluída com sucesso!');
-            limparFormulario();
+            exibirMensagemPromocao('Promoção excluída com sucesso!', 'success');
+            setTimeout(() => {
+                limparFormulario();
+                limparMensagemPromocao();
+            }, 1500);
             carregarPromocoes();
-            // Dispara evento global para atualizar produtos
             window.dispatchEvent(new Event('promocaoAtualizada'));
         } catch (error) {
-            alert(error.message);
+            exibirMensagemPromocao(error.message, 'danger');
         }
     });
 

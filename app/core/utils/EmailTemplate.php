@@ -46,7 +46,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);'>✨ FR Semijoias</h1>
+                                    <img src='http://frsemijoias.hostdeprojetosdoifsp.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -152,7 +152,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                    <img src='http://frsemijoias.hostdeprojetosdoifsp.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -219,7 +219,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                    <img src='http://frsemijoias.hostdeprojetosdoifsp.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -311,7 +311,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <h1 style='margin: 0; color: #fff; font-size: 32px; font-weight: 700;'>✨ FR Semijoias</h1>
+                                    <img src='http://frsemijoias.hostdeprojetosdoifsp.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             

@@ -1,141 +1,235 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <link rel="stylesheet" href="assets/css/style_inicio.css">
-    <link rel="shortcut icon" href="assets/images/logo.svg" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Adamina&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/style_inicio.css" />
+    <link
+      rel="shortcut icon"
+      href="assets/images/logo.svg"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Adamina&display=swap"
+      rel="stylesheet"
+    />
     <title>FR Semijoias - Início</title>
-</head>
-<body>
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            
-            <a class="navbar-brand" href="inicio"> FR Semijoias</a>
-    
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse" id="main-nav">
-                
-                <form class="d-flex mx-auto w-100" style="max-width: 500px;">
-                    <div class="input-group">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="input-search">
-                        <button class="btn btn-outline-success" type="submit" id="btn-pesquisar">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </form>
-                
-                <div class="d-flex align-items-center ms-auto">
-                    <a href="dados_user" class="nav-link me-3">Olá, Usuário <i class="bi bi-person"></i></a>
-                    <a href="carrinho" class="nav-link">
-                        <i class="bi bi-cart3"></i> (<span id="cart-counter">0</span>)
-                    </a>
-                </div>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="inicio"> FR Semijoias</a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#main-nav"
+          aria-controls="main-nav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="main-nav">
+          <form class="d-flex mx-auto w-100" style="max-width: 500px">
+            <div class="input-group">
+              <input
+                class="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                id="input-search"
+              />
+              <button
+                class="btn btn-outline-success"
+                type="submit"
+                id="btn-pesquisar"
+              >
+                <i class="bi bi-search"></i>
+              </button>
             </div>
+          </form>
+
+          <div class="d-flex align-items-center ms-auto">
+            <a href="dados_user" class="nav-link me-3"
+              >Olá, Usuário <i class="bi bi-person"></i
+            ></a>
+            <a href="carrinho" class="nav-link">
+              <i class="bi bi-cart3"></i> (<span id="cart-counter">0</span>)
+            </a>
+          </div>
         </div>
-    </nav>    
+      </div>
+    </nav>
     <!--carrosel de promoçoes-->
     <div class="container my-5">
-        <h2 class="text-center mb-4">Promoções</h2>
-        <div class="carousel-container"> 
-            <div class="product-carousel swiper">
-                <ul class="swiper-wrapper" id="promocoes-wrapper">
-                    <!--produtos adicionados-->
-                </ul>
-            </div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+      <h2 class="text-center mb-4">Promoções</h2>
+      <div class="carousel-container">
+        <div class="product-carousel swiper">
+          <ul class="swiper-wrapper" id="promocoes-wrapper">
+            <!--produtos adicionados-->
+          </ul>
         </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
     </div>
 
     <!--catalogo completo-->
     <div class="container my-5">
-        <h2 class="text-center mb-4">Catálogo Completo</h2>
-        
-        <div class="row g-4" id="catalogo-completo-wrapper">
-            </div>
+      <h2 class="text-center mb-4">Catálogo Completo</h2>
+
+      <div class="row g-4" id="catalogo-completo-wrapper"></div>
     </div>
 
     <!--footer-->
-    <hr>
+    <hr />
     <footer class="pt-5 pb-4">
-        <div class="container text-center text-md-start">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>Sobre Nós</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-decoration-none text-muted">Quem Somos</a></li>
-                        <li><a href="#" class="text-decoration-none text-muted">Políticas</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Ajuda</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-decoration-none text-muted">Dúvidas Frequentes</a></li>
-                        <li><a href="#" class="text-decoration-none text-muted">Garantia</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>SAC</h5>
-                    <p class="text-muted">sac@frsemijoias.com.br</p>
-                </div>
-            </div>
+      <div class="container text-center text-md-start">
+        <div class="row">
+          <div class="col-md-3">
+            <h5>Sobre Nós</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="text-decoration-none text-muted"
+                  >Quem Somos</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-muted"
+                  >Políticas</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>Ajuda</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="text-decoration-none text-muted"
+                  >Dúvidas Frequentes</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-muted">Garantia</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>SAC</h5>
+            <p class="text-muted">sac@frsemijoias.com.br</p>
+          </div>
         </div>
+      </div>
     </footer>
     <!--fim do footer-->
 
     <!--modal-->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-product-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 d-flex justify-content-center align-items-center">
-                            <img id="modal-product-image" src="" class="img-fluid rounded" alt="Imagem do Produto">
-                        </div>
-                        <div class="col-md-6">
-                            <p id="modal-product-description"></p>
-                            <hr>
-                            <h4 id="modal-product-price"></h4>
-                            <p><strong>Marca:</strong> <span id="modal-product-material"></span></p>
-                            <div class="row mb-3 align-items-center">
-                                <label class="col-auto col-form-label">Quantidade:</label>
-                                <div class="col-auto">
-                                    <div class="input-group" style="width: 130px;">
-                                        <button class="btn btn-outline-secondary modal-btn-decrease" type="button">−</button>
-                                        <input type="number" class="form-control text-center" value="1" id="modal-quantity" min="1">
-                                        <button class="btn btn-outline-secondary modal-btn-increase" type="button">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-lg" type="button">Comprar Agora</button>
-                                <button class="btn btn-outline-secondary btn-add-to-cart" type="button">Adicionar ao Carrinho</button>
-                            </div>
-                        </div>
+    <div
+      class="modal fade"
+      id="productModal"
+      tabindex="-1"
+      aria-labelledby="productModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-product-title"></h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div
+                class="col-md-6 d-flex justify-content-center align-items-center"
+              >
+                <img
+                  id="modal-product-image"
+                  src=""
+                  class="img-fluid rounded"
+                  alt="Imagem do Produto"
+                />
+              </div>
+              <div class="col-md-6">
+                <p id="modal-product-description"></p>
+                <hr />
+                <h4 id="modal-product-price"></h4>
+                <p>
+                  <strong>Marca:</strong>
+                  <span id="modal-product-material"></span>
+                </p>
+                <div class="row mb-3 align-items-center">
+                  <label class="col-auto col-form-label">Quantidade:</label>
+                  <div class="col-auto">
+                    <div class="input-group" style="width: 130px">
+                      <button
+                        class="btn btn-outline-secondary modal-btn-decrease"
+                        type="button"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="number"
+                        class="form-control text-center"
+                        value="1"
+                        id="modal-quantity"
+                        min="1"
+                      />
+                      <button
+                        class="btn btn-outline-secondary modal-btn-increase"
+                        type="button"
+                      >
+                        +
+                      </button>
                     </div>
+                  </div>
                 </div>
+                <hr />
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary btn-lg" type="button">
+                    Comprar Agora
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary btn-add-to-cart"
+                    type="button"
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/script_inicio.js"></script>
-</body>
+  </body>
 </html>

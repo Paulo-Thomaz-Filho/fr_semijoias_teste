@@ -22,20 +22,16 @@ $module = trim($module);
 // 2. Remove barras do início e do fim
 $module = trim($module, '/');
 
-// 3. CORREÇÃO CRUCIAL: Remove o prefixo "public/" se ele existir na string
+// 3. Remove o prefixo "public/" se ele existir na string
 // Isso transforma "public/api/usuario/login" em "api/usuario/login"
 if (strpos($module, 'public/') === 0) {
     $module = substr($module, 7); // Remove os 7 caracteres de "public/"
 }
 
-// ---------------------------------------------------
-
 // Se após limpar ficar vazio, define o padrão
 if ($module === '') {
     $module = 'login'; 
 }
-
-
 
 // 4. Inicia o roteador...
 $router = new core\utils\Router();
