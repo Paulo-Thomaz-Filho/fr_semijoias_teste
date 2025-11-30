@@ -23,9 +23,9 @@ try {
             ]
         ],
         "back_urls" => [
-            "success" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/sucesso",
-            "failure" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/erro",
-            "pending" => "https://frsemijoias.hostdeprojetosdoifsp.gru.br/pendente"
+            "success" => "https://frsemijoias.ifhost.gru.br/sucesso",
+            "failure" => "https://frsemijoias.ifhost.gru.br/erro",
+            "pending" => "https://frsemijoias.ifhost.gru.br/pendente"
         ],
         "auto_return" => "approved",
         "external_reference" => $id_pedido
