@@ -12,14 +12,19 @@ services:
       - /var/www/html/vendor
     working_dir: /var/www/html
     environment:
-      # Configurações SMTP e Mercado Pago
-      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
-      SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_USERNAME: ${SMTP_USERNAME:-}
-      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-noreply@frsemijoias.com}
-      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-FR Semijoias}
-      MERCADO_PAGO_ACCESS_TOKEN: "APP_USR-8846572080420296-112213-53c99619804b1cf7f417fa3933005e72-3007590737"
+      # Lê do arquivo .env automaticamente
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
+      MERCADO_PAGO_ACCESS_TOKEN: ${MERCADO_PAGO_ACCESS_TOKEN}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
     depends_on:
       - mysql
     networks:
@@ -32,10 +37,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: fr_semijoias
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./setup_database.sql:/docker-entrypoint-initdb.d/01_setup_database.sql
