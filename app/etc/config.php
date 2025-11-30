@@ -66,11 +66,27 @@ if ($showErrors){
     error_reporting(E_ALL);
 }
 
-$config['database']['host']		= 'mysql';
-$config['database']['schema']	= 'fr_semijoias';
-$config['database']['user']		= 'root';
-$config['database']['pass']		= 'root';
-$config['database']['port']		= '3306';
+$envPath = $rootPath . '/.env';
+if (file_exists($envPath)) {
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        
+        list($key, $value) = explode('=', $line, 2);
+        $key = trim($key);
+        $value = trim($value);
+        
+        $value = trim($value, '"\'');
+        
+        putenv("$key=$value");
+    }
+}
+
+$config['database']['host']   = getenv('DB_HOST') ?: 'localhost';
+$config['database']['schema'] = getenv('DB_NAME') ?: 'fr_semijoias';
+$config['database']['user']   = getenv('DB_USER') ?: 'root';
+$config['database']['pass']   = getenv('DB_PASS') ?: '';
+$config['database']['port']   = getenv('DB_PORT') ?: '3306';
 
 $config['email']['host']	    = 'smtp.mydomain.com';
 $config['email']['port']	    =  587;
