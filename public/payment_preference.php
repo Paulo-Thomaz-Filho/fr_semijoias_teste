@@ -1,20 +1,51 @@
 <?php
 // Endpoint público para criar preferência de pagamento no Mercado Pago
 
-// Iniciar buffer de saída para capturar qualquer output indesejado
+// ATIVAR TODOS OS ERROS E LOGGING
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Não mostrar na tela (vai pro log)
+ini_set('log_errors', 1);
+ini_set('error_log', dirname(__DIR__) . '/php_errors.log');
+
+// Função para registrar logs de debug (VERSÃO ROBUSTA)
+function logDebug($message, $data = null) {
+    try {
+        $logFile = dirname(__DIR__) . '/payment_debug.log';
+        $timestamp = date('Y-m-d H:i:s');
+        $logMessage = "[$timestamp] $message";
+        if ($data !== null) {
+            $logMessage .= "\n" . print_r($data, true);
+        }
+        $logMessage .= "\n---\n";
+        @file_put_contents($logFile, $logMessage, FILE_APPEND);
+    } catch (Exception $e) {
+        // Ignorar erros de log
+    }
+}
+
+// Registrar handler de erro fatal
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        logDebug("ERRO FATAL!", $error);
+        
+        // Tentar retornar JSON mesmo com erro fatal
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(500);
+        }
+        echo json_encode([
+            'error' => 'Fatal error: ' . $error['message'],
+            'file' => $error['file'],
+            'line' => $error['line']
+        ]);
+    }
+});
+
+// Iniciar buffer de saída
 ob_start();
 
-// Função para registrar logs de debug
-function logDebug($message, $data = null) {
-    $logFile = dirname(__DIR__) . '/payment_debug.log';
-    $timestamp = date('Y-m-d H:i:s');
-    $logMessage = "[$timestamp] $message";
-    if ($data !== null) {
-        $logMessage .= "\n" . print_r($data, true);
-    }
-    $logMessage .= "\n---\n";
-    file_put_contents($logFile, $logMessage, FILE_APPEND);
-}
+logDebug("=== SCRIPT INICIADO ===");
 
 // Função para carregar o .env
 function loadEnv($path) {
