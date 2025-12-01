@@ -7,6 +7,7 @@ composer.lock
 
 # Logs
 *.log
+public/notificacao_log.txt
 
 # Cache
 /cache/
