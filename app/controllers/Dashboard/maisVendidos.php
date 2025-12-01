@@ -9,7 +9,7 @@ require_once $rootPath . '/app/core/database/DBConnection.php';
 try {
     $conn = (new \core\database\DBConnection())->getConn();
     
-    // Query para buscar os produtos mais vendidos apenas com status Concluído ou Enviado
+    // Query para buscar os produtos mais vendidos apenas com status Aprovado ou Enviado
     $sql = "
         SELECT 
             ped.produto_nome as nome,
@@ -22,7 +22,7 @@ try {
         INNER JOIN 
             status s ON ped.id_status = s.id_status
         WHERE 
-            s.nome IN ('Concluído', 'Enviado')
+            s.nome IN ('Aprovado', 'Enviado')
         GROUP BY 
             ped.produto_nome, p.categoria
         ORDER BY 

@@ -3,10 +3,10 @@
     RewriteEngine On
     RewriteBase /
 
-    # Se o arquivo ou diretﾃｳrio solicitado Nﾃグ existir...
+    # Se o arquivo ou diretório solicitado não existir...
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     
-    # ...envie a requisiﾃｧﾃ｣o para o index.php
+    # ...envie a requisição para o index.php
     RewriteRule ^(.*)$ index.php?module=$1 [QSA,L]
 </IfModule>

@@ -62,7 +62,7 @@ try {
 
     // Reconstrói o objeto Pedido a partir do array
     $pedidoExistente = new \app\models\Pedido(
-        $pedidoArray['id_pedido'],
+        $pedidoArray['idPedido'],
         $produto_nome,
         $id_cliente,
         $preco,

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
-    <base href="/public/" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon -->
@@ -49,7 +48,9 @@
           <form id="loginForm">
             <div class="row">
               <div class="col-12 mb-3">
-                <label for="loginEmail" class="form-label fw-medium text-black">E-mail</label>
+                <label for="loginEmail" class="form-label fw-medium text-black"
+                  >E-mail</label
+                >
                 <div class="position-relative">
                   <svg
                     width="20"
@@ -112,16 +113,59 @@
                   </svg>
                   <input
                     type="password"
-                    class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                    class="form-control border-0 bg-body-secondary rounded-4 ps-5 pe-5 py-2"
                     id="loginPassword"
                     placeholder="Digite sua senha"
                     required
                   />
+                  <button
+                    type="button"
+                    class="position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent p-0 me-3 d-flex align-items-center justify-content-center"
+                    id="toggleLoginPassword"
+                  >
+                    <svg
+                      id="loginEyeOpen"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="display: none"
+                    >
+                      <path
+                        d="M3 14C3 9.02944 7.02944 5 12 5C16.9706 5 21 9.02944 21 14M17 14C17 16.7614 14.7614 19 12 19C9.23858 19 7 16.7614 7 14C7 11.2386 9.23858 9 12 9C14.7614 9 17 11.2386 17 14Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <svg
+                      id="loginEyeClosed"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.60997 9.60714C8.05503 10.4549 7 12.1043 7 14C7 16.7614 9.23858 19 12 19C13.8966 19 15.5466 17.944 16.3941 16.3878M21 14C21 9.02944 16.9706 5 12 5C11.5582 5 11.1238 5.03184 10.699 5.09334M3 14C3 11.0069 4.46104 8.35513 6.70883 6.71886M3 3L21 21"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
 
               <div class="col-12">
-                <div id="loginEmailError" class="text-danger small text-center mb-4" style="display:none;"></div>
+                <div
+                  id="loginEmailError"
+                  class="text-danger small text-center mb-4"
+                  style="display: none"
+                ></div>
                 <div class="d-grid gap-2 mt-2">
                   <button
                     type="submit"
@@ -347,6 +391,7 @@
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                    style="z-index: 1"
                   >
                     <path
                       d="M16 9V6C16 4.34315 14.6569 3 13 3H11C9.34315 3 8 4.34315 8 6V9M16 9H8M16 9C17.6569 9 19 10.3431 19 12V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V12C5 10.3431 6.34315 9 8 9M12 14V17M13 14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14C11 13.4477 11.4477 13 12 13C12.5523 13 13 13.4477 13 14Z"
@@ -358,18 +403,61 @@
                   </svg>
                   <input
                     type="password"
-                    class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                    class="form-control border-0 bg-body-secondary rounded-4 ps-5 pe-5 py-2"
                     id="cadastroSenha"
                     placeholder="Mínimo 6 caracteres"
                     required
                     minlength="6"
                   />
+                  <button
+                    type="button"
+                    class="position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent p-0 me-3 d-flex align-items-center justify-content-center"
+                    id="toggleCadastroPassword"
+                  >
+                    <svg
+                      id="cadastroEyeOpen"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="display: none"
+                    >
+                      <path
+                        d="M3 14C3 9.02944 7.02944 5 12 5C16.9706 5 21 9.02944 21 14M17 14C17 16.7614 14.7614 19 12 19C9.23858 19 7 16.7614 7 14C7 11.2386 9.23858 9 12 9C14.7614 9 17 11.2386 17 14Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <svg
+                      id="cadastroEyeClosed"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.60997 9.60714C8.05503 10.4549 7 12.1043 7 14C7 16.7614 9.23858 19 12 19C13.8966 19 15.5466 17.944 16.3941 16.3878M21 14C21 9.02944 16.9706 5 12 5C11.5582 5 11.1238 5.03184 10.699 5.09334M3 14C3 11.0069 4.46104 8.35513 6.70883 6.71886M3 3L21 21"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
 
               <div class="col-12">
                 <!-- Mensagem de erro do cadastro -->
-                <div id="cadastroErrorMsg" class="text-danger small text-center mb-4" style="display:none;"></div>
+                <div
+                  id="cadastroErrorMsg"
+                  class="text-danger small text-center mb-4"
+                  style="display: none"
+                ></div>
                 <div class="d-grid gap-2 mt-4">
                   <button
                     type="submit"
@@ -550,6 +638,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/public/assets/js/mask-inputs.js"></script>
     <script src="/public/assets/js/slider-page.js"></script>
+    <script src="/public/assets/js/password-toggle.js"></script>
     <script src="/public/assets/js/script_login.js"></script>
     <script src="/public/assets/js/script_cadastro.js"></script>
   </body>

@@ -1,6 +1,5 @@
 <?php
 // Endpoint para receber notificações de pagamento do Mercado Pago
-// Sempre responda rapidamente com 200 OK
 http_response_code(200);
 
 // Carregar variáveis de ambiente

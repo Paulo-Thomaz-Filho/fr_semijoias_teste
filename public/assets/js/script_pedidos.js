@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let statusClass = statusNome.toLowerCase().replace(/\s+/g, '-');
                 if (statusClass === 'pendente') statusClass = 'pending';
                 if (statusClass === 'enviado') statusClass = 'sent';
-                if (statusClass === 'concluído' || statusClass === 'concluido') statusClass = 'green';
+                if (statusClass === 'aprovado' || statusClass === 'aprovado') statusClass = 'green';
                 if (statusClass === 'cancelado') statusClass = 'danger';
                 const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
                 const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';
@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Pegar o nome do produto selecionado
             const produtoNome = selectProduto.options[selectProduto.selectedIndex]?.text || '';
             const dados = {
-                idPedido: pedidoSelecionado,
+                id_pedido: pedidoSelecionado,
                 produto_nome: produtoNome,
                 id_cliente: inputCliente.value,
                 endereco: inputEndereco.value.trim(),

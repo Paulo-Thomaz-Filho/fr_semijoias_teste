@@ -65,7 +65,7 @@ class WebhookHandler {
         } elseif ($statusPagamento === 'pending') {
             $novoStatus = $statusDAO->getByName('Pendente');
         } elseif ($statusPagamento === 'rejected') {
-            $novoStatus = $statusDAO->getByName('Rejeitado');
+            $novoStatus = $statusDAO->getByName('Cancelado');
         } else {
             $novoStatus = $statusDAO->getByName('Pendente');
         }

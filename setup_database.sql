@@ -143,7 +143,7 @@ INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, d
 INSERT INTO status (nome) VALUES
 ('Cancelado'),
 ('Pendente'),
-('Concluído'),
+('Aprovado'),
 ('Enviado');
 
 -- PEDIDOS

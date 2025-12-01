@@ -1,5 +1,4 @@
 <?php
-// public/index.php
 
 // 1. Define o caminho raiz do projeto.
 $rootPath = dirname(__DIR__);

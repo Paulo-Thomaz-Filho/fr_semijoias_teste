@@ -16,57 +16,128 @@ $(document).ready(function () {
       return;
     }
 
-    // Prepara os items para enviar ao Mercado Pago
-    const items = cart.map((item) => ({
-      title: item.nome,
-      quantity: item.quantity,
-      unit_price: parseFloat(item.preco),
-    }));
+    // Pegar dados do usuário logado
+    const usuarioLogado = JSON.parse(sessionStorage.getItem("usuario")) || {};
+    const idCliente = usuarioLogado.idUsuario;
+
+    if (!idCliente) {
+      Swal.fire({
+        title: "Erro!",
+        text: "Você precisa estar logado para finalizar a compra.",
+        icon: "error",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.href = "/login";
+      });
+      return;
+    }
 
     // Mostra loading
     Swal.fire({
       title: "Processando...",
-      text: "Criando preferência de pagamento",
+      text: "Criando pedido",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
       },
     });
 
-    // Envia para o backend criar a preferência
-    $.ajax({
-      url: "/payment_preference.php",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({
-        items: items,
-      }),
-      success: function (response) {
-        if (response.id && response.init_point) {
-          // Fecha o loading
-          Swal.close();
+    // Calcular preço total e criar descrição dos produtos
+    const precoTotal = cart.reduce(
+      (total, item) => total + parseFloat(item.preco) * item.quantity,
+      0
+    );
+    const produtosNomes = cart.map((item) => item.nome).join(", ");
+    const quantidadeTotal = cart.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
 
-          // Redireciona para o checkout do Mercado Pago
-          window.location.href = response.init_point;
+    // PASSO 1: Criar pedido no banco de dados
+    const formData = new FormData();
+    formData.append("produto_nome", produtosNomes);
+    formData.append("id_cliente", idCliente);
+    formData.append("preco", precoTotal.toFixed(2));
+    formData.append("endereco", usuarioLogado.endereco || "Endereço não informado");
+    formData.append("quantidade", quantidadeTotal);
+    formData.append("data_pedido", new Date().toISOString().slice(0, 19).replace("T", " "));
+    formData.append("descricao", `Pedido do carrinho: ${produtosNomes}`);
+    formData.append("status", "Pendente");
+
+    $.ajax({
+      url: "/api/pedido/salvar",
+      method: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (pedidoResponse) {
+        if (pedidoResponse.id) {
+          const idPedido = pedidoResponse.id;
+
+          // PASSO 2: Criar preferência de pagamento com o ID do pedido
+          const items = cart.map((item) => ({
+            title: item.nome,
+            quantity: item.quantity,
+            unit_price: parseFloat(item.preco),
+          }));
+
+          $.ajax({
+            url: "/payment_preference.php",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              items: items,
+              id_pedido: idPedido, // ID do pedido como external_reference
+            }),
+            success: function (response) {
+              if (response.id && response.init_point) {
+                // Fecha o loading
+                Swal.close();
+
+                // Redireciona para o checkout do Mercado Pago
+                window.location.href = response.init_point;
+              } else {
+                Swal.fire({
+                  title: "Erro!",
+                  text:
+                    "Não foi possível criar a preferência de pagamento: " +
+                    (response.error || "Erro desconhecido"),
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              }
+            },
+            error: function (xhr) {
+              let errorMessage = "Erro ao processar pagamento";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              Swal.fire({
+                title: "Erro!",
+                text: errorMessage,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            },
+          });
         } else {
           Swal.fire({
             title: "Erro!",
-            text:
-              "Não foi possível criar a preferência de pagamento: " +
-              (response.error || "Erro desconhecido"),
+            text: "Não foi possível criar o pedido: " + (pedidoResponse.erro || "Erro desconhecido"),
             icon: "error",
             confirmButtonText: "OK",
           });
         }
       },
-      error: function (xhr, status, error) {
-        console.error("Erro:", error);
-        console.error("Response:", xhr.responseText);
-
-        let errorMessage = "Erro ao processar pagamento";
+      error: function (xhr) {
+        let errorMessage = "Erro ao criar pedido";
         try {
           const errorData = JSON.parse(xhr.responseText);
-          errorMessage = errorData.error || errorMessage;
+          errorMessage = errorData.erro || errorMessage;
         } catch (e) {
           errorMessage = xhr.responseText || errorMessage;
         }
