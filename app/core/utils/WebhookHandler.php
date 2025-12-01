@@ -5,11 +5,15 @@ namespace app\core\utils;
 use app\models\PedidoDAO;
 use app\models\StatusDAO;
 use app\models\Pedido;
+use app\models\UsuarioDAO;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__ . '/../../models/pedidoDAO.php';
+require_once __DIR__ . '/../../models/PedidoDAO.php';
 require_once __DIR__ . '/../../models/StatusDAO.php';
 require_once __DIR__ . '/../../models/Pedido.php';
+require_once __DIR__ . '/../../models/UsuarioDAO.php';
+require_once __DIR__ . '/Mail.php';
+require_once __DIR__ . '/EmailTemplate.php';
 
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Resources\Payment;
@@ -53,8 +57,11 @@ class WebhookHandler {
         // Atualiza o status do pedido conforme o status do pagamento
         $statusDAO = new StatusDAO();
         $novoStatus = null;
+        $enviarEmail = false;
+        
         if ($statusPagamento === 'approved') {
             $novoStatus = $statusDAO->getByName('Aprovado');
+            $enviarEmail = true; // Enviar email apenas quando aprovado
         } elseif ($statusPagamento === 'pending') {
             $novoStatus = $statusDAO->getByName('Pendente');
         } elseif ($statusPagamento === 'rejected') {
@@ -62,9 +69,58 @@ class WebhookHandler {
         } else {
             $novoStatus = $statusDAO->getByName('Pendente');
         }
+        
         if ($novoStatus) {
             $pedido->setIdStatus($novoStatus->getIdStatus());
             $pedidoDAO->update($pedido);
+            
+            // Enviar email de confirmação se o pagamento foi aprovado
+            if ($enviarEmail) {
+                try {
+                    // Buscar dados do usuário
+                    $usuarioDAO = new UsuarioDAO();
+                    $usuarioArr = $usuarioDAO->getById($pedido->getIdCliente());
+                    
+                    if ($usuarioArr) {
+                        $nomeUsuario = $usuarioArr['nome'];
+                        $emailUsuario = $usuarioArr['email'];
+                        $numeroPedido = str_pad($pedido->getIdPedido(), 6, '0', STR_PAD_LEFT);
+                        
+                        // Link para ver o pedido (ajuste conforme sua URL)
+                        $linkPedido = 'https://frsemijoias.ifhost.gru.br/pedido';
+                        
+                        // Gerar o corpo do email usando o template
+                        $corpoEmail = EmailTemplate::emailPedidoRealizado(
+                            $nomeUsuario,
+                            $numeroPedido,
+                            $linkPedido
+                        );
+                        
+                        // Enviar o email
+                        $mail = new Mail(
+                            $emailUsuario,
+                            'Pedido Confirmado - FR Semijoias',
+                            $corpoEmail
+                        );
+                        
+                        $mail->send();
+                        
+                        // Log de sucesso
+                        file_put_contents(
+                            __DIR__ . '/../../../public/notificacao_log.txt',
+                            "Email enviado para $emailUsuario - Pedido #$numeroPedido\n",
+                            FILE_APPEND
+                        );
+                    }
+                } catch (\Exception $e) {
+                    // Log de erro mas não interrompe o processamento
+                    file_put_contents(
+                        __DIR__ . '/../../../public/notificacao_log.txt',
+                        "Erro ao enviar email: " . $e->getMessage() . "\n",
+                        FILE_APPEND
+                    );
+                }
+            }
         }
     }
 }

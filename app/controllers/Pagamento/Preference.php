@@ -11,7 +11,7 @@ try {
     $title = $data['title'] ?? 'Produto';
     $quantity = $data['quantity'] ?? 1;
     $unit_price = $data['unit_price'] ?? 10.00;
-    $id_pedido = $data['id_pedido'] ?? null; // Receba o id do pedido do seu sistema
+    $id_pedido = $data['id_pedido'] ?? null; // Recebe o id do pedido
 
     $client = new PreferenceClient();
     $preference = $client->create([

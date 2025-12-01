@@ -1,15 +1,5 @@
 <?php
 // Endpoint público para criar preferência de pagamento no Mercado Pago
-
-// Limpar qualquer output buffer existente
-while (ob_get_level()) {
-    ob_end_clean();
-}
-
-// Desabilitar output buffering automático
-ini_set('output_buffering', 'off');
-ini_set('implicit_flush', 'on');
-
 header('Content-Type: application/json; charset=utf-8');
 
 try {
@@ -47,23 +37,42 @@ try {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
     
-    if (!$data) {
+    if (!$data || !is_array($data)) {
         throw new Exception('Dados inválidos enviados na requisição');
     }
     
-    $title = $data['title'] ?? 'Produto';
-    $quantity = $data['quantity'] ?? 1;
-    $unit_price = $data['unit_price'] ?? 10.00;
+    // Processar items do carrinho
+    $items = [];
+    
+    // Se recebeu array de items (carrinho completo)
+    if (isset($data['items']) && is_array($data['items'])) {
+        foreach ($data['items'] as $item) {
+            $items[] = [
+                "title" => $item['title'] ?? 'Produto',
+                "quantity" => (int)($item['quantity'] ?? 1),
+                "unit_price" => (float)($item['unit_price'] ?? 0)
+            ];
+        }
+    } 
+    // Se recebeu um único produto (compatibilidade com código antigo)
+    else {
+        $items[] = [
+            "title" => $data['title'] ?? 'Produto',
+            "quantity" => (int)($data['quantity'] ?? 1),
+            "unit_price" => (float)($data['unit_price'] ?? 10.00)
+        ];
+    }
+    
+    if (empty($items)) {
+        throw new Exception('Nenhum item para processar');
+    }
+    
     $id_pedido = $data['id_pedido'] ?? null;
     
     // 6. Criar preferência de pagamento
     $client = new MercadoPago\Client\Preference\PreferenceClient();
     $preference = $client->create([
-        "items" => [[
-            "title" => $title,
-            "quantity" => (int)$quantity,
-            "unit_price" => (float)$unit_price
-        ]],
+        "items" => $items,
         "back_urls" => [
             "success" => "https://frsemijoias.ifhost.gru.br/sucesso",
             "failure" => "https://frsemijoias.ifhost.gru.br/erro",
