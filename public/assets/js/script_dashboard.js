@@ -143,7 +143,7 @@ const carregarPedidosRecentes = async () => {
             let statusClass = status.toLowerCase().replace(/\s+/g, '-');
             if (statusClass === 'pendente') statusClass = 'pending';
             if (statusClass === 'enviado') statusClass = 'sent';
-            if (statusClass === 'aprovado' || statusClass === 'aprovado') statusClass = 'green';
+            if (statusClass === 'aprovado') statusClass = 'green';
             if (statusClass === 'cancelado') statusClass = 'danger';
             
             const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;
