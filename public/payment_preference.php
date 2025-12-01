@@ -1,6 +1,8 @@
 <?php
 // Endpoint público para criar preferência de pagamento no Mercado Pago
-header('Content-Type: application/json; charset=utf-8');
+
+// Iniciar buffer de saída para capturar qualquer output indesejado
+ob_start();
 
 // Função para carregar o .env
 function loadEnv($path) {
@@ -81,18 +83,21 @@ try {
         "external_reference" => $id_pedido
     ]);
     
-    // 7. Retornar resposta de sucesso
+    // 7. Limpar buffer e retornar resposta de sucesso
+    ob_end_clean();
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'id' => $preference->id,
         'init_point' => $preference->init_point
     ]);
     
 } catch (Exception $e) {
+    ob_end_clean();
     http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'error' => $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine()
     ]);
 }
-?>
