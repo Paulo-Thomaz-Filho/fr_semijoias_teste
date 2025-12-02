@@ -202,14 +202,16 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.btn-selecionar-cliente').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const linha = this.closest('tr');
-                    selecionarCliente(this.dataset.id, linha);
+                    tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+                    linha.classList.add('table-active');
+                    selecionarCliente(this.dataset.id);
                 });
             });
             
             // Adicionar eventos aos botões de seleção (cards mobile)
             document.querySelectorAll('.btn-selecionar-cliente-mobile').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    selecionarCliente(this.dataset.id, null);
+                    selecionarCliente(this.dataset.id);
                 });
             });
             
@@ -223,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Selecionar cliente para edição/exclusão
-    const selecionarCliente = async (id, linhaSelecionada) => {
+    const selecionarCliente = async (id) => {
         try {
             const response = await fetch(`/usuario/buscar?idUsuario=${id}`);
             const cliente = await response.json();
@@ -243,9 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
             btnCadastrarCliente.disabled = true;
             btnAtualizarCliente.disabled = false;
             btnExcluirCliente.disabled = false;
-            // Destacar linha selecionada
-            tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
-            linhaSelecionada.classList.add('table-active');
             // Scroll para o formulário
             formCliente.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {

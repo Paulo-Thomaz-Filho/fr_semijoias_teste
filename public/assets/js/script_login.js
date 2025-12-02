@@ -34,14 +34,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(loginData)
             });
             
-            const data = await response.json();
-
             // Esconde mensagem de erro antes de processar
             const emailError = document.getElementById('loginEmailError');
             if (emailError) {
                 emailError.style.display = 'none';
                 emailError.textContent = '';
             }
+
+            const data = await response.json();
 
             if (data.sucesso) {
                 // Salvar dados do usuário na sessionStorage
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = '/inicio'; 
                 }
             } else {
+                // Exibe mensagem de erro
                 if (emailError) {
                     emailError.textContent = data.erro || 'Credenciais inválidas.';
                     emailError.style.display = 'block';

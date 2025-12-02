@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $rootPath = dirname(dirname(dirname(__DIR__)));
+require_once $rootPath . '/vendor/autoload.php';
 require_once $rootPath . '/app/etc/config.php';
 require_once $rootPath . '/app/models/Usuario.php';
 require_once $rootPath . '/app/models/UsuarioDAO.php';
@@ -15,24 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$json_data = file_get_contents('php://input');
-$data = json_decode($json_data);
+$nome            = $_POST['nome']            ?? null;
+$email           = $_POST['email']           ?? null;
+$senha           = $_POST['senha']           ?? null;
+$cpf             = $_POST['cpf']             ?? null;
+$telefone        = $_POST['telefone']        ?? null;
+$dataNascimento  = $_POST['data_nascimento'] ?? null;
+$endereco        = $_POST['endereco']        ?? null;
+$id_nivel        = $_POST['id_nivel']        ?? 2;    // 2 para novos clientes
 
-
-$nome            = $data->nome            ?? null;
-$email           = $data->email           ?? null;
-$senha           = $data->senha           ?? null;
-$cpf             = $data->cpf             ?? null;
-$id_nivel        = $data->id_nivel        ?? 2;    // 2 para novos clientes
-
-// --- CORREÇÃO 2: Ajustar a validação para os campos que realmente vêm do JS ---
 if (!$nome || !$email || !$senha) {
     http_response_code(400);
-    // Mensagem mais simples, pois os outros campos não vêm do cadastro
     echo json_encode(['erro' => 'Dados incompletos. Nome, email e senha são obrigatórios.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
-// --- Fim da Correção 2 ---
 
 try {
     $usuarioDAO = new \app\models\UsuarioDAO();
@@ -48,18 +45,18 @@ try {
         exit;
     }
 
-    // 1. GERAR O TOKEN DE ATIVAÇÃO
     $generator = new app\core\utils\CodeGenerator();
     $token = $generator->run(6); // Gera um código aleatório de 64 caracteres
-
 
     $novoUsuario = new \app\models\Usuario();
     $novoUsuario->setNome($nome);
     $novoUsuario->setEmail($email);
     $novoUsuario->setSenha(password_hash($senha, PASSWORD_DEFAULT));
     $novoUsuario->setCpf($cpf);
+    $novoUsuario->setTelefone($telefone);
+    $novoUsuario->setDataNascimento($dataNascimento);
+    $novoUsuario->setEndereco($endereco);
     $novoUsuario->setIdNivel($id_nivel);
-    // 2. DEFINIR O STATUS COMO PENDENTE E SALVAR O TOKEN
     $novoUsuario->setStatus('pendente');
     $novoUsuario->setTokenAtivacao($token);
     $idInserido = $usuarioDAO->insert($novoUsuario);
@@ -75,8 +72,16 @@ try {
         
         // Enviar email usando PHPMailer
         try {
+            // 1. Email de ativação de conta
             $mail = new app\core\utils\Mail($email, 'Ative sua conta - FR Semijoias', $corpoEmail);
             $mail->send();
+            
+            // 2. Email de boas-vindas
+            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+            $linkLogin = $baseUrl . "/login";
+            $corpoBoasVindas = app\core\utils\EmailTemplate::emailBoasVindas($nome, $email, $linkLogin);
+            $mailBoasVindas = new app\core\utils\Mail($email, 'Bem-vindo(a) à FR Semijoias!', $corpoBoasVindas);
+            $mailBoasVindas->send();
             
             http_response_code(201);
             echo json_encode([

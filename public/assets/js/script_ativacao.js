@@ -69,8 +69,29 @@ document.addEventListener('DOMContentLoaded', function() {
         divFormToken.classList.remove('d-none');
     };
     
-    // Tornar mostrarFormulario global para uso no HTML
+    /**
+     * Mostra o formulário de reenviar email
+     */
+    const mostrarReenviarEmail = () => {
+        divLoading.classList.add('d-none');
+        divSuccess.classList.add('d-none');
+        divError.classList.add('d-none');
+        divFormToken.classList.add('d-none');
+        document.getElementById('form-reenviar').classList.remove('d-none');
+    };
+    
+    /**
+     * Volta para a tela de erro
+     */
+    const voltarParaErro = () => {
+        document.getElementById('form-reenviar').classList.add('d-none');
+        mostrarErro();
+    };
+    
+    // Tornar funções globais para uso no HTML
     window.mostrarFormulario = mostrarFormulario;
+    window.mostrarReenviarEmail = mostrarReenviarEmail;
+    window.voltarParaErro = voltarParaErro;
     
     // -------------------------------------------------------------------------
     // FUNÇÕES DE ATIVAÇÃO
@@ -151,6 +172,49 @@ document.addEventListener('DOMContentLoaded', function() {
     if (inputToken) {
         inputToken.addEventListener('input', (e) => {
             e.target.value = e.target.value.toUpperCase();
+        });
+    }
+    
+    // Handler do formulário de reenviar email
+    const formReenviar = document.getElementById('formReenviar');
+    if (formReenviar) {
+        formReenviar.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailReenviar').value.trim();
+            const messageDiv = document.getElementById('reenviar-message');
+            
+            if (!email) {
+                messageDiv.innerHTML = '<div class="alert alert-danger rounded-4">Por favor, digite seu e-mail.</div>';
+                return;
+            }
+            
+            try {
+                messageDiv.innerHTML = '<div class="alert alert-info rounded-4">Enviando...</div>';
+                
+                const response = await fetch('/usuario/reenviar-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="alert alert-success rounded-4">' + data.mensagem + '</div>';
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 3000);
+                } else {
+                    messageDiv.innerHTML = '<div class="alert alert-danger rounded-4">' + (data.erro || 'Erro ao reenviar email.') + '</div>';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao reenviar email:', error);
+                messageDiv.innerHTML = '<div class="alert alert-danger rounded-4">Erro ao processar solicitação.</div>';
+            }
         });
     }
     

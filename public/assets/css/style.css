@@ -81,7 +81,8 @@ textarea:focus,
 select:focus,
 input.form-control:focus,
 textarea.form-control:focus,
-select.form-select:focus {
+select.form-select:focus,
+.token-input:focus {
   border-color: var(--color-focus) !important;
   box-shadow: 0 0 0 0.2rem rgba(0, 61, 130, 0.25) !important;
   outline: none !important;
@@ -972,10 +973,6 @@ body.bg-light {
    PÁGINA DE ATIVAÇÃO DE CONTA
    ============================================================================= */
 
-.ativacao-icon {
-  font-size: 80px;
-}
-
 .spinner {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #667eea;
@@ -996,9 +993,5 @@ body.bg-light {
 }
 
 .token-input {
-  text-align: center;
-  font-size: 24px;
   letter-spacing: 5px;
-  font-family: "Courier New", monospace;
-  text-transform: uppercase;
 }

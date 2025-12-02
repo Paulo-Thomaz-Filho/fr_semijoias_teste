@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEmail = document.getElementById('cadastroEmail');
     const inputSenha = document.getElementById('cadastroSenha');
     const inputTelefone = document.getElementById('cadastroTelefone');
+    const inputNascimento = document.getElementById('cadastroNascimento');
     const inputCpf = document.getElementById('cadastroCpf');
     const inputEndereco = document.getElementById('cadastroEndereco');
     const btnSignIn = document.getElementById('signIn');
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = inputEmail.value.trim();
         const senha = inputSenha.value;
         const telefone = inputTelefone.value.trim();
+        const nascimento = inputNascimento.value;
         const cpf = inputCpf.value.trim();
         const endereco = inputEndereco.value.trim();
 
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Mensagem de erro
         let errorMsg = '';
-        if (!nome || !email || !senha || !telefone || !cpf || !endereco) {
+        if (!nome || !email || !senha || !telefone || !nascimento || !cpf || !endereco) {
             errorMsg = 'Por favor, preencha todos os campos de cadastro.';
         } else if (!validarEmail(email)) {
             errorMsg = 'E-mail inválido.';
@@ -102,14 +104,20 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     const realizarCadastro = async (cadastroData) => {
         try {
-            console.log('Enviando dados do cadastro via JSON');
+            console.log('Enviando dados do cadastro via FormData');
+            
+            const formData = new FormData();
+            formData.append('nome', cadastroData.nome);
+            formData.append('email', cadastroData.email);
+            formData.append('senha', cadastroData.senha);
+            formData.append('telefone', cadastroData.telefone);
+            formData.append('data_nascimento', cadastroData.data_nascimento);
+            formData.append('cpf', cadastroData.cpf);
+            formData.append('endereco', cadastroData.endereco);
             
             const response = await fetch('usuario/salvar', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(cadastroData)
+                body: formData
             });
             
             const data = await response.json();
@@ -155,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 email: inputEmail.value,
                 senha: inputSenha.value,
                 telefone: inputTelefone.value,
+                data_nascimento: inputNascimento.value,
                 cpf: inputCpf.value,
                 endereco: inputEndereco.value
             };

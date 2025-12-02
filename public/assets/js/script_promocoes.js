@@ -208,14 +208,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Adicionar eventos aos botões de seleção (tabela)
             document.querySelectorAll('.btn-selecionar-promocao').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    selecionarPromocao(this.dataset.id, this.closest('tr'));
+                    const linha = this.closest('tr');
+                    tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+                    linha.classList.add('table-active');
+                    selecionarPromocao(this.dataset.id);
                 });
             });
             
             // Adicionar eventos aos botões de seleção (cards mobile)
             document.querySelectorAll('.btn-selecionar-promocao-mobile').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    selecionarPromocao(this.dataset.id, null);
+                    selecionarPromocao(this.dataset.id);
                 });
             });
             
@@ -245,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Seleciona promoção para edição
-    async function selecionarPromocao(id, linha) {
+    async function selecionarPromocao(id) {
         try {
             const response = await fetch(`/promocoes/buscar?idPromocao=${id}`);
             if (!response.ok) throw new Error('Promoção não encontrada.');
@@ -262,8 +265,8 @@ document.addEventListener('DOMContentLoaded', function() {
             btnCadastrar.disabled = true;
             btnAtualizar.disabled = false;
             btnExcluir.disabled = false;
-            tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
-            linha && linha.classList.add('table-active');
+            // Scroll para o formulário
+            formPromocao.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {
             exibirMensagemPromocao('Não foi possível carregar os dados da promoção.');
         }

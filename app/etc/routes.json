@@ -1,221 +1,207 @@
 {
-    "dashboard/estatisticas": {
-        "path": "app/controllers/Dashboard/estatisticas.php"
-    },
-    "dashboard/estoque": {
-        "path": "app/controllers/Dashboard/estoque.php"
-    },
-    "dashboard/mais-vendidos": {
-        "path": "app/controllers/Dashboard/maisVendidos.php"
-    },
+  "dashboard/estatisticas": {
+    "path": "app/controllers/Dashboard/estatisticas.php"
+  },
+  "dashboard/estoque": {
+    "path": "app/controllers/Dashboard/estoque.php"
+  },
+  "dashboard/mais-vendidos": {
+    "path": "app/controllers/Dashboard/maisVendidos.php"
+  },
 
+  "usuario": {
+    "path": "app/controllers/Usuario/listar.php"
+  },
+  "usuario/salvar": {
+    "path": "app/controllers/Usuario/salvar.php"
+  },
+  "usuario/salvar-admin": {
+    "path": "app/controllers/Usuario/salvarAdmin.php"
+  },
+  "usuario/buscar": {
+    "path": "app/controllers/Usuario/buscarPorId.php"
+  },
+  "usuario/atualizar": {
+    "path": "app/controllers/Usuario/atualizar.php"
+  },
+  "usuario/atualizar-dados": {
+    "path": "app/controllers/Usuario/atualizarDados.php"
+  },
+  "usuario/atualizar-endereco": {
+    "path": "app/controllers/Usuario/atualizarEndereco.php"
+  },
+  "usuario/buscar-endereco": {
+    "path": "app/controllers/Usuario/buscarEndereco.php"
+  },
+  "usuario/buscar-dados": {
+    "path": "app/controllers/Usuario/buscarDados.php"
+  },
+  "usuario/deletar": {
+    "path": "app/controllers/Usuario/deletar.php"
+  },
+  "api/usuario/login": {
+    "path": "app/controllers/Usuario/login.php"
+  },
+  "api/usuario/logout": {
+    "path": "app/controllers/Usuario/logout.php"
+  },
 
+  "niveis": {
+    "path": "app/controllers/NivelAcesso/listar.php"
+  },
 
-    "usuario": {
-        "path": "app/controllers/Usuario/listar.php"
-    },
-    "usuario/salvar": {
-        "path": "app/controllers/Usuario/salvar.php"
-    },
-    "usuario/salvar-admin": {
-        "path": "app/controllers/Usuario/salvarAdmin.php"
-    },
-    "usuario/buscar": {
-        "path": "app/controllers/Usuario/buscarPorId.php"
-    },
-    "usuario/atualizar": {
-        "path": "app/controllers/Usuario/atualizar.php"
-    },
-    "usuario/atualizar-dados": {
-        "path": "app/controllers/Usuario/atualizarDados.php"
-    },
-    "usuario/atualizar-endereco": {
-        "path": "app/controllers/Usuario/atualizarEndereco.php"
-    },
-    "usuario/buscar-endereco": {
-        "path": "app/controllers/Usuario/buscarEndereco.php"
-    },
-    "usuario/buscar-dados": {
-        "path": "app/controllers/Usuario/buscarDados.php"
-    },
-    "usuario/deletar": {
-        "path": "app/controllers/Usuario/deletar.php"
-    },
-    "api/usuario/login": {
-        "path": "app/controllers/Usuario/login.php"
-    },
-    "api/usuario/logout": {
-        "path": "app/controllers/Usuario/logout.php"
-    },
+  "produtos": {
+    "path": "app/controllers/Produto/listar.php"
+  },
+  "imagem": {
+    "path": "app/controllers/Produto/imagem.php"
+  },
+  "produtos/buscar": {
+    "path": "app/controllers/Produto/buscarPorId.php"
+  },
+  "produtos/obter-nome": {
+    "path": "app/controllers/Produto/buscarPorNome.php"
+  },
+  "produtos/salvar": {
+    "path": "app/controllers/Produto/salvar.php"
+  },
+  "produtos/atualizar": {
+    "path": "app/controllers/Produto/atualizar.php"
+  },
+  "produtos/deletar": {
+    "path": "app/controllers/Produto/deletar.php"
+  },
 
+  "pedidos": {
+    "path": "app/controllers/Pedido/listar.php"
+  },
+  "pedidos/buscar": {
+    "path": "app/controllers/Pedido/buscarPorId.php"
+  },
+  "pedidos/salvar": {
+    "path": "app/controllers/Pedido/salvar.php"
+  },
+  "pedidos/atualizar": {
+    "path": "app/controllers/Pedido/atualizar.php"
+  },
+  "pedidos/deletar": {
+    "path": "app/controllers/Pedido/deletar.php"
+  },
 
+  "promocoes": {
+    "path": "app/controllers/Promocao/listar.php"
+  },
+  "promocoes/buscar": {
+    "path": "app/controllers/Promocao/buscarPorId.php"
+  },
+  "promocoes/salvar": {
+    "path": "app/controllers/Promocao/salvar.php"
+  },
+  "promocoes/atualizar": {
+    "path": "app/controllers/Promocao/atualizar.php"
+  },
 
-    "niveis": {
-        "path": "app/controllers/NivelAcesso/listar.php"
-    },
+  "promocoes/deletar": {
+    "path": "app/controllers/Promocao/deletar.php"
+  },
 
+  "status": {
+    "path": "app/controllers/Status/listar.php"
+  },
+  "status/salvar": {
+    "path": "app/controllers/Status/salvar.php"
+  },
 
+  "ativar": {
+    "path": "public/views/ativar.html"
+  },
 
-    "produtos": {
-        "path": "app/controllers/Produto/listar.php"
-    },
-    "imagem": {
-        "path": "app/controllers/Produto/imagem.php"
-    },
-    "produtos/buscar": {
-        "path": "app/controllers/Produto/buscarPorId.php"
-    },
-    "produtos/obter-nome": {
-        "path": "app/controllers/Produto/buscarPorNome.php"
-    },
-    "produtos/salvar": {
-        "path": "app/controllers/Produto/salvar.php"
-    },
-    "produtos/atualizar": {
-        "path": "app/controllers/Produto/atualizar.php"
-    },
-    "produtos/deletar": {
-        "path": "app/controllers/Produto/deletar.php"
-    },
+  "carrinho": {
+    "path": "public/views/carrinho.html"
+  },
 
+  "usuario/ativar": {
+    "path": "app/controllers/Usuario/ativar.php"
+  },
+  "usuario/reenviar-token": {
+    "path": "app/controllers/Usuario/reenviarToken.php"
+  },
+  "inicio": {
+    "path": "public/views/inicio.html"
+  },
+  "login": {
+    "path": "public/views/login.html"
+  },
+  "dados_user": {
+    "path": "public/views/dados_user.html"
+  },
+  "local_user": {
+    "path": "public/views/local_user.html"
+  },
 
+  "dashboard": {
+    "path": "public/views/dashboard.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
+  "cliente": {
+    "path": "public/views/cliente.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
+  "produto": {
+    "path": "public/views/produto.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
+  "pedido": {
+    "path": "public/views/pedido.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
+  "promocao": {
+    "path": "public/views/promocao.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
 
-    "pedidos": {
-        "path": "app/controllers/Pedido/listar.php"
-    },
-    "pedidos/buscar": {
-        "path": "app/controllers/Pedido/buscarPorId.php"
-    },
-    "pedidos/salvar": {
-        "path": "app/controllers/Pedido/salvar.php"
-    },
-    "pedidos/atualizar": {
-        "path": "app/controllers/Pedido/atualizar.php"
-    },
-    "pedidos/deletar": {
-        "path": "app/controllers/Pedido/deletar.php"
-    },
+  "pagamento/sucesso": {
+    "path": "public/views/sucesso.html"
+  },
 
+  "pagamento/pendente": {
+    "path": "public/views/pendente.html"
+  },
 
-
-    "promocoes": {
-        "path": "app/controllers/Promocao/listar.php"
-    },
-    "promocoes/buscar": {
-        "path": "app/controllers/Promocao/buscarPorId.php"
-    },
-    "promocoes/salvar": {
-        "path": "app/controllers/Promocao/salvar.php"
-    },
-    "promocoes/atualizar": {
-        "path": "app/controllers/Promocao/atualizar.php"
-    },
-
-    "promocoes/deletar": {
-        "path": "app/controllers/Promocao/deletar.php"
-    },
-
-
-
-    "status": {
-        "path": "app/controllers/Status/listar.php"
-    },
-    "status/salvar": {
-        "path": "app/controllers/Status/salvar.php"
-    },
-
-
-
-    "ativar": {
-        "path": "public/views/ativar.html"
-    },
-
-    "carrinho": {
-        "path": "public/views/carrinho.html"
-    },
-
-
-
-    "usuario/ativar": {
-        "path": "app/controllers/Usuario/ativar.php"
-    },
-    "inicio": {
-        "path": "public/views/inicio.html"
-    },
-    "login": {
-        "path": "public/views/login.html"
-    },
-    "dados_user": {
-        "path": "public/views/dados_user.html"
-    },
-    "local_user": {
-        "path": "public/views/local_user.html"
-    },
-
-
-
-    "dashboard": {
-        "path": "public/views/dashboard.html",
-        "sessionKey": [
-            {
-                "user_logged_in": true,
-                "usuario_nivel": [1]
-            }
-        ],
-        "errorPath": "login"
-    },
-    "cliente": {
-        "path": "public/views/cliente.html",
-        "sessionKey": [
-            {
-                "user_logged_in": true,
-                "usuario_nivel": [1]
-            }
-        ],
-        "errorPath": "login"
-    },
-    "produto": {
-        "path": "public/views/produto.html",
-        "sessionKey": [
-            {
-                "user_logged_in": true,
-                "usuario_nivel": [1]
-            }
-        ],
-        "errorPath": "login"
-    },
-    "pedido": {
-        "path": "public/views/pedido.html",
-        "sessionKey": [
-            {
-                "user_logged_in": true,
-                "usuario_nivel": [1]
-            }
-        ],
-        "errorPath": "login"
-    },
-    "promocao": {
-        "path": "public/views/promocao.html",
-        "sessionKey": [
-            {
-                "user_logged_in": true,
-                "usuario_nivel": [1]
-            }
-        ],
-        "errorPath": "login"
-    },
-
-
-
-    "sucesso": {
-        "path": "public/views/sucesso.html"
-    },
-
-    "pendente": {
-        "path": "public/views/pendente.html"
-    },
-
-    "cancelado": {
-        "path": "public/views/cancelado.html"
-    }
+  "pagamento/cancelado": {
+    "path": "public/views/cancelado.html"
+  },
+  "pagamento/notificacao": {
+    "path": "app/controllers/Pagamento/Notificacao.php"
+  }
 }
