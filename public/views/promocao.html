@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <!-- Fonte -->
-    <link href="https://fonts.googleapis.com/css2?family=Adamina&display=swap" rel="stylesheet">
     <title>FR Semijoias | Promoções</title>
   </head>
   <body>
@@ -341,7 +339,7 @@
                 <div class="row mb-3">
                   <div class="col-md-7 mb-3">
                     <div class="row g-3">
-                      <div class="col-3">
+                      <div class="col-12 col-md-3">
                         <label
                           for="promocao_id"
                           class="form-label text-muted small fw-medium"
@@ -372,7 +370,7 @@
                           />
                         </div>
                       </div>
-                      <div class="col-9">
+                      <div class="col-12 col-md-9">
                         <label
                           for="nome_promocao"
                           class="form-label text-muted small fw-medium"
@@ -403,7 +401,7 @@
                           />
                         </div>
                       </div>
-                      <div class="col-5">
+                      <div class="col-12 col-md-5">
                         <label
                           for="tipo_desconto_promocao"
                           class="form-label text-muted small fw-medium"
@@ -454,7 +452,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-3">
+                      <div class="col-12 col-md-3">
                         <label
                           for="desconto_promocao"
                           class="form-label text-muted small fw-medium"
@@ -494,7 +492,7 @@
                           />
                         </div>
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <label
                           for="status_promocao"
                           class="form-label text-muted small fw-medium"
@@ -535,7 +533,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-6">
+                      <div class="col-12 col-md-6">
                         <label
                           for="data_inicio"
                           class="form-label text-muted small fw-medium"
@@ -589,7 +587,7 @@
                           />
                         </div>
                       </div>
-                      <div class="col-6">
+                      <div class="col-12 col-md-6">
                         <label
                           for="data_fim"
                           class="form-label text-muted small fw-medium"
@@ -685,7 +683,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="d-flex gap-3 mt-4">
+                <div class="d-flex flex-column flex-md-row gap-3 mt-4">
                   <button
                     type="submit"
                     id="btnCadastrarPromocao"
@@ -726,7 +724,7 @@
               <div class="rounded table-scroll">
                 <table
                   id="tabelaPromocoes"
-                  class="table table-borderless table-transparent table-sm"
+                  class="table table-borderless table-transparent table-sm d-none d-md-table"
                 >
                   <thead class="position-sticky bg-light">
                     <tr class="border-bottom">
@@ -764,6 +762,13 @@
                     </tr>
                   </tbody>
                 </table>
+
+                <!-- Cards para Mobile -->
+                <div id="cardsPromocoes" class="d-block d-md-none">
+                  <div class="text-center py-4 text-muted">
+                    Carregando promoções...
+                  </div>
+                </div>
               </div>
             </div>
           </div>

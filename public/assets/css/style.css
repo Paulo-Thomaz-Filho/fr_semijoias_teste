@@ -255,6 +255,12 @@ button:focus {
   opacity: 1 !important;
 }
 
+@media (max-width: 767px) {
+  .w-mobile-100 {
+    width: 100% !important;
+  }
+}
+
 /* =============================================================================
    RESPONSIVIDADE - MOBILE FIRST
    ============================================================================= */
@@ -270,7 +276,7 @@ aside {
 .mobile-menu-toggle {
   display: none;
   position: fixed;
-  top: 1rem;
+  top: 2rem;
   left: 1rem;
   z-index: 1001;
   background: white;
@@ -279,6 +285,8 @@ aside {
   padding: 0.5rem;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-menu-toggle svg {
@@ -963,7 +971,7 @@ body.bg-light {
 /* =============================================================================
    PÁGINA DE ATIVAÇÃO DE CONTA
    ============================================================================= */
-   
+
 .ativacao-icon {
   font-size: 80px;
 }

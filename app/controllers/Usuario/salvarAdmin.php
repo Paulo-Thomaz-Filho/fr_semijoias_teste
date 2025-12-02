@@ -54,6 +54,21 @@ try {
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {
+        // Enviar email de boas-vindas
+        try {
+            require_once $rootPath . '/app/core/utils/Mail.php';
+            require_once $rootPath . '/app/core/utils/EmailTemplate.php';
+            
+            $linkLogin = 'http://frsemijoias.ifhost.gru.br/public/views/login.html';
+            $htmlEmail = \app\core\utils\EmailTemplate::emailBoasVindas($nome, $email, $linkLogin);
+            
+            $mail = new \app\core\utils\Mail();
+            $mail->enviarEmail($email, $nome, 'Bem-vindo à FR Semijoias', $htmlEmail);
+        } catch (\Exception $e) {
+            // Falha no email não deve impedir o cadastro
+            error_log("Erro ao enviar email de boas-vindas: " . $e->getMessage());
+        }
+        
         http_response_code(201);
         echo json_encode(['sucesso' => 'Cliente cadastrado com sucesso!'], JSON_UNESCAPED_UNICODE);
     } else {

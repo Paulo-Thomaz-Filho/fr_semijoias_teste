@@ -41,7 +41,7 @@ try {
     }
     
     // Pega o caminho da imagem antiga
-    $caminho_imagem_salva = $produtoExistente->get_caminho_imagem(); 
+    $caminho_imagem_salva = $produtoExistente->getCaminhoImagem(); 
 
     // --- 3. PROCESSAR O ARQUIVO DE IMAGEM (se um NOVO foi enviado) ---
     if (isset($_FILES['caminho_imagem']) && $_FILES['caminho_imagem']['error'] == 0) {

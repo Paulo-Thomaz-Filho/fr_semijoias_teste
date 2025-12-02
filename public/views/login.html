@@ -16,11 +16,6 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <!-- Fontes -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Adamina&display=swap"
-      rel="stylesheet"
-    />
     <title>FR Semijoias | Login</title>
   </head>
   <body class="bg-light">
@@ -83,6 +78,7 @@
                     class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                     id="loginEmail"
                     placeholder="seu@email.com"
+                    autocomplete="email"
                     required
                   />
                 </div>
@@ -116,6 +112,7 @@
                     class="form-control border-0 bg-body-secondary rounded-4 ps-5 pe-5 py-2"
                     id="loginPassword"
                     placeholder="Digite sua senha"
+                    autocomplete="current-password"
                     required
                   />
                   <button
@@ -269,6 +266,7 @@
                     class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
                     id="cadastroEmail"
                     placeholder="seu@email.com"
+                    autocomplete="email"
                     required
                   />
                 </div>
@@ -406,6 +404,7 @@
                     class="form-control border-0 bg-body-secondary rounded-4 ps-5 pe-5 py-2"
                     id="cadastroSenha"
                     placeholder="Mínimo 6 caracteres"
+                    autocomplete="new-password"
                     required
                     minlength="6"
                   />

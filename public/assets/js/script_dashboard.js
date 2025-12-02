@@ -73,9 +73,12 @@ const carregarEstatisticas = async () => {
 const carregarPedidosRecentes = async () => {
     try {
         const tbody = document.querySelector('#tabelaPedidosRecentes tbody');
-        if (!tbody) return;
+        const cardsContainer = document.getElementById('cardsPedidosRecentes');
+        
+        if (!tbody || !cardsContainer) return;
         
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3">Carregando...</td></tr>';
+        cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Carregando pedidos...</div>';
         
         // Carregar mapeamento de status
         let statusMap = {};
@@ -111,6 +114,7 @@ const carregarPedidosRecentes = async () => {
         if (!response.ok || !Array.isArray(pedidos)) {
             console.error('Erro ao carregar pedidos:', pedidos);
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar pedidos</td></tr>';
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar pedidos</div>';
             return;
         }
         
@@ -125,6 +129,7 @@ const carregarPedidosRecentes = async () => {
         
         if (pedidos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">Nenhum pedido pendente</td></tr>';
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Nenhum pedido pendente</div>';
             return;
         }
         // Renderizar tabela
@@ -159,12 +164,62 @@ const carregarPedidosRecentes = async () => {
                 </tr>
             `;
         }).join('');
+
+        // Renderizar cards para mobile
+        cardsContainer.innerHTML = pedidos.map(p => {
+            const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
+            const valor = valorTotal.toLocaleString('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL' 
+            });
+            const data = p.dataPedido ? new Date(p.dataPedido).toLocaleDateString('pt-BR') : 'N/A';
+            const status = statusMap[p.idStatus] || 'N/A';
+            const endereco = p.endereco || '-';
+            const clienteNome = clientesMap[p.idCliente] || 'N/A';
+            
+            // Mapear status para classe CSS
+            let statusClass = status.toLowerCase().replace(/\s+/g, '-');
+            if (statusClass === 'pendente') statusClass = 'pending';
+            if (statusClass === 'enviado') statusClass = 'sent';
+            if (statusClass === 'aprovado') statusClass = 'green';
+            if (statusClass === 'cancelado') statusClass = 'danger';
+            
+            const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;
+            
+            return `
+                <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-medium mb-0 text-dark">${p.produtoNome || 'N/A'}</h6>
+                            ${statusBadge}
+                        </div>
+                        <div class="small text-muted mb-1">
+                            <strong>Cliente:</strong> ${clienteNome}
+                        </div>
+                        <div class="small text-muted mb-1">
+                            <strong>Endereço:</strong> ${endereco}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                            <div class="small text-muted">
+                                <strong>Data:</strong> ${data}
+                            </div>
+                            <div class="fw-medium text-dark">${valor}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('Erro ao carregar pedidos recentes:', error);
         const tbody = document.querySelector('#tabelaPedidosRecentes tbody');
+        const cardsContainer = document.getElementById('cardsPedidosRecentes');
+        
         if (tbody) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar</td></tr>';
+        }
+        if (cardsContainer) {
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar pedidos</div>';
         }
     }
 };

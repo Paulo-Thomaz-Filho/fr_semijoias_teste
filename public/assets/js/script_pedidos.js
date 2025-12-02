@@ -231,7 +231,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carregar pedidos na tabela
     const carregarPedidos = async () => {
+        const cardsContainer = document.getElementById('cardsPedidos');
+        
         tabelaPedidos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Carregando pedidos...</td></tr>';
+        if (cardsContainer) {
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Carregando pedidos...</div>';
+        }
         
         // Garantir que os clientes estejam carregados antes de exibir os pedidos
         if (Object.keys(clientesMap).length === 0) {
@@ -242,10 +247,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Corrige para buscar da porta correta
             const response = await fetch('/pedidos');
             const pedidos = await response.json();
+            
             if (!Array.isArray(pedidos) || pedidos.length === 0) {
                 tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">Nenhum pedido cadastrado</td></tr>';
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Nenhum pedido cadastrado</div>';
+                }
                 return;
             }
+            
+            // Renderizar tabela
             tabelaPedidos.innerHTML = pedidos.map(p => {
                 // Calcular valor total (preco * quantidade)
                 const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
@@ -278,13 +289,88 @@ document.addEventListener('DOMContentLoaded', function() {
                 return '<tr class="border-bottom border-light"><td class="py-4 text-dark">' + p.idPedido + '</td><td class="py-4 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-4 text-dark">' + clienteNome + '</td><td class="py-4 text-dark">' + valor + '</td><td class="py-4 text-dark">' + (p.endereco || '-') + '</td><td class="py-4 text-dark">' + data + '</td><td class="py-4">' + statusBadge + '</td><td class="py-4 text-dark">' + quantidade + '</td><td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido" data-id="' + p.idPedido + '">Selecionar</button></td></tr>';
             }).join('');
             
-            // Adicionar evento de clique aos botões de selecionar
+            // Renderizar cards para mobile
+            if (cardsContainer) {
+                cardsContainer.innerHTML = pedidos.map(p => {
+                    const valorTotal = (parseFloat(p.preco) || 0) * (parseInt(p.quantidade) || 1);
+                    const valor = valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+                    
+                    function formatarDataBR(dataStr) {
+                        if (!dataStr) return '';
+                        let partes = null;
+                        if (/^\d{4}-\d{2}-\d{2}/.test(dataStr)) {
+                            partes = dataStr.split('T')[0].split('-');
+                            if (partes.length === 3) {
+                                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                            }
+                        }
+                        const d = new Date(dataStr);
+                        if (!isNaN(d.getTime())) {
+                            return d.toLocaleDateString('pt-BR');
+                        }
+                        return dataStr;
+                    }
+                    
+                    const data = p.dataPedido ? formatarDataBR(p.dataPedido) : 'Sem data';
+                    const statusNome = window.statusMap && window.statusMap[p.idStatus] ? window.statusMap[p.idStatus] : 'N/A';
+                    const quantidade = p.quantidade || 0;
+                    
+                    let statusClass = statusNome.toLowerCase().replace(/\s+/g, '-');
+                    if (statusClass === 'pendente') statusClass = 'pending';
+                    if (statusClass === 'enviado') statusClass = 'sent';
+                    if (statusClass === 'aprovado') statusClass = 'green';
+                    if (statusClass === 'cancelado') statusClass = 'danger';
+                    const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
+                    const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';
+                    
+                    return `
+                        <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-medium mb-0 text-dark">${p.produtoNome || 'N/A'}</h6>
+                                    ${statusBadge}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>ID:</strong> ${p.idPedido}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Cliente:</strong> ${clienteNome}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Endereço:</strong> ${p.endereco || '-'}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Quantidade:</strong> ${quantidade}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Data:</strong> ${data}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                    <div class="fw-medium text-dark">${valor}</div>
+                                    <button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido-mobile" data-id="${p.idPedido}">
+                                        Selecionar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Adicionar evento de clique aos botões de selecionar (tabela)
             document.querySelectorAll('.btn-selecionar-pedido').forEach(btn => {
                 btn.addEventListener('click', function() {
                     // Remover destaque de todas as linhas
                     tabelaPedidos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
                     // Adicionar destaque na linha selecionada
                     this.closest('tr').classList.add('table-active');
+                    selecionarPedido(this.dataset.id);
+                });
+            });
+            
+            // Adicionar evento de clique aos botões de selecionar (cards mobile)
+            document.querySelectorAll('.btn-selecionar-pedido-mobile').forEach(btn => {
+                btn.addEventListener('click', function() {
                     selecionarPedido(this.dataset.id);
                 });
             });
@@ -365,13 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
-                if (msgDiv) {
-                    msgDiv.textContent = 'Erro: ' + (resultado.erro || 'Desconhecido');
-                    msgDiv.className = 'text-danger text-center mt-3';
-                    msgDiv.style.display = 'block';
-                } else {
-                    alert('Erro: ' + (resultado.erro || 'Desconhecido'));
-                }
+                exibirMensagemPedido('Erro: ' + (resultado.erro || 'Desconhecido'), 'danger');
             }
         } catch (error) {
             const msgDiv = document.getElementById('pedidoMsg');
@@ -414,13 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
             } else {
-                if (msgDiv) {
-                    msgDiv.textContent = 'Erro: ' + (resultado.erro || 'Desconhecido');
-                    msgDiv.className = 'text-danger text-center mt-3';
-                    msgDiv.style.display = 'block';
-                } else {
-                    alert('Erro: ' + (resultado.erro || 'Desconhecido'));
-                }
+                exibirMensagemPedido('Erro: ' + (resultado.erro || 'Desconhecido'), 'danger');
             }
         } catch (error) {
             const msgDiv = document.getElementById('pedidoMsg');
@@ -478,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formPedido.scrollIntoView({behavior: 'smooth', block: 'start'});
         } catch (error) {
             console.error('Erro ao selecionar pedido:', error);
-            alert('Erro ao carregar dados do pedido');
+            exibirMensagemPedido('Erro ao carregar dados do pedido', 'danger');
         }
     };
 
@@ -501,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnAtualizarPedido) {
         btnAtualizarPedido.addEventListener('click', function() {
             if (!pedidoSelecionado) {
-                alert('Selecione um pedido primeiro');
+                exibirMensagemPedido('Selecione um pedido primeiro', 'danger');
                 return;
             }
             // Pegar o nome do produto selecionado
@@ -524,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnExcluirPedido) {
         btnExcluirPedido.addEventListener('click', function() {
             if (!pedidoSelecionado) {
-                alert('Selecione um pedido primeiro');
+                exibirMensagemPedido('Selecione um pedido primeiro', 'danger');
                 return;
             }
             deletarPedido(pedidoSelecionado);
@@ -588,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Só adiciona se todos os campos forem válidos
                 if (!produtoId || produtoId === '' || produtoNome === 'Selecione um produto' || !quantidade || quantidade <= 0 || !valorTotal || valorTotal <= 0) {
-                    alert('Selecione um produto, quantidade e preço válidos.');
+                    exibirMensagemPedido('Selecione um produto, quantidade e preço válidos.', 'danger');
                     return;
                 }
                 // Garante que nunca será adicionado item inválido
@@ -650,9 +724,29 @@ document.addEventListener('DOMContentLoaded', function() {
             formPedido.addEventListener('submit', function(e) {
                 e.preventDefault();
                 limparMensagemPedido();
-                // Validação dos campos principais
-                if (!inputCliente.value || !inputEndereco.value.trim() || !selectStatus.value || !inputData.value) {
-                    exibirMensagemPedido('Preencha todos os campos obrigatórios do pedido.', 'danger');
+                
+                // Validação detalhada dos campos principais
+                if (!inputCliente.value) {
+                    exibirMensagemPedido('Por favor, selecione um cliente.', 'danger');
+                    inputCliente.focus();
+                    return;
+                }
+
+                if (!inputEndereco.value.trim()) {
+                    exibirMensagemPedido('Por favor, preencha o endereço de entrega.', 'danger');
+                    inputEndereco.focus();
+                    return;
+                }
+
+                if (!selectStatus.value) {
+                    exibirMensagemPedido('Por favor, selecione o status do pedido.', 'danger');
+                    selectStatus.focus();
+                    return;
+                }
+
+                if (!inputData.value) {
+                    exibirMensagemPedido('Por favor, selecione a data do pedido.', 'danger');
+                    inputData.focus();
                     return;
                 }
                 // Limpa o array de itens antes do envio

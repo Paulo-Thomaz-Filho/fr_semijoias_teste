@@ -12,6 +12,8 @@ $(document).ready(function() {
     signUpButton.on('click', function() {
       container.addClass('right-panel-active');
       updateMobileButtons();
+      // Rolar para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -27,6 +29,8 @@ $(document).ready(function() {
     mobileSignUpButton.on('click', function() {
       container.addClass('right-panel-active');
       updateMobileButtons();
+      // Rolar para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 

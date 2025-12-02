@@ -295,6 +295,94 @@ class EmailTemplate {
     }
 
     /**
+     * Template de email de boas-vindas (cadastro pelo admin)
+     * 
+     * @param string $nomeUsuario Nome do usuário
+     * @param string $email Email do usuário
+     * @param string $linkLogin Link para página de login
+     * @return string HTML do email
+     */
+    public static function emailBoasVindas($nomeUsuario, $email, $linkLogin) {
+        $conteudo = "
+            <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 40px 20px;'>
+                <tr>
+                    <td align='center'>
+                        <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
+                            <!-- Header -->
+                            <tr>
+                                <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                </td>
+                            </tr>
+                            
+                            <!-- Body -->
+                            <tr>
+                                <td style='padding: 40px 30px;'>
+                                    <h2 style='margin: 0 0 20px 0; color: #333333; font-size: 24px; font-weight: 600;'>Bem-vindo(a) à FR Semijoias! 🎉</h2>
+                                    
+                                    <p style='margin: 0 0 16px 0; color: #555555; font-size: 16px; line-height: 1.6;'>
+                                        Olá, <strong>{$nomeUsuario}</strong>!
+                                    </p>
+                                    
+                                    <p style='margin: 0 0 24px 0; color: #555555; font-size: 16px; line-height: 1.6;'>
+                                        Sua conta foi criada com sucesso na <strong>FR Semijoias</strong>. Agora você já pode fazer login e aproveitar todos os nossos produtos!
+                                    </p>
+                                    
+                                    <!-- Info Box -->
+                                    <table role='presentation' style='width: 100%; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; margin: 24px 0;'>
+                                        <tr>
+                                            <td style='padding: 20px;'>
+                                                <p style='margin: 0 0 12px 0; color: #333333; font-size: 14px; font-weight: 600;'>📧 Seus dados de acesso:</p>
+                                                <p style='margin: 0 0 8px 0; color: #555555; font-size: 14px;'>
+                                                    <strong>Email:</strong> {$email}
+                                                </p>
+                                                <p style='margin: 0; color: #555555; font-size: 14px;'>
+                                                    <strong>Senha:</strong> A senha que você cadastrou
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <!-- Button -->
+                                    <table role='presentation' style='width: 100%; margin: 32px 0;'>
+                                        <tr>
+                                            <td align='center'>
+                                                <a href='{$linkLogin}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);'>
+                                                    🔐 Fazer Login
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <div style='border-top: 2px solid #e0e0e0; margin: 32px 0;'></div>
+                                    
+                                    <p style='margin: 0; color: #555555; font-size: 14px; line-height: 1.6; text-align: center;'>
+                                        Explore nosso catálogo e encontre as semijoias perfeitas para você! 💎
+                                    </p>
+                                </td>
+                            </tr>
+                            
+                            <!-- Footer -->
+                            <tr>
+                                <td style='background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e0e0e0;'>
+                                    <p style='margin: 0 0 10px 0; color: #666666; font-size: 14px;'>
+                                        &copy; " . date('Y') . " FR Semijoias. Todos os direitos reservados.
+                                    </p>
+                                    <p style='margin: 0; color: #999999; font-size: 12px;'>
+                                        Este é um email automático, por favor não responda.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        ";
+        
+        return self::getBaseTemplate('Bem-vindo - FR Semijoias', $conteudo);
+    }
+
+    /**
      * Template de email de pedido realizado
      * 
      * @param string $nomeUsuario Nome do usuário

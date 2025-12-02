@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (idNivel == 2) {
             return '<span class="status-badge status-sent">• Cliente</span>';
         }
-        return '<span class="status-badge status-pending">Desconhecido</span>';
+        return '<span class="status-badge status-pending">• Desconhecido</span>';
     }
 
     // -------------------------------------------------------------------------
@@ -120,15 +120,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Carregar lista de clientes
     const carregarClientes = async () => {
+        const cardsContainer = document.getElementById('cardsClientes');
+        
         tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center">Carregando clientes...</td></tr>`;
+        if (cardsContainer) {
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Carregando clientes...</div>';
+        }
         
         try {
             const response = await fetch('/usuario');
             const clientes = await response.json();
+            
             if (!Array.isArray(clientes) || clientes.length === 0) {
                 tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center">Nenhum cliente cadastrado.</td></tr>`;
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Nenhum cliente cadastrado.</div>';
+                }
                 return;
             }
+            
+            // Renderizar tabela
             tabelaCorpo.innerHTML = clientes.map(cliente => {
                 const dataFormatada = formatarDataBR(cliente.dataNascimento);
                 const badge = gerarBadgeNivel(cliente.idNivel);
@@ -147,21 +158,67 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 `;
             }).join('');
-            // Adicionar eventos aos botões de seleção
+            
+            // Renderizar cards para mobile
+            if (cardsContainer) {
+                cardsContainer.innerHTML = clientes.map(cliente => {
+                    const dataFormatada = formatarDataBR(cliente.dataNascimento);
+                    const badge = gerarBadgeNivel(cliente.idNivel);
+                    
+                    return `
+                        <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-medium mb-0 text-dark">${cliente.nome ?? ''}</h6>
+                                    ${badge}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>ID:</strong> ${cliente.idUsuario ?? ''}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Email:</strong> ${cliente.email ?? ''}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Telefone:</strong> ${cliente.telefone ?? ''}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Endereço:</strong> ${cliente.endereco ?? ''}
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    <strong>Data de Nascimento:</strong> ${dataFormatada}
+                                </div>
+                                <div class="mt-2 pt-2 border-top">
+                                    <button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 w-100 btn-selecionar-cliente-mobile" data-id="${cliente.idUsuario}">
+                                        Selecionar Cliente
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Adicionar eventos aos botões de seleção (tabela)
             document.querySelectorAll('.btn-selecionar-cliente').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const linha = this.closest('tr');
                     selecionarCliente(this.dataset.id, linha);
                 });
             });
+            
+            // Adicionar eventos aos botões de seleção (cards mobile)
+            document.querySelectorAll('.btn-selecionar-cliente-mobile').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selecionarCliente(this.dataset.id, null);
+                });
+            });
+            
         } catch (error) {
-            const msgDiv = document.getElementById('clienteMsg');
-            if (msgDiv) {
-                msgDiv.textContent = 'Erro ao carregar lista de clientes.';
-                msgDiv.className = 'text-danger text-center mt-3';
-                msgDiv.style.display = 'block';
+            tabelaCorpo.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Erro ao carregar lista de clientes</td></tr>`;
+            if (cardsContainer) {
+                cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar lista de clientes</div>';
             }
-            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Erro ao carregar os clientes</td></tr>`;
+            console.error('Erro ao carregar clientes:', error);
         }
     };
 
@@ -202,11 +259,122 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // -------------------------------------------------------------------------
+    // FUNÇÕES DE VALIDAÇÃO
+    // -------------------------------------------------------------------------
+    
+    /**
+     * Valida formato de email
+     */
+    const validarEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
+    /**
+     * Valida CPF (formato e dígitos verificadores)
+     */
+    const validarCPF = (cpf) => {
+        cpf = cpf.replace(/\D/g, '');
+        
+        if (cpf.length !== 11) return false;
+        
+        // Verifica se todos os dígitos são iguais
+        if (/^(\d)\1+$/.test(cpf)) return false;
+        
+        // Valida primeiro dígito verificador
+        let soma = 0;
+        for (let i = 0; i < 9; i++) {
+            soma += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) return false;
+        
+        // Valida segundo dígito verificador
+        soma = 0;
+        for (let i = 0; i < 10; i++) {
+            soma += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(10))) return false;
+        
+        return true;
+    };
+
+    /**
+     * Valida telefone (formato brasileiro)
+     */
+    const validarTelefone = (telefone) => {
+        const numeros = telefone.replace(/\D/g, '');
+        return numeros.length === 10 || numeros.length === 11;
+    };
+
+    /**
+     * Exibe mensagem de erro
+     */
+    const exibirErro = (mensagem) => {
+        const msgDiv = document.getElementById('clienteMsg');
+        if (msgDiv) {
+            msgDiv.textContent = mensagem;
+            msgDiv.className = 'text-danger text-center mt-3';
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 5000);
+        }
+    };
+
+    // -------------------------------------------------------------------------
     // FUNÇÕES DE CRUD
     // -------------------------------------------------------------------------
     
     // Salvar novo cliente
     const salvarCliente = async () => {
+    // Validações de campos obrigatórios
+    if (!inputNome.value.trim()) {
+        exibirErro('Por favor, preencha o nome do cliente.');
+        inputNome.focus();
+        return;
+    }
+
+    if (!inputEmail.value.trim()) {
+        exibirErro('Por favor, preencha o e-mail.');
+        inputEmail.focus();
+        return;
+    }
+
+    if (!inputSenha.value.trim()) {
+        exibirErro('Por favor, preencha a senha.');
+        inputSenha.focus();
+        return;
+    }
+
+    if (!selectNivel.value) {
+        exibirErro('Por favor, selecione o nível de acesso.');
+        selectNivel.focus();
+        return;
+    }
+
+    // Validações de formato
+    if (!validarEmail(inputEmail.value)) {
+        exibirErro('Por favor, insira um e-mail válido.');
+        inputEmail.focus();
+        return;
+    }
+
+    if (!validarCPF(inputCpf.value)) {
+        exibirErro('Por favor, insira um CPF válido.');
+        inputCpf.focus();
+        return;
+    }
+
+    if (!validarTelefone(inputTelefone.value)) {
+        exibirErro('Por favor, insira um telefone válido (10 ou 11 dígitos).');
+        inputTelefone.focus();
+        return;
+    }
+
     // 1. Criar um objeto JS simples
     const dadosCliente = {
         nome: inputNome.value,
@@ -271,6 +439,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Atualizar cliente existente
 const atualizarCliente = async () => {
+    // Validações
+    if (!validarEmail(inputEmail.value)) {
+        exibirErro('Por favor, insira um e-mail válido.');
+        inputEmail.focus();
+        return;
+    }
+
+    if (!validarCPF(inputCpf.value)) {
+        exibirErro('Por favor, insira um CPF válido.');
+        inputCpf.focus();
+        return;
+    }
+
+    if (!validarTelefone(inputTelefone.value)) {
+        exibirErro('Por favor, insira um telefone válido (10 ou 11 dígitos).');
+        inputTelefone.focus();
+        return;
+    }
+
     // 1. Criar um objeto JS simples
     const dadosCliente = {
         idUsuario: clienteSelecionado, // Incluir o ID

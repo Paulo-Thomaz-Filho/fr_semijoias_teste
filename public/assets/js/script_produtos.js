@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEstoque = document.getElementById('estoque');
     const selectDisponivel = document.getElementById('disponivel');
     const inputImagem = document.getElementById('imagem_produto');
-    const tabelaProdutos = document.querySelector('#produtos-section tbody');
+    const tabelaProdutos = document.querySelector('#tabelaProdutos tbody');
     const btnCadastrarProduto = document.getElementById('btnCadastrarProduto');
     const btnAtualizarProduto = document.getElementById('btnAtualizarProduto');
     const btnExcluirProduto = document.getElementById('btnExcluirProduto');
@@ -25,6 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mapeamento de promoções por id
     let mapaPromocoes = {};
     let produtoSelecionado = null;
+    let precoOriginalProduto = 0; // Armazena o preço original do produto
+
+    // Função para exibir mensagens
+    function exibirMensagemProduto(mensagem, tipo = 'erro') {
+        const msgDiv = document.getElementById('produtoMsg');
+        if (!msgDiv) return;
+        
+        msgDiv.textContent = mensagem;
+        msgDiv.style.display = 'block';
+        msgDiv.className = tipo === 'sucesso' 
+            ? 'alert alert-success text-center mt-3' 
+            : 'alert alert-danger text-center mt-3';
+        
+        setTimeout(() => {
+            msgDiv.style.display = 'none';
+        }, 4000);
+    }
 
     // Carregar promoções no select e no mapa
     const carregarPromocoes = async () => {
@@ -72,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Se não tiver nada, limpa o campo
         if (!valor) {
             e.target.value = '';
+            precoOriginalProduto = 0;
             return;
         }
         
@@ -80,6 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Formata com 2 casas decimais e vírgula
         e.target.value = numero.toFixed(2).replace('.', ',');
+        
+        // Se não tiver produto selecionado (modo cadastro), salva como preço original
+        if (!produtoSelecionado) {
+            precoOriginalProduto = numero;
+        }
     });
     
     // Função para converter valor formatado (com vírgula) para número
@@ -97,7 +120,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carregar produtos na tabela
     const carregarProdutos = async () => {
+        const cardsContainer = document.getElementById('cardsProdutos');
+        
         tabelaProdutos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Carregando produtos...</td></tr>';
+        if (cardsContainer) {
+            cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Carregando produtos...</div>';
+        }
+        
         if (Object.keys(mapaPromocoes).length === 0) {
             await carregarPromocoes();
         }
@@ -105,10 +134,16 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/produtos'); // Endpoint de listagem
             const produtos = await response.json();
+            
             if (!Array.isArray(produtos) || produtos.length === 0) {
                 tabelaProdutos.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">Nenhum produto cadastrado</td></tr>';
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = '<div class="text-center py-4 text-muted">Nenhum produto cadastrado</div>';
+                }
                 return;
             }
+            
+            // Renderizar tabela
             tabelaProdutos.innerHTML = produtos.map(p => {
                 let precoOriginal = parseFloat(p.preco);
                 let precoFinal = precoOriginal;
@@ -150,16 +185,99 @@ document.addEventListener('DOMContentLoaded', function() {
                     + '<td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-produto" data-id="' + p.idProduto + '">Selecionar</button></td>'
                     + '</tr>';
             }).join('');
-                document.querySelectorAll('.btn-selecionar-produto').forEach(btnSelecionarProduto => {
+            
+            // Renderizar cards para mobile
+            if (cardsContainer) {
+                cardsContainer.innerHTML = produtos.map(p => {
+                    let precoOriginal = parseFloat(p.preco);
+                    let precoFinal = precoOriginal;
+                    let promocao = 'N/A';
+                    let promocaoId = p.idPromocao; 
+                    let promocaoObj = null;
+                    
+                    if (promocaoId) {
+                        promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == promocaoId);
+                    }
+
+                    if (promocaoObj) {
+                        let descontoFormatado = '';
+                        if (promocaoObj.tipo_desconto === 'valor') {
+                            descontoFormatado = 'R$ ' + parseInt(promocaoObj.desconto);
+                        } else {
+                            descontoFormatado = parseInt(promocaoObj.desconto) + '%';
+                        }
+                        promocao = promocaoObj.nome + ' - ' + descontoFormatado;
+                        if (promocaoObj.tipo_desconto === 'percentual') {
+                            precoFinal = precoOriginal * (1 - promocaoObj.desconto / 100);
+                        } else if (promocaoObj.tipo_desconto === 'valor') {
+                            precoFinal = precoOriginal - promocaoObj.desconto;
+                        }
+                        if (precoFinal < 0) precoFinal = 0;
+                    }
+                    
+                    const precoFormatado = formatarPreco(precoFinal);
+                    const disponivelBadge = p.disponivel == 1 
+                        ? '<span class="status-badge status-green">• Sim</span>' 
+                        : '<span class="status-badge status-danger">• Não</span>';
+                    
+                    return `
+                        <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-medium mb-0 text-dark">${p.nome || 'N/A'}</h6>
+                                    ${disponivelBadge}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>ID:</strong> ${p.idProduto}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Preço:</strong> ${precoFormatado}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Marca:</strong> ${p.marca || 'N/A'}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Categoria:</strong> ${p.categoria || 'N/A'}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Estoque:</strong> ${p.estoque || 0}
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    <strong>Promoção:</strong> ${promocao}
+                                </div>
+                                <div class="mt-2 pt-2 border-top">
+                                    <button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 w-100 btn-selecionar-produto-mobile" data-id="${p.idProduto}">
+                                        Selecionar Produto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Adicionar eventos aos botões de seleção (tabela)
+            document.querySelectorAll('.btn-selecionar-produto').forEach(btnSelecionarProduto => {
                 btnSelecionarProduto.addEventListener('click', function() {
                     tabelaProdutos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
                     this.closest('tr').classList.add('table-active');
                     selecionarProduto(this.dataset.id);
                 });
             });
+            
+            // Adicionar eventos aos botões de seleção (cards mobile)
+            document.querySelectorAll('.btn-selecionar-produto-mobile').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selecionarProduto(this.dataset.id);
+                });
+            });
+            
         } catch (error) {
             console.error('Erro:', error);
             tabelaProdutos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Erro ao carregar os produtos</td></tr>';
+            if (cardsContainer) {
+                cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar os produtos</div>';
+            }
         }
     };
 
@@ -175,55 +293,42 @@ document.addEventListener('DOMContentLoaded', function() {
             inputCategoria.value = produto.categoria ?? '';
             inputMarca.value = produto.marca ?? '';
 
-            let precoOriginal = parseFloat(produto.preco);
-            let precoFinal = precoOriginal;
+            let precoAtual = parseFloat(produto.preco);
             let promocaoId = produto.idPromocao ?? '';
-            let promocaoValida = false;
-
-            if (promocaoId && mapaPromocoes[promocaoId]) {
-                // Checa se a promoção ainda está válida
-                const promocoesValidas = Object.keys(mapaPromocoes);
-                if (promocoesValidas.includes(promocaoId.toString())) {
-                    promocaoValida = true;
-                    const texto = mapaPromocoes[promocaoId];
-
-                    // Verifica se é percentual ou valor fixo
-                    let valorDesconto = 0;
-                    let tipoDesconto = '';
-
-                    if (texto.includes('%')) {
-                        // Desconto percentual: "25%"
-                        const matchPercent = texto.match(/([\d]+)%/);
-                        if (matchPercent) {
-                            valorDesconto = parseInt(matchPercent[1]);
-                            tipoDesconto = 'percentual';
-                        }
-                    } else if (texto.includes('R$')) {
-                        // Desconto em valor: "R$ 25"
-                        const matchValor = texto.match(/R\$\s*([\d]+)/);
-                        if (matchValor) {
-                            valorDesconto = parseInt(matchValor[1]);
-                            tipoDesconto = 'valor';
-                        }
+            
+            // O preço no banco SEMPRE é o original (sem desconto)
+            // A correção anterior garantiu isso
+            precoOriginalProduto = precoAtual;
+            
+            // Verifica se tem promoção VÁLIDA para calcular desconto na exibição
+            let precoComDesconto = precoAtual;
+            const promocoesValidas = Object.keys(mapaPromocoes);
+            const temPromocaoValida = promocaoId && promocoesValidas.includes(promocaoId.toString());
+            
+            if (temPromocaoValida) {
+                const promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == promocaoId);
+                
+                if (promocaoObj) {
+                    const desconto = parseFloat(promocaoObj.desconto);
+                    
+                    // Calcula o preço com desconto para exibição
+                    if (promocaoObj.tipo_desconto === 'percentual') {
+                        precoComDesconto = precoAtual * (1 - desconto / 100);
+                    } else if (promocaoObj.tipo_desconto === 'valor') {
+                        precoComDesconto = precoAtual - desconto;
                     }
-
-                    if (tipoDesconto && valorDesconto > 0) {
-                        if (tipoDesconto === 'percentual') {
-                            precoFinal = precoOriginal * (1 - valorDesconto / 100);
-                        } else if (tipoDesconto === 'valor') {
-                            precoFinal = precoOriginal - valorDesconto;
-                        }
-                        if (precoFinal < 0) precoFinal = 0;
-                    }
+                    
+                    if (precoComDesconto < 0) precoComDesconto = 0;
                 }
             }
-            // Se a promoção não for válida, seleciona 'sem promoção' e volta ao preço original
-            if (!promocaoValida) {
-                selectPromocao.value = 'sem';
-                inputPreco.value = precoOriginal ? precoOriginal.toFixed(2).replace('.', ',') : '';
-            } else {
+            
+            // Seleciona a promoção correta e mostra o preço
+            if (temPromocaoValida) {
                 selectPromocao.value = promocaoId;
-                inputPreco.value = precoFinal ? precoFinal.toFixed(2).replace('.', ',') : '';
+                inputPreco.value = precoComDesconto.toFixed(2).replace('.', ',');
+            } else {
+                selectPromocao.value = 'sem';
+                inputPreco.value = precoAtual.toFixed(2).replace('.', ',');
             }
             inputEstoque.value = produto.estoque ?? 0;
             selectDisponivel.value = produto.disponivel ?? 1;
@@ -234,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formProduto.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {
             console.error('Erro ao selecionar produto:', error);
-            alert('Erro ao carregar dados do produto');
+            exibirMensagemProduto('Erro ao carregar dados do produto');
         }
     };
 
@@ -375,6 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inputId.value = 'Auto';
         selectDisponivel.value = '';
         produtoSelecionado = null;
+        precoOriginalProduto = 0; // Limpa o preço original salvo
         btnCadastrarProduto.disabled = false;
         btnAtualizarProduto.disabled = true;
         btnExcluirProduto.disabled = true;
@@ -386,6 +492,37 @@ document.addEventListener('DOMContentLoaded', function() {
     formProduto.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Validações de campos obrigatórios
+        if (!inputNome.value.trim()) {
+            exibirMensagemProduto('Por favor, preencha o nome do produto.');
+            inputNome.focus();
+            return;
+        }
+
+        if (!inputPreco.value.trim()) {
+            exibirMensagemProduto('Por favor, preencha o preço do produto.');
+            inputPreco.focus();
+            return;
+        }
+
+        if (!inputMarca.value.trim()) {
+            exibirMensagemProduto('Por favor, preencha a marca do produto.');
+            inputMarca.focus();
+            return;
+        }
+
+        if (!inputCategoria.value.trim()) {
+            exibirMensagemProduto('Por favor, preencha a categoria do produto.');
+            inputCategoria.focus();
+            return;
+        }
+
+        if (!inputEstoque.value && inputEstoque.value !== '0') {
+            exibirMensagemProduto('Por favor, preencha a quantidade em estoque.');
+            inputEstoque.focus();
+            return;
+        }
+        
         let idPromocaoValue = selectPromocao.value;
         if (idPromocaoValue === 'sem') idPromocaoValue = '';
 
@@ -394,10 +531,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Adiciona os campos de texto
         formData.append('nome', inputNome.value);
         formData.append('descricao', inputDescricao.value);
-        formData.append('preco', precoParaNumero(inputPreco.value));
+        // SEMPRE envia o preço ORIGINAL (sem desconto)
+        formData.append('preco', precoOriginalProduto || precoParaNumero(inputPreco.value));
         formData.append('marca', inputMarca.value);
         formData.append('categoria', inputCategoria.value);
-        formData.append('id_promocao', idPromocaoValue); // CORRIGIDO
+        formData.append('id_promocao', idPromocaoValue);
         formData.append('estoque', inputEstoque.value || 0);
         formData.append('disponivel', selectDisponivel.value);
         
@@ -408,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (produtoSelecionado) {
-            formData.append('idProduto', inputId.value);
+            formData.append('id_produto', inputId.value); // CORRIGIDO: backend espera id_produto
             atualizarProduto(formData);
         } else {
             cadastrarProduto(formData);
@@ -440,6 +578,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     formProduto.addEventListener('reset', function() {
         limparFormulario();
+    });
+
+    // Listener para recalcular preço quando muda a promoção
+    selectPromocao.addEventListener('change', function() {
+        const promocaoId = this.value;
+        
+        // Se não tiver preço original salvo, não faz nada
+        if (!precoOriginalProduto || precoOriginalProduto <= 0) {
+            return;
+        }
+
+        let precoFinal = precoOriginalProduto;
+
+        // Se selecionou "sem promoção", volta ao preço original
+        if (promocaoId === 'sem' || !promocaoId) {
+            inputPreco.value = precoOriginalProduto.toFixed(2).replace('.', ',');
+            return;
+        }
+
+        // Busca a promoção selecionada no array global
+        const promocaoObj = window.promocoesArray?.find(pr => pr.idPromocao == promocaoId);
+        
+        if (promocaoObj) {
+            // Garante que o desconto é um número
+            const desconto = parseFloat(promocaoObj.desconto);
+            
+            // Calcula o preço com desconto
+            if (promocaoObj.tipo_desconto === 'percentual') {
+                precoFinal = precoOriginalProduto * (1 - desconto / 100);
+            } else if (promocaoObj.tipo_desconto === 'valor') {
+                precoFinal = precoOriginalProduto - desconto;
+            }
+            
+            if (precoFinal < 0) precoFinal = 0;
+        }
+
+        // Atualiza o campo de preço
+        inputPreco.value = precoFinal.toFixed(2).replace('.', ',');
     });
 
     // --- INICIALIZAÇÃO ---

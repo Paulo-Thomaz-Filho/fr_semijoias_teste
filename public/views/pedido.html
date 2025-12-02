@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <!-- Fonte -->
-    <link href="https://fonts.googleapis.com/css2?family=Adamina&display=swap" rel="stylesheet">
     <title>FR Semijoias | Pedidos</title>
   </head>
   <body>
@@ -579,7 +577,7 @@
                   <div class="col-12">
                     <hr class="my-3 border-2 rounded-4" />
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-3 mb-md-0">
                     <label
                       for="produto_pedido"
                       class="form-label text-muted small fw-medium"
@@ -612,7 +610,7 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2 mb-3 mb-md-0">
                     <label
                       for="quantidade_pedido"
                       class="form-label text-muted small fw-medium"
@@ -662,7 +660,7 @@
                       />
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2 mb-3 mb-md-0">
                     <label
                       for="valor_total_pedido"
                       class="form-label text-muted small fw-medium"
@@ -694,11 +692,11 @@
                       />
                     </div>
                   </div>
-                  <div class="col-md-2 d-flex align-items-end">
+                  <div class="col-md-2 d-flex align-items-end mb-3 mb-md-0">
                     <button
                       type="button"
                       id="btnAdicionarItem"
-                      class="btn btn-success px-3 py-2 fw-medium rounded-4"
+                      class="btn btn-success px-3 py-2 fw-medium rounded-4 w-mobile-100"
                     >
                       Adicionar item
                     </button>
@@ -789,7 +787,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="d-flex gap-3 mt-4">
+                <div class="d-flex flex-column flex-md-row gap-3 mt-4">
                   <button
                     type="submit"
                     id="btnCadastrarPedido"
@@ -830,7 +828,7 @@
               <div class="rounded table-scroll">
                 <table
                   id="tabelaPedidos"
-                  class="table table-borderless mb-0 table-transparent table-sm"
+                  class="table table-borderless mb-0 table-transparent table-sm d-none d-md-table"
                 >
                   <thead class="position-sticky bg-light">
                     <tr class="border-bottom">
@@ -871,6 +869,13 @@
                     </tr>
                   </tbody>
                 </table>
+
+                <!-- Cards para Mobile -->
+                <div id="cardsPedidos" class="d-block d-md-none">
+                  <div class="text-center py-4 text-muted">
+                    Carregando pedidos...
+                  </div>
+                </div>
               </div>
             </div>
           </div>

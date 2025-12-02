@@ -16,6 +16,11 @@ if (!$idProduto) {
 }
 
 try {
+    // Remove promoções expiradas antes de buscar
+    require_once $rootPath . '/app/models/PromocaoDAO.php';
+    $promocaoDAO = new \app\models\PromocaoDAO();
+    $promocaoDAO->removerPromocoesExpiradasDosProdutos();
+    
     $produtoDAO = new \app\models\ProdutoDAO();
     $produto = $produtoDAO->getById($idProduto);
 
