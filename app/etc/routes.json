@@ -133,10 +133,24 @@
     "path": "public/views/login.html"
   },
   "dados_user": {
-    "path": "public/views/dados_user.html"
+    "path": "public/views/dados_user.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [2]
+      }
+    ],
+    "errorPath": "login"
   },
   "local_user": {
-    "path": "public/views/local_user.html"
+    "path": "public/views/local_user.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [2]
+      }
+    ],
+    "errorPath": "login"
   },
 
   "dashboard": {

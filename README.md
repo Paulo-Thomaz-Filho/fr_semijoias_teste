@@ -1,4 +1,4 @@
-# ✨ FR Semijoias
+# 💍 FR Semijoias
 
 > Sistema completo de e-commerce para venda de semijoias com integração ao Mercado Pago
 
