@@ -44,10 +44,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.sucesso) {
-                // Salvar dados do usuário na sessionStorage
-                if (data.usuario_nome) {
-                    sessionStorage.setItem('usuario_nome', data.usuario_nome);
-                }
+                                // Salvar dados do usuário na sessionStorage
+                                const usuario = {
+                                    nome: data.usuario_nome,
+                                    idUsuario: data.usuario_id || data.idUsuario,
+                                    acesso: data.usuario_acesso || data.acesso,
+                                    nivel: data.usuario_nivel || data.nivel
+                                };
+                                sessionStorage.setItem('usuario', JSON.stringify(usuario));
                 // Redirecionar conforme tipo de usuário
                 if (data.isAdmin) {
                     window.location.href = '/dashboard'; 

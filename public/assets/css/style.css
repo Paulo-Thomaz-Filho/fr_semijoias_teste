@@ -99,6 +99,21 @@ select.form-select:focus,
   outline: none !important;
 }
 
+input[type="number"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--bs-secondary) !important;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  background: url('data:image/svg+xml;utf8,<svg fill="%23212529" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 8.586l4.95-4.95a1 1 0 111.414 1.414L11.414 10l4.95 4.95a1 1 0 01-1.414 1.414L10 11.414l-4.95 4.95a1 1 0 01-1.414-1.414L8.586 10l-4.95-4.95A1 1 0 115.05 3.636L10 8.586z"/></svg>')
+    no-repeat center;
+  cursor: pointer;
+}
+
 .chart-container-bar {
   height: 200px !important;
 }
@@ -259,6 +274,95 @@ button:focus {
 @media (max-width: 767px) {
   .w-mobile-100 {
     width: 100% !important;
+  }
+}
+
+.banner-carousel {
+  overflow: hidden;
+  border-radius: 1rem;
+  max-width: 100vw;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.banner-carousel .swiper-wrapper {
+  border-radius: 1rem;
+}
+
+.banner-carousel .swiper-slide {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.banner-carousel .swiper-slide img {
+  border-radius: 1rem;
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  object-fit: contain;
+  display: block;
+}
+
+.banner-carousel .swiper-button-next,
+.banner-carousel .swiper-button-prev {
+  color: #212529;
+}
+
+.banner-carousel .swiper-button-next::after,
+.banner-carousel .swiper-button-prev::after {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.banner-carousel .swiper-pagination-bullet {
+  background: #212529;
+  opacity: 0.5;
+}
+
+.banner-carousel .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+.categoria-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--bs-dark);
+  border-radius: 50px;
+}
+
+#categorias-menu span {
+  width: 2px;
+  height: 16px;
+  background-color: currentColor;
+  border-radius: 50px;
+  opacity: 0.3;
+}
+
+.section-divider {
+  width: 60px;
+  height: 4px;
+  background-color: var(--bs-dark);
+  border-radius: 50px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .carousel-container .swiper-button-next,
+  .carousel-container .swiper-button-prev {
+    display: none;
   }
 }
 
@@ -994,4 +1098,65 @@ body.bg-light {
 
 .token-input {
   letter-spacing: 5px;
+}
+
+/* Custom modal styles */
+.modal-content {
+  border: none !important;
+  border-radius: 2rem !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Custom SweetAlert2 styles para FR Semijoias */
+.swal2-popup {
+  background: #fff !important;
+  border-radius: 2rem !important;
+  color: #212529 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.swal2-title {
+  color: #212529 !important;
+  font-weight: 700 !important;
+  font-size: 1.3rem !important;
+}
+
+.swal2-content {
+  color: #6c757d !important;
+  font-size: 1rem !important;
+}
+
+.swal2-success-ring,
+.swal2-icon.swal2-success {
+  border-color: #198754 !important;
+  color: #198754 !important;
+}
+
+.swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background: #198754 !important;
+}
+
+.swal2-confirm {
+  background: #198754 !important;
+  color: #fff !important;
+  border-radius: 1rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.swal2-cancel {
+  border-radius: 1rem !important;
+}
+
+.swal2-icon.swal2-warning {
+  color: #ffc107 !important;
+  border-color: #ffc107 !important;
+}
+
+.btn-close:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }

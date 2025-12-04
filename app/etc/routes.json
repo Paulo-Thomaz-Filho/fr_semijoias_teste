@@ -39,6 +39,12 @@
   "usuario/deletar": {
     "path": "app/controllers/Usuario/deletar.php"
   },
+  "usuario/ativar": {
+    "path": "app/controllers/Usuario/ativar.php"
+  },
+  "usuario/reenviar-token": {
+    "path": "app/controllers/Usuario/reenviarToken.php"
+  },
   "api/usuario/login": {
     "path": "app/controllers/Usuario/login.php"
   },
@@ -53,14 +59,14 @@
   "produtos": {
     "path": "app/controllers/Produto/listar.php"
   },
+  "produtos/categorias": {
+    "path": "app/controllers/Produto/categorias.php"
+  },
   "imagem": {
     "path": "app/controllers/Produto/imagem.php"
   },
   "produtos/buscar": {
     "path": "app/controllers/Produto/buscarPorId.php"
-  },
-  "produtos/obter-nome": {
-    "path": "app/controllers/Produto/buscarPorNome.php"
   },
   "produtos/salvar": {
     "path": "app/controllers/Produto/salvar.php"
@@ -100,7 +106,6 @@
   "promocoes/atualizar": {
     "path": "app/controllers/Promocao/atualizar.php"
   },
-
   "promocoes/deletar": {
     "path": "app/controllers/Promocao/deletar.php"
   },
@@ -120,20 +125,14 @@
     "path": "public/views/carrinho.html"
   },
 
-  "usuario/ativar": {
-    "path": "app/controllers/Usuario/ativar.php"
-  },
-  "usuario/reenviar-token": {
-    "path": "app/controllers/Usuario/reenviarToken.php"
-  },
   "inicio": {
     "path": "public/views/inicio.html"
   },
   "login": {
     "path": "public/views/login.html"
   },
-  "dados_user": {
-    "path": "public/views/dados_user.html",
+  "dados-usuario": {
+    "path": "public/views/dados-usuario.html",
     "sessionKey": [
       {
         "user_logged_in": true,
@@ -207,11 +206,9 @@
   "pagamento/sucesso": {
     "path": "public/views/sucesso.html"
   },
-
   "pagamento/pendente": {
     "path": "public/views/pendente.html"
   },
-
   "pagamento/cancelado": {
     "path": "public/views/cancelado.html"
   },

@@ -3,219 +3,426 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="shortcut icon"
+      href="assets/images/logo.svg"
+      type="image/x-icon"
     />
+    <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
+    <!-- Swiper CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
-    <link rel="stylesheet" href="assets/css/style_inicio.css" />
-    <link
-      rel="shortcut icon"
-      href="../assets/images/logo.svg"
-      type="image/x-icon"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Adamina&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css" />
     <title>FR Semijoias | Início</title>
   </head>
+
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="inicio"> FR Semijoias</a>
+    <!-- Header -->
+    <header class="bg-white border-bottom sticky-top shadow-sm">
+      <nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+          <!-- Logo -->
+          <a class="navbar-brand logo-login" href="inicio">
+            <img src="assets/images/logo.svg" alt="FR Semijoias" />
+          </a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#main-nav"
-          aria-controls="main-nav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+          <!-- Mobile Toggle -->
+          <button class="navbar-toggler border-0" type="button">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <div class="collapse navbar-collapse" id="main-nav">
-          <form class="d-flex mx-auto w-100" style="max-width: 500px">
-            <div class="input-group">
+          <!-- Search Form (Desktop) -->
+          <form class="d-none d-lg-flex mx-auto w-100" style="max-width: 550px">
+            <div class="input-group ms-5">
               <input
-                class="form-control me-2"
                 type="search"
-                placeholder="Search"
-                aria-label="Search"
+                class="form-control border border-secondary border-opacity-25 bg-light rounded-start-pill px-4 py-2"
+                placeholder="Buscar produtos"
                 id="input-search"
+                style="
+                  outline: none !important;
+                  box-shadow: none !important;
+                  border-color: rgba(108, 117, 125, 0.25) !important;
+                "
               />
               <button
-                class="btn btn-outline-success"
                 type="submit"
+                class="btn btn-dark rounded-end-pill px-4 d-flex align-items-center justify-content-center"
                 id="btn-pesquisar"
               >
-                <i class="bi bi-search"></i>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
               </button>
             </div>
           </form>
 
-          <div class="d-flex align-items-center ms-auto">
-            <a href="dados_user" class="nav-link me-3"
-              >Olá, Usuário <i class="bi bi-person"></i
-            ></a>
-            <a href="carrinho" class="nav-link">
-              <i class="bi bi-cart3"></i> (<span id="cart-counter">0</span>)
+          <!-- Search Form (Mobile) -->
+          <form class="d-lg-none my-3">
+            <div class="input-group">
+              <input
+                type="search"
+                class="form-control border border-secondary border-opacity-25 bg-light rounded-start-pill px-4 py-2"
+                placeholder="Buscar produtos"
+                style="
+                  outline: none !important;
+                  box-shadow: none !important;
+                  border-color: rgba(108, 117, 125, 0.25) !important;
+                "
+              />
+              <button
+                type="submit"
+                class="btn btn-dark rounded-end-pill px-4 d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- User Actions -->
+          <div class="d-flex align-items-center gap-5 ms-lg-3">
+            <a href="/dados-usuario" class="text-decoration-none text-secondary" id="user-greeting">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9ZM15.8243 13.6235C17.1533 12.523 18 10.8604 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 10.8604 6.84668 12.523 8.17572 13.6235C4.98421 14.7459 3 17.2474 3 20C3 20.5523 3.44772 21 4 21C4.55228 21 5 20.5523 5 20C5 17.7306 7.3553 15 12 15C16.6447 15 19 17.7306 19 20C19 20.5523 19.4477 21 20 21C20.5523 21 21 20.5523 21 20C21 17.2474 19.0158 14.7459 15.8243 13.6235Z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span class="fw-medium" id="user-greeting-text">Minha conta</span>
+            </a>
+            <a
+              href="carrinho"
+              class="text-decoration-none text-secondary position-relative"
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                id="cart-counter"
+                >0</span
+              >
             </a>
           </div>
         </div>
+      </nav>
+    </header>
+
+    <!-- Menu de Categorias -->
+    <div class="bg-light border-bottom py-3">
+      <div class="container">
+        <nav
+          class="d-flex justify-content-center align-items-center flex-wrap gap-4"
+          id="categorias-menu"
+        >
+          <a
+            href="#"
+            class="text-decoration-none text-dark fw-semibold categoria-link active px-3 py-2 fs-6 d-inline-block position-relative"
+            data-categoria="inicio"
+          >
+            Início
+          </a>
+          <span class="text-muted"></span>
+          <!-- Categorias serão inseridas aqui via JavaScript -->
+        </nav>
       </div>
-    </nav>
-    <!--carrosel de promoçoes-->
-    <div class="container my-5">
-      <h2 class="text-center mb-4">Promoções</h2>
-      <div class="carousel-container">
-        <div class="product-carousel swiper">
-          <ul class="swiper-wrapper" id="promocoes-wrapper">
-            <!--produtos adicionados-->
-          </ul>
+    </div>
+
+    <!-- Carrossel Infinite Loop -->
+    <section class="py-5">
+      <div class="px-5"">
+        <div class="banner-carousel swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img
+                src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&h=400&fit=crop"
+                alt="Coleção de Joias"
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&h=400&fit=crop"
+                alt="Anéis Elegantes"
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&h=400&fit=crop"
+                alt="Brincos Sofisticados"
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&h=400&fit=crop"
+                alt="Colares Exclusivos"
+              />
+            </div>
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
       </div>
-    </div>
+    </section>
 
-    <!--catalogo completo-->
-    <div class="container my-5">
-      <h2 class="text-center mb-4">Catálogo Completo</h2>
+    <!-- Catálogo de Produtos -->
+    <section class="py-5" id="secao-catalogo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold mb-2">Catálogo Completo</h2>
+          <div class="section-divider mx-auto mb-4"></div>
+          <p class="text-muted mb-0">Todos os nossos produtos</p>
+        </div>
+        <div class="row g-4" id="catalogo-completo-wrapper"></div>
+      </div>
+    </section>
 
-      <div class="row g-4" id="catalogo-completo-wrapper"></div>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-white border-top">
+      <div class="container pt-5">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <img
+              src="assets/images/logo.svg"
+              alt="FR Semijoias"
+              height="50"
+              class="mb-3"
+            />
+            <p class="text-muted small mb-0">
+              Elegância e sofisticação em cada detalhe
+            </p>
+          </div>
 
-    <!--footer-->
-    <hr />
-    <footer class="pt-5 pb-4">
-      <div class="container text-center text-md-start">
-        <div class="row">
           <div class="col-md-3">
-            <h5>Sobre Nós</h5>
-            <ul class="list-unstyled">
-              <li>
+            <h6 class="fw-semibold mb-3 small">Sobre</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
                   >Quem Somos</a
                 >
               </li>
-              <li>
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
-                  >Políticas</a
+                  >Políticas de Privacidade</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted"
+                  >Políticas de Devolução e Trocas</a
                 >
               </li>
             </ul>
           </div>
-          <div class="col-md-3">
-            <h5>Ajuda</h5>
-            <ul class="list-unstyled">
-              <li>
-                <a href="#" class="text-decoration-none text-muted"
-                  >Dúvidas Frequentes</a
-                >
+
+          <div class="col-md-2">
+            <h6 class="fw-semibold mb-3 small">Ajuda</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted">FAQ</a>
               </li>
-              <li>
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted">Garantia</a>
               </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted"
+                  >Entrega e Prazos</a
+                >
+              </li>
             </ul>
           </div>
+
           <div class="col-md-3">
-            <h5>SAC</h5>
-            <p class="text-muted">sac@frsemijoias.com.br</p>
+            <h6 class="fw-semibold mb-3 small">Contato</h6>
+            <div class="d-flex gap-3 mb-3">
+              <a
+                href="#"
+                class="bg-dark rounded-circle p-2 d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    d="M18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M1.65396 4.27606C1 5.55953 1 7.23969 1 10.6V13.4C1 16.7603 1 18.4405 1.65396 19.7239C2.2292 20.8529 3.14708 21.7708 4.27606 22.346C5.55953 23 7.23969 23 10.6 23H13.4C16.7603 23 18.4405 23 19.7239 22.346C20.8529 21.7708 21.7708 20.8529 22.346 19.7239C23 18.4405 23 16.7603 23 13.4V10.6C23 7.23969 23 5.55953 22.346 4.27606C21.7708 3.14708 20.8529 2.2292 19.7239 1.65396C18.4405 1 16.7603 1 13.4 1H10.6C7.23969 1 5.55953 1 4.27606 1.65396C3.14708 2.2292 2.2292 3.14708 1.65396 4.27606ZM13.4 3H10.6C8.88684 3 7.72225 3.00156 6.82208 3.0751C5.94524 3.14674 5.49684 3.27659 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3.27659 5.49684 3.14674 5.94524 3.0751 6.82208C3.00156 7.72225 3 8.88684 3 10.6V13.4C3 15.1132 3.00156 16.2777 3.0751 17.1779C3.14674 18.0548 3.27659 18.5032 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C5.49684 20.7234 5.94524 20.8533 6.82208 20.9249C7.72225 20.9984 8.88684 21 10.6 21H13.4C15.1132 21 16.2777 20.9984 17.1779 20.9249C18.0548 20.8533 18.5032 20.7234 18.816 20.564C19.5686 20.1805 20.1805 19.5686 20.564 18.816C20.7234 18.5032 20.8533 18.0548 20.9249 17.1779C20.9984 16.2777 21 15.1132 21 13.4V10.6C21 8.88684 20.9984 7.72225 20.9249 6.82208C20.8533 5.94524 20.7234 5.49684 20.564 5.18404C20.1805 4.43139 19.5686 3.81947 18.816 3.43597C18.5032 3.27659 18.0548 3.14674 17.1779 3.0751C16.2777 3.00156 15.1132 3 13.4 3Z"
+                    fill="#ffffff"
+                  />
+                </svg>
+              </a>
+              <a
+                href="#"
+                class="bg-dark rounded-circle p-2 d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px"
+              >
+                <svg
+                  fill="#ffffff"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.42 9.49c-.19-.09-1.1-.54-1.27-.61s-.29-.09-.42.1-.48.6-.59.73-.21.14-.4 0a5.13 5.13 0 0 1-1.49-.92 5.25 5.25 0 0 1-1-1.29c-.11-.18 0-.28.08-.38s.18-.21.28-.32a1.39 1.39 0 0 0 .18-.31.38.38 0 0 0 0-.33c0-.09-.42-1-.58-1.37s-.3-.32-.41-.32h-.4a.72.72 0 0 0-.5.23 2.1 2.1 0 0 0-.65 1.55A3.59 3.59 0 0 0 5 8.2 8.32 8.32 0 0 0 8.19 11c.44.19.78.3 1.05.39a2.53 2.53 0 0 0 1.17.07 1.93 1.93 0 0 0 1.26-.88 1.67 1.67 0 0 0 .11-.88c-.05-.07-.17-.12-.36-.21z"
+                  />
+                  <path
+                    d="M13.29 2.68A7.36 7.36 0 0 0 8 .5a7.44 7.44 0 0 0-6.41 11.15l-1 3.85 3.94-1a7.4 7.4 0 0 0 3.55.9H8a7.44 7.44 0 0 0 5.29-12.72zM8 14.12a6.12 6.12 0 0 1-3.15-.87l-.22-.13-2.34.61.62-2.28-.14-.23a6.18 6.18 0 0 1 9.6-7.65 6.12 6.12 0 0 1 1.81 4.37A6.19 6.19 0 0 1 8 14.12z"
+                  />
+                </svg>
+              </a>
+            </div>
+            <p class="text-muted small">sac@frsemijoias.com.br</p>
           </div>
         </div>
+        <div class="my-4 border-top"></div>
+      </div>
+      <div class="text-center">
+        <p class="text-muted small py-3">
+          © 2025 FR Semijoias. Todos os direitos reservados.
+        </p>
       </div>
     </footer>
-    <!--fim do footer-->
 
-    <!--modal-->
-    <div
-      class="modal fade"
-      id="productModal"
-      tabindex="-1"
-      aria-labelledby="productModalLabel"
-      aria-hidden="true"
-    >
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal">
       <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modal-product-title"></h5>
+        <div class="modal-content p-3">
+          <div class="modal-header border-0">
+            <h4 class="modal-title fw-bold" id="modal-product-title"></h4>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
             ></button>
           </div>
+
           <div class="modal-body">
-            <div class="row">
-              <div
-                class="col-md-6 d-flex justify-content-center align-items-center"
-              >
+            <div class="row g-4">
+              <div class="col-md-6">
                 <img
                   id="modal-product-image"
                   src=""
-                  class="img-fluid rounded"
-                  alt="Imagem do Produto"
+                  class="img-fluid rounded-4"
+                  alt="Produto"
                 />
               </div>
+
               <div class="col-md-6">
-                <p id="modal-product-description"></p>
-                <hr />
-                <h4 id="modal-product-price"></h4>
-                <p>
+                <p id="modal-product-description" class="text-muted"></p>
+
+                <div class="my-4 border-top"></div>
+
+                <h4
+                  id="modal-product-price"
+                  class="text-dark fw-bold mb-3"
+                ></h4>
+
+                <p class="mb-3">
                   <strong>Marca:</strong>
-                  <span id="modal-product-material"></span>
+                  <span id="modal-product-material" class="text-muted"></span>
                 </p>
-                <div class="row mb-3 align-items-center">
-                  <label class="col-auto col-form-label">Quantidade:</label>
-                  <div class="col-auto">
-                    <div class="input-group" style="width: 130px">
-                      <button
-                        class="btn btn-outline-secondary modal-btn-decrease"
-                        type="button"
-                      >
-                        −
-                      </button>
-                      <input
-                        type="number"
-                        class="form-control text-center"
-                        value="1"
-                        id="modal-quantity"
-                        min="1"
-                      />
-                      <button
-                        class="btn btn-outline-secondary modal-btn-increase"
-                        type="button"
-                      >
-                        +
-                      </button>
-                    </div>
+
+                <div class="mb-5">
+                  <label class="form-label fw-medium">Quantidade:</label>
+                  <div class="input-group" style="max-width: 120px">
+                    <button
+                      class="btn btn-outline-secondary modal-btn-decrease rounded-start-pill"
+                      type="button"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      class="form-control text-center"
+                      value="1"
+                      id="modal-quantity"
+                      min="1"
+                    />
+                    <button
+                      class="btn btn-outline-secondary modal-btn-increase rounded-end-pill"
+                      type="button"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
-                <hr />
+
                 <div class="d-grid gap-2">
-                  <button class="btn btn-primary btn-lg" type="button">
+                  <button
+                    class="btn btn-dark rounded-pill fw-medium px-5 py-2 w-100"
+                  >
                     Comprar Agora
                   </button>
                   <button
-                    class="btn btn-outline-secondary btn-add-to-cart"
-                    type="button"
+                    class="btn btn-outline-dark rounded-pill fw-medium px-5 py-2 w-100 btn-add-to-cart"
                   >
                     Adicionar ao Carrinho
                   </button>
@@ -226,10 +433,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="assets/js/script_inicio.js"></script>
+    <script src="../assets/js/script_inicio.js"></script>
   </body>
 </html>

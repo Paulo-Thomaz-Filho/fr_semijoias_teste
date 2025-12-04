@@ -3,101 +3,127 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
+    <!-- Favicon -->
     <link
       rel="shortcut icon"
       href="../assets/images/logo.svg"
       type="image/x-icon"
     />
-    <link rel="stylesheet" href="../assets/css/style_inicio.css" />
+    <!-- Bootstrap CSS -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Adamina&display=swap"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css" />
     <title>FR Semijoias | Carrinho</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="inicio"> FR Semijoias</a>
-
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#main-nav"
-          aria-controls="main-nav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+    <!-- Header -->
+    <header class="bg-white border-bottom sticky-top shadow-sm">
+      <nav class="navbar navbar-expand-lg py-3">
+        <div
+          class="container d-flex align-items-center justify-content-between"
         >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="main-nav">
-          <div class="d-flex align-items-center ms-auto">
-            <a href="dados_user" class="nav-link me-3"
-              >Olá, Usuário <i class="bi bi-person"></i
-            ></a>
-            <a href="carrinho" class="nav-link">
-              <i class="bi bi-cart3"></i> (<span id="cart-counter">0</span>)
+          <a class="navbar-brand logo-login" href="inicio">
+            <img src="../assets/images/logo.svg" alt="FR Semijoias" />
+          </a>
+          <div class="d-flex align-items-center gap-4 ms-auto">
+            <a href="/dados-usuario" class="text-decoration-none text-secondary">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9ZM15.8243 13.6235C17.1533 12.523 18 10.8604 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 10.8604 6.84668 12.523 8.17572 13.6235C4.98421 14.7459 3 17.2474 3 20C3 20.5523 3.44772 21 4 21C4.55228 21 5 20.5523 5 20C5 17.7306 7.3553 15 12 15C16.6447 15 19 17.7306 19 20C19 20.5523 19.4477 21 20 21C20.5523 21 21 20.5523 21 20C21 17.2474 19.0158 14.7459 15.8243 13.6235Z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span class="fw-medium" id="user-greeting-text">Minha conta</span>
+            </a>
+            <a
+              href="carrinho"
+              class="text-decoration-none text-secondary position-relative"
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                id="cart-counter"
+                >0</span
+              >
             </a>
           </div>
+          <button
+            class="navbar-toggler border-0"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
 
-    <main class="container my-5">
-      <h1 class="mb-4">Carrinho</h1>
+    <!-- Carrinho -->
+    <main class="container py-5">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold mb-2">Carrinho</h2>
+        <div class="section-divider mx-auto mb-4"></div>
+        <p class="text-muted mb-0">
+          Confira seus produtos antes de finalizar a compra
+        </p>
+      </div>
       <div class="row g-4">
         <div class="col-lg-8">
           <div id="cart-items"></div>
         </div>
-
         <div class="col-lg-4">
           <div
-            class="card"
-            style="
-              border-radius: var(--raio-borda-card);
-              border: 1px solid var(--cor-borda);
-            "
+            class="card border border-1 rounded-4"
           >
             <div class="card-body p-4">
               <h5 class="card-title text-center mb-3">Resumo da sua compra</h5>
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-between mb-2">
                 <span>Subtotal</span>
                 <span id="subtotal">R$ 0,00</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span>Descontos</span>
-                <span id="descontos">R$ 00,00</span>
               </div>
               <div class="d-flex justify-content-between text-muted">
                 <span>Entrega</span>
                 <span id="frete">R$ 0,00</span>
               </div>
-              <hr />
+              <div class="my-3 border-top"></div>
               <div class="d-flex justify-content-between fw-bold fs-5">
                 <span>Total</span>
                 <span id="total">R$ 0,00</span>
               </div>
               <button
                 id="btn-finalizar-compra"
-                class="btn btn-primary w-100 mt-3"
+                class="btn btn-dark w-100 mt-4 rounded-pill fw-medium py-2"
               >
                 FINALIZAR COMPRA
               </button>
@@ -107,50 +133,130 @@
       </div>
     </main>
 
-    <hr />
-    <footer class="pt-5 pb-4">
-      <div class="container text-center text-md-start">
-        <div class="row">
+    <!-- Footer -->
+    <footer class="bg-white border-top mt-3">
+      <div class="container pt-5">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <img
+              src="../assets/images/logo.svg"
+              alt="FR Semijoias"
+              height="50"
+              class="mb-3"
+            />
+            <p class="text-muted small mb-0">
+              Elegância e sofisticação em cada detalhe
+            </p>
+          </div>
           <div class="col-md-3">
-            <h5>Sobre Nós</h5>
-            <ul class="list-unstyled">
-              <li>
+            <h6 class="fw-semibold mb-3 small">Sobre</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
                   >Quem Somos</a
                 >
               </li>
-              <li>
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
-                  >Políticas</a
+                  >Políticas de Privacidade</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted"
+                  >Políticas de Devolução e Trocas</a
                 >
               </li>
             </ul>
           </div>
-          <div class="col-md-3">
-            <h5>Ajuda</h5>
-            <ul class="list-unstyled">
-              <li>
-                <a href="#" class="text-decoration-none text-muted"
-                  >Dúvidas Frequentes</a
-                >
+          <div class="col-md-2">
+            <h6 class="fw-semibold mb-3 small">Ajuda</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted">FAQ</a>
               </li>
-              <li>
+              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted">Garantia</a>
               </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted"
+                  >Entrega e Prazos</a
+                >
+              </li>
             </ul>
           </div>
           <div class="col-md-3">
-            <h5>SAC</h5>
-            <p class="text-muted">sac@frsemijoias.com.br</p>
+            <h6 class="fw-semibold mb-3 small">Contato</h6>
+            <div class="d-flex gap-3 mb-3">
+              <a
+                href="#"
+                class="bg-dark rounded-circle p-2 d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px"
+              >
+                <!-- Instagram SVG -->
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    d="M18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M1.65396 4.27606C1 5.55953 1 7.23969 1 10.6V13.4C1 16.7603 1 18.4405 1.65396 19.7239C2.2292 20.8529 3.14708 21.7708 4.27606 22.346C5.55953 23 7.23969 23 10.6 23H13.4C16.7603 23 18.4405 23 19.7239 22.346C20.8529 21.7708 21.7708 20.8529 22.346 19.7239C23 18.4405 23 16.7603 23 13.4V10.6C23 7.23969 23 5.55953 22.346 4.27606C21.7708 3.14708 20.8529 2.2292 19.7239 1.65396C18.4405 1 16.7603 1 13.4 1H10.6C7.23969 1 5.55953 1 4.27606 1.65396C3.14708 2.2292 2.2292 3.14708 1.65396 4.27606ZM13.4 3H10.6C8.88684 3 7.72225 3.00156 6.82208 3.0751C5.94524 3.14674 5.49684 3.27659 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3.27659 5.49684 3.14674 5.94524 3.0751 6.82208C3.00156 7.72225 3 8.88684 3 10.6V13.4C3 15.1132 3.00156 16.2777 3.0751 17.1779C3.14674 18.0548 3.27659 18.5032 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C5.49684 20.7234 5.94524 20.8533 6.82208 20.9249C7.72225 20.9984 8.88684 21 10.6 21H13.4C15.1132 21 16.2777 20.9984 17.1779 20.9249C18.0548 20.8533 18.5032 20.7234 18.816 20.564C19.5686 20.1805 20.1805 19.5686 20.564 18.816C20.7234 18.5032 20.8533 18.0548 20.9249 17.1779C20.9984 16.2777 21 15.1132 21 13.4V10.6C21 8.88684 20.9984 7.72225 20.9249 6.82208C20.8533 5.94524 20.7234 5.49684 20.564 5.18404C20.1805 4.43139 19.5686 3.81947 18.816 3.43597C18.5032 3.27659 18.0548 3.14674 17.1779 3.0751C16.2777 3.00156 15.1132 3 13.4 3Z"
+                    fill="#ffffff"
+                  />
+                </svg>
+              </a>
+              <a
+                href="#"
+                class="bg-dark rounded-circle p-2 d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px"
+              >
+                <!-- WhatsApp SVG -->
+                <svg
+                  fill="#ffffff"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.42 9.49c-.19-.09-1.1-.54-1.27-.61s-.29-.09-.42.1-.48.6-.59.73-.21.14-.4 0a5.13 5.13 0 0 1-1.49-.92 5.25 5.25 0 0 1-1-1.29c-.11-.18 0-.28.08-.38s.18-.21.28-.32a1.39 1.39 0 0 0 .18-.31.38.38 0 0 0 0-.33c0-.09-.42-1-.58-1.37s-.3-.32-.41-.32h-.4a.72.72 0 0 0-.5.23 2.1 2.1 0 0 0-.65 1.55A3.59 3.59 0 0 0 5 8.2 8.32 8.32 0 0 0 8.19 11c.44.19.78.3 1.05.39a2.53 2.53 0 0 0 1.17.07 1.93 1.93 0 0 0 1.26-.88 1.67 1.67 0 0 0 .11-.88c-.05-.07-.17-.12-.36-.21z"
+                  />
+                  <path
+                    d="M13.29 2.68A7.36 7.36 0 0 0 8 .5a7.44 7.44 0 0 0-6.41 11.15l-1 3.85 3.94-1a7.4 7.4 0 0 0 3.55.9H8a7.44 7.44 0 0 0 5.29-12.72zM8 14.12a6.12 6.12 0 0 1-3.15-.87l-.22-.13-2.34.61.62-2.28-.14-.23a6.18 6.18 0 0 1 9.6-7.65 6.12 6.12 0 0 1 1.81 4.37A6.19 6.19 0 0 1 8 14.12z"
+                  />
+                </svg>
+              </a>
+            </div>
+            <p class="text-muted small">sac@frsemijoias.com.br</p>
           </div>
         </div>
+        <div class="my-4 border-top"></div>
+      </div>
+      <div class="text-center">
+        <p class="text-muted small py-3">
+          © 2025 FR Semijoias. Todos os direitos reservados.
+        </p>
       </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="assets/js/script_carrinho.js"></script>
-    <script src="assets/js/pagamento_mercadopago.js"></script>
+    <script src="../assets/js/script_carrinho.js"></script>
+    <script src="../assets/js/pagamento_mercadopago.js"></script>
   </body>
 </html>

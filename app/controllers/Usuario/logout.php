@@ -21,4 +21,5 @@ if (ini_get("session.use_cookies")) {
 // Finalmente, destrói a sessão
 session_destroy();
 
-echo json_encode(['sucesso' => true, 'mensagem' => 'Logout realizado com sucesso'], JSON_UNESCAPED_UNICODE);
+header('Location: /inicio');
+exit;

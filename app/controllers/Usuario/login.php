@@ -60,7 +60,10 @@ try {
         echo json_encode([
             'sucesso' => true,
             'isAdmin' => $isAdmin,
-            'usuario_nome' => $usuarioExistente->getNome()
+            'usuario_nome' => $usuarioExistente->getNome(),
+            'usuario_id' => $usuarioExistente->getIdUsuario(),
+            'usuario_acesso' => $usuarioExistente->getAcesso(),
+            'usuario_nivel' => $usuarioExistente->getIdNivel()
         ], JSON_UNESCAPED_UNICODE);
         
     } else {

@@ -26,6 +26,7 @@ $(document).ready(function () {
         text: "Você precisa estar logado para finalizar a compra.",
         icon: "error",
         confirmButtonText: "OK",
+        confirmButtonColor: "#dc3545",
       }).then(() => {
         window.location.href = "/login";
       });
@@ -36,6 +37,8 @@ $(document).ready(function () {
     Swal.fire({
       title: "Processando...",
       text: "Criando pedido",
+      icon: "info",
+      showConfirmButton: false,
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -58,14 +61,20 @@ $(document).ready(function () {
     formData.append("produto_nome", produtosNomes);
     formData.append("id_cliente", idCliente);
     formData.append("preco", precoTotal.toFixed(2));
-    formData.append("endereco", usuarioLogado.endereco || "Endereço não informado");
+    formData.append(
+      "endereco",
+      usuarioLogado.endereco || "Endereço não informado"
+    );
     formData.append("quantidade", quantidadeTotal);
-    formData.append("data_pedido", new Date().toISOString().slice(0, 19).replace("T", " "));
+    formData.append(
+      "data_pedido",
+      new Date().toISOString().slice(0, 19).replace("T", " ")
+    );
     formData.append("descricao", `Pedido do carrinho: ${produtosNomes}`);
     formData.append("status", "Pendente");
 
     $.ajax({
-      url: "/api/pedido/salvar",
+      url: "/pedidos/salvar",
       method: "POST",
       data: formData,
       processData: false,
@@ -127,7 +136,9 @@ $(document).ready(function () {
         } else {
           Swal.fire({
             title: "Erro!",
-            text: "Não foi possível criar o pedido: " + (pedidoResponse.erro || "Erro desconhecido"),
+            text:
+              "Não foi possível criar o pedido: " +
+              (pedidoResponse.erro || "Erro desconhecido"),
             icon: "error",
             confirmButtonText: "OK",
           });

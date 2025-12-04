@@ -9,7 +9,7 @@ require_once $rootPath . '/app/core/utils/Router.php';
 require_once $rootPath . '/app/core/utils/Sanitize.php';
 
 // 3. Pega o "módulo" da URL.
-$module = $_GET['module'] ?? 'login';
+$module = $_GET['module'] ?? 'inicio';
 
 // ---------------------------------------------------
 // ZONA DE LIMPEZA DE URL
@@ -29,7 +29,7 @@ if (strpos($module, 'public/') === 0) {
 
 // Se após limpar ficar vazio, define o padrão
 if ($module === '') {
-    $module = 'login'; 
+    $module = 'inicio'; 
 }
 
 // 4. Inicia o roteador...

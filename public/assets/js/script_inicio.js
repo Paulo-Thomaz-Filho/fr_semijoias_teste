@@ -1,350 +1,395 @@
-$(document).ready(function() {
+// =====================================
+// INÍCIO - SCRIPTS DE CATÁLOGO E MODAL
+// =====================================
 
-    // fução atualizar carrinho
-    function updateCartCounter() {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let totalItems = 0;
-        cart.forEach(item => { totalItems += item.quantity; });
-        $('#cart-counter').text(totalItems);
+// ----------- UTILITÁRIOS DE USUÁRIO -----------
+function exibirSaudacaoUsuario() {
+  try {
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+    if (usuario && usuario.nome) {
+      const primeiroNome = usuario.nome.split(" ")[0];
+      var greetingEl = document.getElementById("user-greeting-text");
+      if (greetingEl) greetingEl.textContent = `Olá, ${primeiroNome}`;
     }
+  } catch (e) {}
+}
+// ----------- VARIÁVEIS GLOBAIS -----------
+let globalProductDatabase = [];
+let categoriaAtual = "inicio";
 
-    // criação do card em grid
-    function criarCardCatalogoHtml(product) {
-        let precoFormatado = product.preco;
-        if (!isNaN(product.preco)) {
-            precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-        
-        const imagemSrc = 'assets/images/' + product.caminhoImagem; 
+// ----------- CARRINHO -----------
+function atualizarContadorCarrinho() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let totalItems = 0;
+  cart.forEach((item) => {
+    totalItems += item.quantity;
+  });
+  var cartCounterEl = document.getElementById("cart-counter");
+  if (cartCounterEl) cartCounterEl.textContent = totalItems;
+}
 
-        return `
-            <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
-                <div class="product-card-link w-100 d-flex flex-column" style="background: #fff; border: 1px solid #e9ecef; border-radius: 12px; overflow: hidden; transition: 0.3s;">
-                    
-                    <div style="position: relative; padding-top: 100%; overflow: hidden;">
-                        <img src="${imagemSrc}" alt="${product.nome}" 
-                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    
-                    <div class="p-3 d-flex flex-column flex-grow-1">
-                        <h5 class="product-card-title" style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">
-                            ${product.nome}
-                        </h5>
-                        <p class="product-card-price" style="font-size: 1.1rem; font-weight: 700; color: #212529;">
-                            ${precoFormatado}
-                        </p>
-                        
-                        <div class="mt-auto pt-2">
-                            <button class="btn btn-outline-dark w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#productModal"
-                                    data-product-id="${product.idProduto}">
-                                Ver Detalhes
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        `;
-    }
-
-    // criação do card carrossel
-    function criarCardHtml(product) {
-        let precoFormatado = product.preco;
-        if (!isNaN(product.preco)) {
-            precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-        
-        const imagemSrc = 'assets/images/' + product.caminhoImagem;
-
-        return `
-            <li class="swiper-slide d-flex flex-column">
-                <div class="product-card-link">
-                    <img src="${imagemSrc}" alt="${product.nome}" class="product-card-image">
-                    <h5 class="product-card-title">${product.nome}</h5>
-                    <p class="product-card-price">${precoFormatado}</p>
-                    <div class="p-3 pt-0">
-                        <button class="btn btn-outline-dark w-100"
-                                data-bs-toggle="modal"
-                                data-bs-target="#productModal"
-                                data-product-id="${product.idProduto}">
-                            Ver Detalhes
-                        </button>
-                    </div>
-                </div>
-            </li>
-        `;
-    }
-
-    // Modal    
-    class CatalogPage {
-        constructor(modalSelector, buttonSelector, database) {
-            this.modal = $(modalSelector);
-            this.buttonSelector = buttonSelector;
-            this.database = database; 
-            this.modalTitle = this.modal.find('#modal-product-title');
-            this.modalImage = this.modal.find('#modal-product-image');
-            this.modalDescription = this.modal.find('#modal-product-description');
-            this.modalPrice = this.modal.find('#modal-product-price');
-            this.modalMaterial = this.modal.find('#modal-product-material');
-            this.modalBtnAddToCart = this.modal.find('.btn-add-to-cart');
-            this.currentProduct = null; 
-            this.modalQtyInput = this.modal.find('#modal-quantity');
-            this.modalBtnIncrease = this.modal.find('.modal-btn-increase');
-            this.modalBtnDecrease = this.modal.find('.modal-btn-decrease');
-
-            this.initEvents();
-        }
-
-        initEvents() {
-            // Evento "Ver Detalhes"
-            $(document).on('click', this.buttonSelector, (event) => {
-                const button = $(event.currentTarget);
-                const productId = button.data('product-id');
-                const product = this.findProductById(productId);
-                if (product) {
-                    this.populateModal(product);
-                } else {
-                    alert('Erro: Produto não encontrado.');
-                }
-            });
-
-            // Evento "Adicionar ao Carrinho"
-            this.modalBtnAddToCart.on('click', () => {
-                if (this.currentProduct) {
-                    this.addToCart(this.currentProduct);
-                }
-            });
-
-            // Eventos de quantidade +/- e blur
-            this.modalBtnIncrease.on('click', () => {
-                let qty = parseInt(this.modalQtyInput.val());
-                qty++;
-                this.modalQtyInput.val(qty);
-            });
-
-            this.modalBtnDecrease.on('click', () => {
-                let qty = parseInt(this.modalQtyInput.val());
-                if (qty > 1) { 
-                    qty--;
-                    this.modalQtyInput.val(qty);
-                }
-            });
-
-            this.modalQtyInput.on('blur', () => {
-                try {
-                    let qty = parseInt(this.modalQtyInput.val());
-                    if (isNaN(qty) || qty < 1) {
-                        this.modalQtyInput.val(1);
-                    } else {
-                        this.modalQtyInput.val(qty);
-                    }
-                } catch (e) {
-                    this.modalQtyInput.val(1);
-                }
-            });
-        }
-        
-        // adicionar ao carrinho
-        addToCart(product) {
-            const quantityToAdd = parseInt(this.modalQtyInput.val());
-
-            if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
-                Swal.fire({ title: "Quantidade Inválida", text: "Por favor, insira um número maior que zero.", icon: "error" });
-                this.modalQtyInput.val(1);
-                return; 
-            }
-
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingItem = cart.find(item => item.id == product.idProduto); 
-
-            if (existingItem) {
-                existingItem.quantity += quantityToAdd;
-            } else {
-                cart.push({
-                    id: product.idProduto,
-                    nome: product.nome,
-                    preco: product.preco,
-                    imagem: product.caminhoImagem,
-                    quantity: quantityToAdd
-                });
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCounter(); 
-            var modalInstance = bootstrap.Modal.getInstance(this.modal[0]);
-            modalInstance.hide();
-
-            Swal.fire({
-                title: "Adicionado!",
-                text: `(x${quantityToAdd}) ${product.nome} foi adicionado ao carrinho.`,
-                icon: "success",
-                timer: 2000, 
-                showConfirmButton: false
-            });
-        }
-        
-        findProductById(id) {
-            return this.database.find(product => product.idProduto == id);
-        }
-
-        populateModal(product) {
-            this.currentProduct = product; 
-            this.modalQtyInput.val(1);
-
-            let precoFormatado = product.preco;
-            if (!isNaN(product.preco)) {
-                precoFormatado = parseFloat(product.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            }
-            this.modalTitle.text(product.nome);
-            this.modalImage.attr('src', 'assets/images/' + product.caminhoImagem); 
-            this.modalDescription.text(product.descricao); 
-            this.modalPrice.text(precoFormatado);
-            this.modalMaterial.text(product.marca); 
-        }
-    }
-
-    // Lógica AJAX
-    
-    let globalProductDatabase = []; // Variável para armazenar os produtos globalmente no escopo do ready
-
-    $.ajax({
-        url: 'produtos', 
-        type: 'GET',
-        dataType: 'json',
-        success: function(productDatabase) {
-            
-            globalProductDatabase = productDatabase; 
-            
-            const produtosPromocoes = productDatabase.filter(p => p.idPromocao > 0); 
-            const $promocoesWrapper = $('#promocoes-wrapper');
-            const $catalogoWrapper = $('#catalogo-completo-wrapper');
-            
-            $promocoesWrapper.empty();
-            $catalogoWrapper.empty();
-
-            const produtosLancamentos = productDatabase.filter(p => p.categoria_id == 1); 
-            const $lancamentosWrapper = $('#lancamentos-wrapper'); 
-
-            $lancamentosWrapper.empty();
-            if (produtosLancamentos.length > 0) {
-                produtosLancamentos.forEach(product => { 
-                    $lancamentosWrapper.append(criarCardHtml(product)); 
-                });
-            } else { 
-                $lancamentosWrapper.html("<p class='text-center p-3'>Nenhum lançamento encontrado.</p>"); 
-            }
-            
-            //Promoções (CARROSSEL)
-            if (produtosPromocoes.length > 0) {
-                produtosPromocoes.forEach(product => { 
-                    $promocoesWrapper.append(criarCardHtml(product));
-                });
-            } else { 
-                $promocoesWrapper.html("<p class='text-center p-3'>Nenhuma promoção encontrada.</p>"); 
-            }
-            
-            // Popula Catálogo Completo (GRID)
-            // ⬇️ Esta função será reutilizada para exibir os resultados da busca
-            function renderizarCatalogo(produtos, termoBuscaBruto = null) {
-                const $catalogoWrapper = $('#catalogo-completo-wrapper');
-                $catalogoWrapper.empty();
-                
-                // 1. Tenta selecionar o H2 que já tem o ID de resultados (prioridade)
-                let $tituloH2 = $('#titulo-resultados');
-                
-                if ($tituloH2.length === 0) {
-                    // 2. Se o ID não existe (primeira pesquisa ou catálogo completo),
-                    //    seleciona o H2 que contém o texto padrão "Catálogo Completo".
-                    $tituloH2 = $('.container h2').filter(function() {
-                        // Usa .trim() para garantir a correspondência exata do texto
-                        return $(this).text().trim() === 'Catálogo Completo';
-                    }).first();
-                }
-                
-                // Verifica se o elemento foi encontrado antes de tentar manipular
-                if ($tituloH2.length === 0) {
-                    console.error("Erro: Elemento H2 do catálogo não encontrado.");
-                    return; 
-                }
-
-                if (termoBuscaBruto) {
-                    // MODO BUSCA: Usa o elemento encontrado para atualizar o texto e garantir o ID
-                    $('.carousel-container').hide();
-                    $tituloH2.text(`Resultados da Busca para: "${termoBuscaBruto}"`).attr('id', 'titulo-resultados');
-                } else {
-                    // MODO CATÁLOGO COMPLETO: Reverte o estado
-                    $('.carousel-container').show();
-                    // Reverte o texto e remove o ID de busca
-                    $tituloH2.text('Catálogo Completo').removeAttr('id');
-                }
-
-                // --------------------------------------------------------------------------
-                // O restante da lógica de renderização dos produtos permanece inalterado
-                // --------------------------------------------------------------------------
-
-                if (produtos.length > 0) {
-                    produtos.forEach(product => { 
-                        $catalogoWrapper.append(criarCardCatalogoHtml(product)); 
-                    });
-                } else { 
-                    $catalogoWrapper.html(`<div class="col-12"><p class="text-center fs-5">Nenhum produto encontrado${termoBuscaBruto ? ` com o nome "${termoBuscaBruto}"` : ' no catálogo'}.</p></div>`); 
-                }
-            }
-
-            // Renderiza o catálogo completo ao carregar
-            renderizarCatalogo(productDatabase);
-
-            // Inicia o Swiper (carrossel)
-            $('.product-carousel').each(function() {
-                // ... (seu código de inicialização do Swiper) ...
-                const $carousel = $(this);
-                const slidesCount = $carousel.find('.swiper-slide').length;
-                new Swiper(this, { 
-                    slidesPerView: 1, spaceBetween: 20, loop: slidesCount > 4, 
-                    navigation: {
-                        nextEl: $carousel.siblings('.swiper-button-next')[0],
-                        prevEl: $carousel.siblings('.swiper-button-prev')[0],
-                    },
-                    breakpoints: { 576: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1200: { slidesPerView: 4 } }
-                });
-            });
-
-            // Inicia o gerenciador do modal 
-            const catalogPage = new CatalogPage('#productModal', '[data-bs-toggle="modal"]', productDatabase);
-                        
-            // 1. Interceptar o envio do formulário de busca
-            $('form.d-flex').submit(function(event) {
-                event.preventDefault(); // Impede o recarregamento da página
-                
-                // 2. Coletar o termo de busca (assumindo que o input não tem ID, buscamos por tipo)
-                const termoBuscaBruto = $(this).find('input[type="search"]').val();
-                const termoBusca = termoBuscaBruto.trim().toLowerCase();
-                
-                if (termoBusca.length === 0) {
-                    // Se o termo estiver vazio, exibe o catálogo completo novamente
-                    renderizarCatalogo(globalProductDatabase); 
-                    return;
-                }
-                
-                // 3. Filtrar o array globalProductDatabase
-                const resultados = globalProductDatabase.filter(product => 
-                    product.nome.toLowerCase().includes(termoBusca)
-                );
-                
-                // 4. Renderizar os resultados
-                renderizarCatalogo(resultados, termoBuscaBruto);
-            });
-            
-            // ---------------------------
-
-        },
-        error: function(xhr, status, error) {
-            console.error("Erro fatal ao buscar produtos: ", status, error);
-            $('.swiper-wrapper').html("<p class='text-center text-danger p-5'>Não foi possível carregar os produtos.</p>");
-        }
+// ----------- RENDERIZAÇÃO DE CARDS -----------
+function criarCardCatalogoHtml(product) {
+  let precoFormatado = product.preco;
+  if (!isNaN(product.preco)) {
+    precoFormatado = parseFloat(product.preco).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
     });
-    
-    updateCartCounter();
+  }
+  const imagemSrc = "assets/images/" + product.caminhoImagem;
+  return `
+    <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
+      <div class="w-100 d-flex flex-column rounded-4 bg-white border border-1">
+        <div class="position-relative overflow-hidden" style="padding-top: 100%;">
+          <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        </div>
+        <div class="p-3 d-flex flex-column flex-grow-1">
+          <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
+          <p class="product-card-price fs-5 fw-bold text-dark">${precoFormatado}</p>
+          <div class="mt-auto pt-2">
+            <button class="btn btn-outline-dark rounded-4 fw-medium px-5 py-2 w-100 border-2"
+              data-bs-toggle="modal"
+              data-bs-target="#productModal"
+              data-product-id="${product.idProduto}">
+              Ver Detalhes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+// ----------- CLASSE MODAL PRODUTO -----------
+class CatalogPage {
+  constructor(modalSelector, buttonSelector, database) {
+    this.modal = document.querySelector(modalSelector);
+    this.buttonSelector = buttonSelector;
+    this.database = database;
+    this.modalTitle = this.modal.querySelector("#modal-product-title");
+    this.modalImage = this.modal.querySelector("#modal-product-image");
+    this.modalDescription = this.modal.querySelector(
+      "#modal-product-description"
+    );
+    this.modalPrice = this.modal.querySelector("#modal-product-price");
+    this.modalMaterial = this.modal.querySelector("#modal-product-material");
+    this.modalBtnAddToCart = this.modal.querySelector(".btn-add-to-cart");
+    this.currentProduct = null;
+    this.modalQtyInput = this.modal.querySelector("#modal-quantity");
+    this.modalBtnIncrease = this.modal.querySelector(".modal-btn-increase");
+    this.modalBtnDecrease = this.modal.querySelector(".modal-btn-decrease");
+    this.initEvents();
+  }
+
+  initEvents() {
+    // Evento "Ver Detalhes" (funciona para clique em qualquer parte do botão)
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest(this.buttonSelector);
+      if (button) {
+        const productId = button.getAttribute("data-product-id");
+        const product = this.findProductById(productId);
+        if (product) {
+          this.populateModal(product);
+        } else {
+          alert("Erro: Produto não encontrado.");
+        }
+      }
+    });
+
+    // Evento "Adicionar ao Carrinho"
+    if (this.modalBtnAddToCart) {
+      this.modalBtnAddToCart.addEventListener("click", () => {
+        if (this.currentProduct) {
+          this.addToCart(this.currentProduct);
+        }
+      });
+    }
+
+    // Evento "Comprar Agora"
+    const btnComprarAgora = this.modal.querySelector(".btn-dark");
+    if (btnComprarAgora) {
+      btnComprarAgora.addEventListener("click", () => {
+        if (this.currentProduct) {
+          this.addToCart(this.currentProduct, true);
+        }
+      });
+    }
+
+    // Eventos de quantidade +/- e blur
+    if (this.modalBtnIncrease) {
+      this.modalBtnIncrease.addEventListener("click", () => {
+        let qty = parseInt(this.modalQtyInput.value);
+        qty++;
+        this.modalQtyInput.value = qty;
+      });
+    }
+    if (this.modalBtnDecrease) {
+      this.modalBtnDecrease.addEventListener("click", () => {
+        let qty = parseInt(this.modalQtyInput.value);
+        if (qty > 1) {
+          qty--;
+          this.modalQtyInput.value = qty;
+        }
+      });
+    }
+    if (this.modalQtyInput) {
+      this.modalQtyInput.addEventListener("blur", () => {
+        try {
+          let qty = parseInt(this.modalQtyInput.value);
+          if (isNaN(qty) || qty < 1) {
+            this.modalQtyInput.value = 1;
+          } else {
+            this.modalQtyInput.value = qty;
+          }
+        } catch (e) {
+          this.modalQtyInput.value = 1;
+        }
+      });
+    }
+  }
+
+  // adicionar ao carrinho
+  addToCart(product, goToCart = false) {
+    const quantityToAdd = parseInt(this.modalQtyInput.value);
+
+    if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
+      Swal.fire({
+        title: "Quantidade Inválida",
+        text: "Por favor, insira um número maior que zero.",
+        icon: "error",
+      });
+      if (this.modalQtyInput) this.modalQtyInput.value = 1;
+      return;
+    }
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let existingItem = cart.find((item) => item.id == product.idProduto);
+
+    if (existingItem) {
+      existingItem.quantity += quantityToAdd;
+    } else {
+      cart.push({
+        id: product.idProduto,
+        nome: product.nome,
+        preco: product.preco,
+        imagem: product.caminhoImagem,
+        quantity: quantityToAdd,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    atualizarContadorCarrinho();
+    var modalInstance = bootstrap.Modal.getInstance(this.modal);
+    modalInstance.hide();
+
+    if (goToCart) {
+      window.location.href = "carrinho";
+    } else {
+      Swal.fire({
+        title: "Adicionado!",
+        text: `(x${quantityToAdd}) ${product.nome} foi adicionado ao carrinho.`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  }
+
+  findProductById(id) {
+    return this.database.find((product) => product.idProduto == id);
+  }
+
+  populateModal(product) {
+    this.currentProduct = product;
+    if (this.modalQtyInput) this.modalQtyInput.value = 1;
+
+    let precoFormatado = product.preco;
+    if (!isNaN(product.preco)) {
+      precoFormatado = parseFloat(product.preco).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+    }
+    if (this.modalTitle) this.modalTitle.textContent = product.nome;
+    if (this.modalImage)
+      this.modalImage.setAttribute(
+        "src",
+        "assets/images/" + product.caminhoImagem
+      );
+    if (this.modalDescription)
+      this.modalDescription.textContent = product.descricao;
+    if (this.modalPrice) this.modalPrice.textContent = precoFormatado;
+    if (this.modalMaterial) this.modalMaterial.textContent = product.marca;
+  }
+}
+
+// ----------- CATEGORIAS -----------
+function carregarCategorias() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "produtos/categorias", true);
+  xhr.responseType = "json";
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      var categorias = xhr.response;
+      var menu = document.getElementById("categorias-menu");
+      if (menu) {
+        categorias.forEach(function (categoria, index) {
+          var link = document.createElement("a");
+          link.href = "#";
+          link.className =
+            "text-decoration-none text-dark fw-semibold categoria-link px-3 py-2 fs-6 d-inline-block position-relative";
+          link.setAttribute("data-categoria", categoria);
+          link.textContent = categoria;
+          menu.appendChild(link);
+          if (index < categorias.length - 1) {
+            var sep = document.createElement("span");
+            sep.className = "text-muted";
+            menu.appendChild(sep);
+          }
+        });
+        var categoriaLinks = document.querySelectorAll(".categoria-link");
+        categoriaLinks.forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            var categoria = link.getAttribute("data-categoria");
+            categoriaLinks.forEach(function (l) {
+              l.classList.remove("active");
+            });
+            link.classList.add("active");
+            categoriaAtual = categoria;
+            renderizarPorCategoria(categoria);
+          });
+        });
+      }
+    } else {
+      console.error("Erro ao carregar categorias:", xhr.status);
+    }
+  };
+  xhr.onerror = function () {
+    console.error("Erro ao carregar categorias:", xhr.status);
+  };
+  xhr.send();
+}
+
+// ----------- FILTRO DE CATEGORIA -----------
+function renderizarPorCategoria(categoria) {
+  if (categoria === "inicio") {
+    // Mostrar catálogo completo
+    renderizarCatalogo(globalProductDatabase, "Catálogo Completo");
+  } else {
+    // Filtrar por categoria
+    const produtosFiltrados = globalProductDatabase.filter(
+      (p) => p.categoria === categoria
+    );
+    renderizarCatalogo(produtosFiltrados, categoria);
+  }
+}
+
+// ----------- RENDERIZAÇÃO DE CATÁLOGO -----------
+function renderizarCatalogo(produtos, titulo = "Catálogo Completo") {
+  var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
+  var tituloH2 = document.querySelector(
+    "#secao-catalogo .container .text-center h2"
+  );
+  if (catalogoWrapper) catalogoWrapper.innerHTML = "";
+  if (tituloH2) tituloH2.textContent = titulo;
+  if (produtos.length > 0) {
+    produtos.forEach(function (product) {
+      if (catalogoWrapper)
+        catalogoWrapper.insertAdjacentHTML(
+          "beforeend",
+          criarCardCatalogoHtml(product)
+        );
+    });
+  } else {
+    if (catalogoWrapper)
+      catalogoWrapper.innerHTML = `<div class="col-12"><p class="text-center fs-5">Nenhum produto encontrado.</p></div>`;
+  }
+}
+
+// Lógica AJAX para carregar produtos
+
+// ----------- INICIALIZAÇÃO PRINCIPAL -----------
+document.addEventListener("DOMContentLoaded", function () {
+  // Inicialização do catálogo
+  exibirSaudacaoUsuario();
+  atualizarContadorCarrinho();
+  // Lógica AJAX para carregar produtos
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "produtos", true);
+  xhr.responseType = "json";
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      var productDatabase = xhr.response;
+      globalProductDatabase = productDatabase;
+      renderizarCatalogo(productDatabase, "Catálogo Completo");
+      new Swiper(".banner-carousel", {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: true,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+        },
+        speed: 800,
+        effect: "slide",
+        navigation: {
+          nextEl: ".banner-carousel .swiper-button-next",
+          prevEl: ".banner-carousel .swiper-button-prev",
+        },
+        pagination: {
+          el: ".banner-carousel .swiper-pagination",
+          clickable: true,
+        },
+      });
+      const catalogPage = new CatalogPage(
+        "#productModal",
+        '[data-bs-toggle="modal"]',
+        productDatabase
+      );
+      carregarCategorias();
+      var forms = document.querySelectorAll("form");
+      forms.forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var searchInput = form.querySelector('input[type="search"]');
+          var termoBuscaBruto = searchInput ? searchInput.value : "";
+          var termoBusca = termoBuscaBruto.trim().toLowerCase();
+          if (termoBusca.length === 0) {
+            renderizarPorCategoria(categoriaAtual);
+            return;
+          }
+          let resultados = globalProductDatabase;
+          if (categoriaAtual !== "inicio") {
+            resultados = resultados.filter(
+              (p) => p.categoria === categoriaAtual
+            );
+          }
+          resultados = resultados.filter((product) =>
+            product.nome.toLowerCase().includes(termoBusca)
+          );
+          renderizarCatalogo(
+            resultados,
+            `Resultados da Busca: "${termoBuscaBruto}"`
+          );
+        });
+      });
+    } else {
+      var swiperWrapper = document.querySelector(".swiper-wrapper");
+      if (swiperWrapper) {
+        swiperWrapper.innerHTML =
+          "<p class='text-center text-danger p-5'>Não foi possível carregar os produtos.</p>";
+      }
+      console.error("Erro fatal ao buscar produtos: ", xhr.status);
+    }
+  };
+  xhr.onerror = function () {
+    var swiperWrapper = document.querySelector(".swiper-wrapper");
+    if (swiperWrapper) {
+      swiperWrapper.innerHTML =
+        "<p class='text-center text-danger p-5'>Não foi possível carregar os produtos.</p>";
+    }
+    console.error("Erro fatal ao buscar produtos: ", xhr.status);
+  };
+  xhr.send();
 });

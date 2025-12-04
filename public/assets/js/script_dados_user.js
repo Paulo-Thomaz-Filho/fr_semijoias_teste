@@ -23,7 +23,7 @@ $(document).ready(function() {
     
     //resquisitar dados do usuário (nome, email, cpf, data de nacimento, telefone) e preencher os campos do formulário
     $.ajax({
-        url: 'usuario/obter-dados',
+        url: 'usuario/buscar-dados',
         type: 'GET',
         dataType: 'json',
         success: function(response) {

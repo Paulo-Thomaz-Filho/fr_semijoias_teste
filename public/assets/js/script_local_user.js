@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     //resquisitar endereço do usuário e preencher os campos do formulário
     $.ajax({
-        url: 'usuario/obter-endereco',
+        url: 'usuario/buscar-endereco',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
