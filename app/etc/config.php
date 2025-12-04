@@ -1,9 +1,4 @@
 <?php
-// Carregamento do Dotenv para variáveis do .env
-require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
-use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
-$dotenv->load();
 
 /**
  * config.php
@@ -75,15 +70,12 @@ $envPath = $rootPath . '/.env';
 if (file_exists($envPath)) {
     $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        
+        if (strpos(trim($line), '#') === 0 || trim($line) === '') continue;
         list($key, $value) = explode('=', $line, 2);
         $key = trim($key);
-        $value = trim($value);
-        
-        $value = trim($value, '"\'');
-        
+        $value = trim($value, "\"'");
         putenv("$key=$value");
+        $_ENV[$key] = $value;
     }
 }
 
