@@ -82,16 +82,16 @@ if (file_exists($envPath)) {
     }
 }
 
-$config['database']['host']   = getenv('DB_HOST') ?: 'localhost';
-$config['database']['schema'] = getenv('DB_NAME') ?: 'fr_semijoias';
-$config['database']['user']   = getenv('DB_USER') ?: 'root';
-$config['database']['pass']   = getenv('DB_PASS') ?: '';
-$config['database']['port']   = getenv('DB_PORT') ?: '3306';
+$config['database']['host']   = getenv('DB_HOST');
+$config['database']['schema'] = getenv('DB_NAME');
+$config['database']['user']   = getenv('DB_USER');
+$config['database']['pass']   = getenv('DB_PASS');
+$config['database']['port']   = getenv('DB_PORT');
 
-$config['email']['host']	    = 'smtp.mydomain.com';
-$config['email']['port']	    =  587;
-$config['email']['username']	= 'my_username';
-$config['email']['password']	= 'my_password';
+$config['email']['host']	    = getenv('MAIL_HOST');
+$config['email']['port']	    = getenv('MAIL_PORT');
+$config['email']['username']	= getenv('MAIL_USERNAME');
+$config['email']['password']	= getenv('MAIL_PASSWORD');
     
 $config['path']['routes']	  = $routersFile;
 $config['path']['root']	      = $rootPath;
