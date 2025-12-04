@@ -1,4 +1,9 @@
 <?php
+// Carregamento do Dotenv para variáveis do .env
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
+$dotenv->load();
 
 /**
  * config.php
