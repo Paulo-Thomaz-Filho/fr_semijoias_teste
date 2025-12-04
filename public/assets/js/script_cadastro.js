@@ -124,11 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Resposta do servidor:', data);
             
             if (data.sucesso) {
-                alert('Cadastro realizado com sucesso! Você já pode fazer login.');
-                
+                let mensagem = data.mensagem;
+                if (!mensagem) {
+                    mensagem = 'Enviamos um email para ' + cadastroData.email + ' com as instruções para ativar sua conta.';
+                }
+                alert(data.sucesso + "\n" + mensagem);
                 // Limpar formulário
                 formCadastro.reset();
-                
                 // Voltar para o login
                 if (btnSignIn) {
                     btnSignIn.click();

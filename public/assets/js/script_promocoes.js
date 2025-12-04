@@ -296,8 +296,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (!inputDesconto.value || parseFloat(inputDesconto.value) <= 0) {
-            exibirMensagemPromocao('Por favor, preencha um valor de desconto válido.', 'danger');
+        // Validação extra: só aceita número
+        if (!inputDesconto.value || isNaN(inputDesconto.value) || parseFloat(inputDesconto.value) <= 0) {
+            exibirMensagemPromocao('Por favor, preencha um valor de desconto válido (apenas números).', 'danger');
             inputDesconto.focus();
             return;
         }
@@ -351,10 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
     btnExcluir.addEventListener('click', async function() {
         if (!promocaoSelecionada) return;
         if (!confirm(`Tem certeza que deseja excluir a promoção ID ${promocaoSelecionada}?`)) return;
-        const dados = new FormData();
-        dados.append('id', promocaoSelecionada);
         try {
-            const response = await fetch('/promocoes/deletar', { method: 'POST', body: dados });
+            const response = await fetch(`/promocoes/deletar?id=${promocaoSelecionada}`, { method: 'DELETE' });
             const resultado = await response.json();
             if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir promoção.');
             exibirMensagemPromocao('Promoção excluída com sucesso!', 'success');

@@ -47,8 +47,8 @@ class PromocaoDAO {
     
     public function __construct(){
         $this->dbQuery = new DBQuery(
-            'promocoes', 
-            'id_promocao, nome, data_inicio, data_fim, desconto, tipo_desconto, status, descricao', 
+            'promocoes',
+            'id_promocao, nome, desconto, tipo_desconto, data_inicio, data_fim, status, descricao',
             'id_promocao'
         );
     }
@@ -102,12 +102,12 @@ class PromocaoDAO {
         $dados = [
             null, // id_promocao (auto increment)
             $promocao->getNome(),
-            $promocao->getDataInicio(),
-            $promocao->getDataFim(),
-            $promocao->getDescricao(),
             $promocao->getDesconto(),
             $promocao->getTipoDesconto(),
-            $promocao->getStatus()
+            $promocao->getDataInicio(),
+            $promocao->getDataFim(),
+            $promocao->getStatus(),
+            $promocao->getDescricao()
         ];
         return $this->dbQuery->insert($dados);
     }
@@ -126,20 +126,37 @@ class PromocaoDAO {
         
         return $this->dbQuery->update($dados);
     }
-    
-    // 5. MÉTODO DELETE SUBSTITUÍDO POR INATIVAR:
-    //    Este método implementa o "soft delete".
-    public function inativar($id) {
-        // Busca a promoção completa para poder passá-la ao método update.
-        $promocao = $this->getById($id);
-        if (!$promocao) {
-            return false;
+
+    // Exclui uma promoção do banco de dados
+    public function excluir($id) {
+        try {
+            $conn = (new DBConnection())->getConn();
+            $sql = "DELETE FROM promocoes WHERE id_promocao = :id";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            throw new \Exception('Erro ao deletar promoção: ' . $e->getMessage());
         }
-
-        // Altera apenas o status do objeto.
-        $promocao->setStatus('inativa');
-
-        // Chama o método update do próprio DAO, que já contém o workaround para o DBQuery.
-        return $this->update($promocao);
+    }
+    
+    public function inativar($id) {
+        $promocao = $this->getById($id);
+        if (!$promocao || $promocao->getStatus() == 0) {
+            return true;
+        }
+        $promocao->setStatus(0);
+        $dados = [
+            'id_promocao'    => $promocao->getIdPromocao(),
+            'nome'           => $promocao->getNome(),
+            'desconto'       => $promocao->getDesconto(),
+            'tipo_desconto'  => $promocao->getTipoDesconto(),
+            'data_inicio'    => $promocao->getDataInicio(),
+            'data_fim'       => $promocao->getDataFim(),
+            'status'         => $promocao->getStatus(),
+            'descricao'      => $promocao->getDescricao()
+        ];
+        return $this->dbQuery->update($dados);
     }
 }

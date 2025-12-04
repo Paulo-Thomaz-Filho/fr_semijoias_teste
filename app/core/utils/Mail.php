@@ -26,17 +26,15 @@ class Mail {
         try {
             // Configurações do servidor SMTP
             $this->mailer->isSMTP();
-            $this->mailer->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+            $this->mailer->Host       = $_ENV['MAIL_HOST'];
             $this->mailer->SMTPAuth   = true;
-            $this->mailer->Username   = $_ENV['SMTP_USERNAME'] ?? '';
-            $this->mailer->Password   = $_ENV['SMTP_PASSWORD'] ?? '';
-            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $this->mailer->Port       = $_ENV['SMTP_PORT'] ?? 587;
+            $this->mailer->Username   = $_ENV['MAIL_USERNAME'];
+            $this->mailer->Password   = $_ENV['MAIL_PASSWORD'];
+            $this->mailer->SMTPSecure = $_ENV['MAIL_ENCRYPTION'];
+            $this->mailer->Port       = $_ENV['MAIL_PORT'];
             $this->mailer->CharSet    = 'UTF-8';
-            
-            // Configurações do remetente
-            $fromEmail = $_ENV['SMTP_FROM_EMAIL'] ?? $_ENV['SMTP_USERNAME'] ?? 'noreply@example.com';
-            $fromName  = $_ENV['SMTP_FROM_NAME'] ?? 'FR Semijoias';
+            $fromEmail = $_ENV['MAIL_FROM_EMAIL'] ?? $_ENV['MAIL_USERNAME'];
+            $fromName  = $_ENV['MAIL_FROM_NAME'] ?? 'FR Semijoias';
             $this->mailer->setFrom($fromEmail, $fromName);
             
             // Configurações do destinatário

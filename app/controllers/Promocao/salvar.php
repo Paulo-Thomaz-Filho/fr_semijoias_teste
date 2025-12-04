@@ -26,6 +26,13 @@ if (!$nome || !$dataInicio || !$dataFim || !$desconto) {
     exit;
 }
 
+// Validação extra: desconto deve ser numérico
+if (!is_numeric($desconto) || $desconto <= 0) {
+    http_response_code(400);
+    echo json_encode(['erro' => 'O campo desconto deve ser um número maior que zero.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 try {
     $novaPromocao = new \app\models\Promocao();
     $novaPromocao->setNome($nome);

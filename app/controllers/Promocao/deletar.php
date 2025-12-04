@@ -30,11 +30,23 @@ try {
         exit;
     }
 
-    if ($promocaoDAO->inativar($idPromocao)) {
-        echo json_encode(['sucesso' => 'Promoção inativada com sucesso.'], JSON_UNESCAPED_UNICODE);
+    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        // Exclusão real
+        $result = $promocaoDAO->excluir($idPromocao);
+        if ($result) {
+            echo json_encode(['sucesso' => 'Promoção excluída com sucesso.'], JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(500);
+            echo json_encode(['erro' => 'Erro ao excluir a promoção.'], JSON_UNESCAPED_UNICODE);
+        }
     } else {
-        http_response_code(500);
-        echo json_encode(['erro' => 'Erro ao inativar a promoção.'], JSON_UNESCAPED_UNICODE);
+        // Inativação (soft delete)
+        if ($promocaoDAO->inativar($idPromocao)) {
+            echo json_encode(['sucesso' => 'Promoção inativada com sucesso.'], JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(500);
+            echo json_encode(['erro' => 'Erro ao inativar a promoção.'], JSON_UNESCAPED_UNICODE);
+        }
     }
 } catch (\Throwable $e) {
     http_response_code(500);
