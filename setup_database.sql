@@ -100,27 +100,24 @@ INSERT INTO promocoes (id_promocao, nome, desconto, tipo_desconto, data_inicio, 
 (3, 'Promoção Expirada', 10.00, 'percentual', '2025-08-01', '2025-08-15', 0, 'Promoção já expirada, não pode ser usada.');
 
 -- PRODUTOS
-INSERT INTO produtos (id_produto, nome, descricao, estoque, preco, marca, categoria, id_promocao, disponivel) VALUES
-(1, 'Anel Solitário', 'Anel com zircônia central', 50, 89.90, 'Rommanel', 'Anéis', 1, 1),
-(2, 'Anel Meia Aliança', 'Anel com zircônias laterais', 30, 129.90, 'Vivara', 'Anéis', 2, 1),
-(3, 'Anel Trio', 'Set com 3 anéis empilháveis', 25, 149.90, 'Life by Vivara', 'Anéis', NULL, 1),
-(4, 'Anel Life', 'Anel delicado folheado', 40, 69.90, 'Life by Vivara', 'Anéis', NULL, 1),
-(5, 'Brinco Argola Média', 'Argola lisa 3cm', 60, 119.90, 'Pandora', 'Brincos', NULL, 1),
-(6, 'Brinco Ponto de Luz', 'Brinco com zircônia 6mm', 80, 79.90, 'Rommanel', 'Brincos', NULL, 1),
-(7, 'Brinco Argola Grande', 'Argola grossa 5cm', 35, 179.90, 'Vivara', 'Brincos', NULL, 1),
-(8, 'Ear Cuff Estrelas', 'Brinco sem furo', 45, 89.90, 'Life by Vivara', 'Brincos', NULL, 1),
-(9, 'Brinco Argola Pequena', 'Argola fina 1.5cm', 100, 79.90, 'Rommanel', 'Brincos', NULL, 1),
-(10, 'Brinco Gota Luxo', 'Brinco de gota com pedras', 20, 139.90, 'Carla Amorim', 'Brincos', NULL, 1),
-(11, 'Colar Ponto de Luz', 'Colar delicado com zircônia', 55, 119.90, 'Rommanel', 'Colares', NULL, 1),
-(12, 'Gargantilha Choker', 'Gargantilha ajustável', 40, 99.90, 'Life by Vivara', 'Colares', NULL, 1),
-(13, 'Colar Corrente Grossa', 'Corrente statement', 25, 189.90, 'Vivara', 'Colares', NULL, 1),
-(14, 'Colar Gravatinha', 'Gravatinha com zircônia', 50, 129.90, 'Pandora', 'Colares', NULL, 1),
-(15, 'Pulseira Riviera', 'Pulseira com zircônias sequenciais', 30, 299.90, 'Vivara', 'Pulseiras', NULL, 1),
-(16, 'Pulseira Berloque', 'Pulseira com berloques Pandora', 25, 249.90, 'Pandora', 'Pulseiras', NULL, 1),
-(17, 'Pulseira Elos', 'Pulseira de elos cartier', 35, 399.90, 'Carla Amorim', 'Pulseiras', NULL, 1),
-(18, 'Bracelete Liso', 'Bracelete aberto ajustável', 50, 149.90, 'Life by Vivara', 'Pulseiras', NULL, 1),
-(19, 'Conjunto Delicado', 'Colar + brincos + anel', 15, 799.90, 'Vivara', 'Conjuntos', NULL, 1),
-(20, 'Conjunto Noiva', 'Set completo para casamento', 10, 599.90, 'Carla Amorim', 'Conjuntos', NULL, 1);
+INSERT INTO produtos (id_produto, nome, descricao, preco, marca, categoria, id_promocao, caminho_imagem, estoque, disponivel) VALUES
+(1, 'Colar Canutilho Duo', 'Minimalismo e versatilidade definem este acessório. Conhecido como "ponto de luz" ou "colar invisível", ele é confeccionado em fio de nylon transparente de alta resistência, dando a impressão de que os detalhes metálicos flutuam sobre a pele.', 53.30, 'FR Semijoias', 'Colares', 1, 'produto_6931109abd56720251204013954.jpeg.base64', 10, 1),
+(2, 'Brinco Coração Olho de Gato', 'Um toque de romantismo e sofisticação para o seu dia a dia. Este brinco em formato de coração destaca-se pela beleza da pedra Olho de Gato, conhecida por seu tom perolado e brilho suave', 78.00, 'FR Semijoias', 'Brincos', NULL, 'produto_693111d50166b20251204014509.jpeg.base64', 10, 1),
+(3, 'Conjunto Jade Coração Rosa', 'Feminilidade e cor se unem neste conjunto vibrante de pedras rosas com pingente de coração. O colar de contas traz presença ao look, enquanto os brincos delicados equilibram a produção com charme. Uma escolha romântica e cheia de vida, perfeita para realçar o visual com um toque de alegria e elegância.', 159.00, 'FR Semijoias', 'Conjuntos', NULL, 'produto_693114116b79b20251204015441.jpeg.base64', 10, 1),
+(4, 'Brinco Rubi Pérola', 'O clássico requinte da pérola pendente com o requinte do brilho de uma argolinha cravejada. Os cristais em tom rubi trazem um ponto de cor vibrante que atualiza e rejuvenesce a joia. Um acessório com movimento e sofisticação, capaz de elevar instantaneamente desde o jeans até vestidos de festa.', 55.90, 'FR Semijoias', 'Brincos', NULL, 'produto_69311594c2caa20251204020108.jpeg.base64', 10, 1),
+(5, 'Colar Duplo Jade Coração', 'Uma composição apaixonante que une a delicadeza da corrente dourada com a vibração intensa dos cristais vermelhos. O pingente vertical "LOVE" e o coração cravejado criam uma narrativa romântica e cheia de significado. Prático e estiloso, este mix já vem pronto para usar, garantindo um visual de camadas perfeito sem esforço.', 161.20, 'FR Semijoias', 'Colares', NULL, 'produto_6931163ab206d20251204020354.jpeg.base64', 10, 1),
+(6, 'Escapulário Deus é Fiel', 'Expresse sua fé com elegância e significado através deste escapulário dourado com acabamento impecável. As medalhas retangulares trazem a frase "Deus é Fiel" e a Estrela de Davi, unindo proteção e simbolismo sagrado. Uma peça atemporal, perfeita para ser usada diariamente como um amuleto de devoção ou para presentear com carinho.', 68.90, 'FR Semijoias', 'Colares', NULL, 'produto_6931174111ed720251204020817.jpeg.base64', 10, 1),
+(7, 'Conjunto Laços Dourados', 'A delicadeza em forma de joia: este conjunto de laços dourados exala feminilidade e acompanha a tendência romântica atual. O design vazado e fluido traz leveza à peça, garantindo um brilho sofisticado e discreto para o dia a dia. Uma escolha encantadora e atemporal, perfeita para presentear ou adicionar um toque de charme a qualquer produção.', 64.35, 'FR Semijoias', 'Conjuntos', NULL, 'produto_693118aff0cd920251204021423.jpeg.base64', 10, 1),
+(8, 'Anel', 'Ousadia e estilo se encontram neste anel de dedinho bicolor, uma tendência absoluta entre as fashionistas. A fusão dos tons dourado e prateado garante versatilidade máxima, facilitando o mix com acessórios de qualquer cor. Com design moderno e acabamento impecável, é a peça perfeita para modernizar o visual e fugir do óbvio.', 69.50, 'FR Semijoias', 'Anéis', NULL, 'produto_69311a068d1de20251204022006.jpeg.base64', 10, 1),
+(9, 'Brinco Triângulo Duo', 'Aposte na versatilidade máxima com estes brincos triangulares bicolores. O design moderno em forma de leque une o dourado e o prateado, criando uma peça marcante e arquitetônica que combina facilmente com qualquer outro acessório do seu porta-joias.', 53.90, 'FR Semijoias', 'Brincos', NULL, 'produto_69311df31d4d020251204023651.jpeg.base64', 10, 1),
+(10, 'Colar de Esferas Diamantadas Prata', 'Eleve seu estilo com este colar de esferas prateadas texturizadas. O acabamento martelado reflete a luz de forma única, criando um visual contemporâneo, robusto e cheio de personalidade que não passa despercebido.', 175.00, 'FR Semijoias', 'Colares', NULL, 'produto_69311e5b93c9520251204023835.jpeg.base64', 10, 1),
+(11, 'Anel Quadrado Dourado', 'Adicione um toque moderno e ousado ao seu visual com este anel geométrico prateado. Seu design quadrado e acabamento polido garantem sofisticação instantânea, tornando-o a peça statement perfeita para elevar qualquer look básico.', 90.90, 'FR Semijoias', 'Anéis', NULL, 'produto_69311ec28c78f20251204024018.jpeg.base64', 10, 1),
+(12, 'Conjunto Coraçõa Resina Italiana vermelha', 'Adicione cor e paixão ao seu dia com este conjunto vibrante de coração com esmalte vermelho e acabamento dourado. O contraste perfeito para iluminar o rosto e as mãos com um toque divertido, romântico e elegante.', 84.45, 'FR Semijoias', 'Conjuntos', NULL, 'produto_69311f44e24fd20251204024228.jpeg.base64', 10, 1),
+(13, 'Colar Coração Zircônia Vazado', 'Brilhe com delicadeza usando este colar de coração vazado em tom rose gold, cravejado com pedras cintilantes. Uma peça atemporal que une o romantismo do design à sofisticação do brilho, perfeita para ocasiões especiais ou para iluminar o dia a dia.', 95.90, 'FR Semijoias', 'Colares', NULL, 'produto_6931200a92d7120251204024546.jpeg.base64', 10, 1),
+(14, 'Conjunto Coração Abaloado prata', 'Expresse seu estilo com este conjunto apaixonante de anel e brincos de coração prateados. O design escultural "puffy" e o acabamento polido trazem uma abordagem moderna e volumosa ao romantismo clássico.', 63.70, 'FR Semijoias', 'Conjuntos', NULL, 'produto_6931209bb943220251204024811.jpeg.base64', 10, 1),
+(15, 'Tornozeleira Elos Achatados Dourada', 'Destaque seus passos com esta tornozeleira clássica de elos dourados. O design de corrente atemporal e o brilho intenso trazem um toque de glamour e feminilidade, sendo o acessório indispensável para os dias de sol e pernas de fora.', 58.50, 'FR Semijoias', 'Tornozeleiras', NULL, 'produto_693120fa2eb1d20251204024946.jpeg.base64', 10, 1),
+(16, 'Bracelete Fino dourado', 'Adote a tendência mais quente do momento com este bracelete de braço minimalista prateado. Seu design fino, aberto e delicado oferece um toque sutil de modernidade e sensualidade, perfeito para complementar looks sem mangas.', 51.35, 'FR Semijoias', 'Braceletes', NULL, 'produto_693121bb5f92020251204025259.jpeg.base64', 10, 1),
+(17, 'Brinco Argola Dourada', 'Imponha presença com estas argolas "chunky" douradas de alto brilho. O design volumoso, largo e o acabamento polido transformam um clássico em um verdadeiro statement de moda, garantindo poder e sofisticação instantânea a qualquer produção.', 72.90, 'FR Semijoias', 'Brincos', 1, 'produto_69312499be4cf20251204030513.jpeg.base64', 10, 1);
 
 -- NÍVEIS DE ACESSO
 INSERT INTO nivel_acesso (id_nivel, tipo) VALUES
@@ -149,16 +146,16 @@ INSERT INTO status (nome) VALUES
 -- PEDIDOS
 INSERT INTO pedidos (id_pedido, produto_nome, preco, endereco, data_pedido, quantidade, id_status, descricao, id_produto, id_cliente) VALUES
 (1, 'Brinco Argola Média', 239.80, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-14', 2, 2, 'Dois colares ponto de luz', 5, 2),
-(2, 'Conjunto Delicado', 799.90, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-14', 1, 2, 'Conjunto presente', 19, 3),
+(2, 'Conjunto Delicado', 799.90, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-14', 1, 2, 'Conjunto presente', 7, 3),
 (3, 'Pulseira Elos', 399.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-13', 1, 4, 'Pedido especial', 17, 4),
 (4, 'Anel Meia Aliança', 159.80, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-13', 1, 4, 'Dois anéis diferentes', 2, 5),
 (5, 'Pulseira Riviera', 299.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-12', 1, 3, 'Pulseira Riviera', 15, 6),
 (6, 'Ear Cuff Estrelas', 349.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-11', 1, 3, 'Colar premium', 8, 2),
 (7, 'Brinco Argola Pequena', 259.70, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-10', 3, 3, '3 brincos argola', 9, 3),
-(8, 'Bracelete Liso', 449.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-09', 1, 1, 'Conjunto dourado', 18, 4),
+(8, 'Bracelete Liso', 449.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-09', 1, 1, 'Conjunto dourado', 16, 4),
 (9, 'Brinco Gota Luxo', 329.85, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-08', 2, 4, 'Brincos para presente', 10, 5),
 (10, 'Gargantilha Choker', 189.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-08', 1, 3, 'Brinco Pandora', 12, 6),
-(11, 'Conjunto Noiva', 599.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-05', 1, 4, 'Conjunto de noiva', 20, 2),
+(11, 'Conjunto Noiva', 599.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-05', 1, 4, 'Conjunto de noiva', 3, 2),
 (12, 'Colar Gravatinha', 319.80, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-03', 1, 3, 'Pulseira berloque', 14, 3),
 (13, 'Anel Solitário', 449.75, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-02', 5, 3, '5 anéis solitário', 1, 4),
 (14, 'Brinco Argola Média', 299.70, 'Rua do Ouro, 321 - São Paulo, SP', '2025-09-28', 3, 3, '3 colares ponto de luz', 5, 5),

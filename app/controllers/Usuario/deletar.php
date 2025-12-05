@@ -46,7 +46,11 @@ try {
         echo json_encode(['erro' => 'Erro ao excluir o usuário. (Possível restrição de chave estrangeira, ex: usuário com pedidos existentes)'], JSON_UNESCAPED_UNICODE);
     }
 } catch (\Throwable $e) {
-    http_response_code(500);
-    // Se a restrição de FK não for tratada e gerar uma exceção
-    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        http_response_code(500);
+        // Se for erro de integridade referencial, apresenta mensagem amigável
+        if (strpos($e->getMessage(), 'Integrity constraint violation') !== false && strpos($e->getMessage(), 'FOREIGN KEY') !== false) {
+            echo json_encode(['erro' => 'Não é possível excluir o cliente porque existem pedidos vinculados a ele.'], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        }
 }

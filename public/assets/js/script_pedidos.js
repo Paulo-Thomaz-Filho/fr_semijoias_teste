@@ -391,18 +391,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const resultado = await response.json();
             const msgDiv = document.getElementById('pedidoMsg');
             if (response.status === 201 && resultado.sucesso) {
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Pedido cadastrado com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 return { sucesso: resultado.sucesso, id: resultado.id };
             } else {
                 if (msgDiv) {
@@ -434,18 +432,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const resultado = await response.json();
             const msgDiv = document.getElementById('pedidoMsg');
             if (resultado.sucesso) {
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Pedido atualizado com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
@@ -476,19 +472,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const resultado = await response.json();
             const msgDiv = document.getElementById('pedidoMsg');
             if (resultado.sucesso) {
+                // Limpa apenas os campos do formulário, mas mantém a mensagem visível
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Pedido excluído com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
                         msgDiv.className = 'text-center mt-3';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 carregarPedidos();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
                 if (typeof window.carregarGraficoBarras === 'function') window.carregarGraficoBarras();
@@ -682,8 +677,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!tabelaItensPedido) return;
             const tbody = tabelaItensPedido.querySelector('tbody');
             tbody.innerHTML = '';
+            const cardsContainer = document.getElementById('cardsItensPedido');
+            if (cardsContainer) cardsContainer.innerHTML = '';
             if (itensPedido.length === 0) {
                 tbody.innerHTML = '<tr id="linhaVaziaItensPedido"><td colspan="4" class="text-center py-3 text-muted">Nenhum item adicionado.</td></tr>';
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = '<div class="text-center py-3 text-muted">Nenhum item adicionado.</div>';
+                }
                 atualizarValorTotalItens();
                 return;
             }
@@ -696,8 +696,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button class="btn btn-sm px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido bg-danger text-white border-0" data-idx="${idx}">Remover</button>
                     </td>
                 </tr>`;
+                // Cards para mobile
+                if (cardsContainer) {
+                    cardsContainer.innerHTML += `
+                        <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-medium mb-0 text-dark">${item.produtoNome}</h6>
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Quantidade:</strong> ${item.quantidade}
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    <strong>Preço (R$):</strong> ${item.preco.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                                </div>
+                                <div class="d-flex justify-content-end align-items-center mt-2 pt-2 border-top">
+                                    <button class="btn btn-sm btn-danger px-3 py-2 fw-medium rounded-4 btn-remover-item-mobile" data-idx="${idx}">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
             });
-            // Adicionar evento de remover
+            // Adicionar evento de remover na tabela
             tbody.querySelectorAll('button[data-idx]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const idx = parseInt(this.dataset.idx);
@@ -705,6 +726,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     atualizarTabelaItensPedido();
                 });
             });
+            // Adicionar evento de remover nos cards mobile
+            if (cardsContainer) {
+                cardsContainer.querySelectorAll('button.btn-remover-item-mobile').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.idx);
+                        itensPedido.splice(idx, 1);
+                        atualizarTabelaItensPedido();
+                    });
+                });
+            }
             atualizarValorTotalItens();
         }
 
@@ -724,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formPedido.addEventListener('submit', function(e) {
                 e.preventDefault();
                 limparMensagemPedido();
-                
+
                 // Validação detalhada dos campos principais
                 if (!inputCliente.value) {
                     exibirMensagemPedido('Por favor, selecione um cliente.', 'danger');
@@ -749,6 +780,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     inputData.focus();
                     return;
                 }
+
                 // Limpa o array de itens antes do envio
                 itensPedido = itensPedido.filter(item => {
                     return item.produtoNome && item.produtoNome !== 'Selecione um produto' && item.quantidade && item.quantidade > 0 && item.preco && item.preco > 0;
@@ -757,33 +789,47 @@ document.addEventListener('DOMContentLoaded', function() {
                     exibirMensagemPedido('Adicione pelo menos um item válido ao pedido.', 'danger');
                     return;
                 }
+
                 // Pega o nome do status selecionado
                 const statusNome = selectStatus.options[selectStatus.selectedIndex]?.text || selectStatus.value;
-                // Envia cada item da tabela dinâmica como pedido separado
-                Promise.all(itensPedido.map(item => {
-                    const dados = {
+                // Monta o objeto do pedido com todos os itens
+                const pedidoData = {
+                    id_cliente: inputCliente.value,
+                    endereco: inputEndereco.value.trim(),
+                    data_pedido: inputData.value,
+                    descricao: inputDescricao.value.trim(),
+                    status: statusNome,
+                    produtos: itensPedido.map(item => ({
                         produto_nome: item.produtoNome,
-                        id_cliente: inputCliente.value,
                         preco: item.preco,
-                        endereco: inputEndereco.value.trim(),
-                        quantidade: item.quantidade,
-                        data_pedido: inputData.value,
-                        descricao: inputDescricao.value.trim(),
-                        status: statusNome
-                    };
-                    return cadastrarPedido(dados);
-                })).then((resultados) => {
-                    // Verifica o resultado de cada item
-                    const sucessoCount = resultados.filter(r => r && typeof r.sucesso === 'string' && r.sucesso.toLowerCase().includes('sucesso')).length;
-                    if (sucessoCount > 0) {
+                        quantidade: item.quantidade
+                    }))
+                };
+                const formData = new FormData();
+                formData.append('id_cliente', pedidoData.id_cliente);
+                formData.append('endereco', pedidoData.endereco);
+                formData.append('data_pedido', pedidoData.data_pedido);
+                formData.append('descricao', pedidoData.descricao);
+                formData.append('status', pedidoData.status);
+                formData.append('produtos', JSON.stringify(pedidoData.produtos));
+
+                fetch('/pedidos/salvar', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sucesso) {
                         exibirMensagemPedido('Pedido cadastrado com sucesso!', 'success');
+                        itensPedido = [];
+                        atualizarTabelaItensPedido();
+                        carregarPedidos();
                     } else {
-                        exibirMensagemPedido('Erro: Dados incompletos. Produto, Cliente, Quantidade e Preço são obrigatórios.', 'danger');
+                        exibirMensagemPedido(data.erro || 'Erro ao cadastrar pedido.', 'danger');
                     }
-                    // Limpa o array de itens para garantir que não fique resíduo
-                    itensPedido = [];
-                    atualizarTabelaItensPedido();
-                    carregarPedidos();
+                })
+                .catch(() => {
+                    exibirMensagemPedido('Erro ao cadastrar pedido.', 'danger');
                 });
             });
         }

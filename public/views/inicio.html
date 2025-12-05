@@ -130,7 +130,7 @@
                   fill="currentColor"
                 />
               </svg>
-              <span class="fw-medium" id="user-greeting-text">Minha conta</span>
+              <span class="fw-medium" id="user-greeting-text">Entrar ou Cadastrar</span>
             </a>
             <a
               href="carrinho"
@@ -163,15 +163,11 @@
     </header>
 
     <!-- Menu de Categorias -->
-    <div class="bg-light border-bottom py-3">
-      <div class="container">
-        <nav
-          class="d-flex justify-content-center align-items-center flex-wrap gap-4"
-          id="categorias-menu"
-        >
+    <div class="bg-light border-bottom py-3 w-100" style="position:fixed; z-index:100;">
+      <nav class="container d-flex justify-content-center align-items-center flex-wrap gap-4" id="categorias-menu">
           <a
             href="#"
-            class="text-decoration-none text-dark fw-semibold categoria-link active px-3 py-2 fs-6 d-inline-block position-relative"
+            class="text-decoration-none text-dark fw-semibold categoria-link active rounded-pill px-3 py-2 fs-6 d-inline-block"
             data-categoria="inicio"
           >
             Início
@@ -257,12 +253,12 @@
               </li>
               <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
-                  >Políticas de Privacidade</a
+                  >Política de Privacidade</a
                 >
               </li>
               <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted"
-                  >Políticas de Devolução e Trocas</a
+                  >Política de Devolução e Troca</a
                 >
               </li>
             </ul>
@@ -272,15 +268,13 @@
             <h6 class="fw-semibold mb-3 small">Ajuda</h6>
             <ul class="list-unstyled small">
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted">FAQ</a>
-              </li>
-              <li class="mb-2">
                 <a href="#" class="text-decoration-none text-muted">Garantia</a>
               </li>
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted"
-                  >Entrega e Prazos</a
-                >
+                <a href="#" class="text-decoration-none text-muted">Entregas</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-muted">Prazos</a>
               </li>
             </ul>
           </div>
@@ -391,7 +385,7 @@
                 </p>
 
                 <div class="mb-5">
-                  <label class="form-label fw-medium">Quantidade:</label>
+                  <label class="form-label fw-bold">Quantidade:</label>
                   <div class="input-group" style="max-width: 120px">
                     <button
                       class="btn btn-outline-secondary modal-btn-decrease rounded-start-pill"
@@ -439,6 +433,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/js/script_inicio.js"></script>
+    <script src="/public/assets/js/script_inicio.js"></script>
   </body>
 </html>

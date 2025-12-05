@@ -4,11 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon"/>
+    <link
+      rel="shortcut icon"
+      href="../assets/images/logo.svg"
+      type="image/x-icon"
+    />
     <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/style.css" />
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <title>FR Semijoias | Produtos</title>
   </head>
   <body>
@@ -334,332 +341,351 @@
             <div class="bg-light p-4 rounded-4 mb-4">
               <h2 class="fw-medium fs-5 text-black mb-4">Gerenciar Produto</h2>
               <form id="form-produto">
-                <div class="row g-3 mb-3">
-                  <div class="col-md-2">
-                    <label
-                      for="produto_id"
-                      class="form-label text-muted small fw-medium"
-                      >ID</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M3 5C2.44772 5 2 5.44771 2 6V18C2 18.5523 2.44772 19 3 19H21C21.5523 19 22 18.5523 22 18V6C22 5.44772 21.5523 5 21 5H3ZM0 6C0 4.34315 1.34314 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12C6.67157 12 6 11.3284 6 10.5ZM10.1756 12.7565C10.69 12.1472 11 11.3598 11 10.5C11 8.567 9.433 7 7.5 7C5.567 7 4 8.567 4 10.5C4 11.3598 4.31002 12.1472 4.82438 12.7565C3.68235 13.4994 3 14.7069 3 16C3 16.5523 3.44772 17 4 17C4.55228 17 5 16.5523 5 16C5 15.1145 5.80048 14 7.5 14C9.19952 14 10 15.1145 10 16C10 16.5523 10.4477 17 11 17C11.5523 17 12 16.5523 12 16C12 14.7069 11.3177 13.4994 10.1756 12.7565ZM13 8C12.4477 8 12 8.44772 12 9C12 9.55228 12.4477 10 13 10H19C19.5523 10 20 9.55228 20 9C20 8.44772 19.5523 8 19 8H13ZM14 12C13.4477 12 13 12.4477 13 13C13 13.5523 13.4477 14 14 14H18C18.5523 14 19 13.5523 19 13C19 12.4477 18.5523 12 18 12H14Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2 text-muted"
-                        id="produto_id"
-                        placeholder="Auto"
-                        readonly
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label
-                      for="nome_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Nome</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 32 32"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <g fill="none" fill-rule="evenodd">
-                          <path d="m0 0h32v32h-32z" />
-                          <path
-                            d="m19 1.73205081 7.8564065 4.53589838c1.8564064 1.07179677 3 3.05255889 3 5.19615241v9.0717968c0 2.1435935-1.1435936 4.1243556-3 5.1961524l-7.8564065 4.5358984c-1.8564065 1.0717968-4.1435935 1.0717968-6 0l-7.85640646-4.5358984c-1.85640646-1.0717968-3-3.0525589-3-5.1961524v-9.0717968c0-2.14359352 1.14359354-4.12435564 3-5.19615241l7.85640646-4.53589838c1.8564065-1.07179677 4.1435935-1.07179677 6 0zm-4.791172 1.6195783-.208828.11247251-7.85640646 4.53589838c-1.17246724.67692428-1.91843145 1.89771701-1.99370617 3.2394348l-.00629383.2246668v9.0717968c0 1.3538485.68425541 2.6102689 1.80857977 3.3463176l.19142023.117784 7.85640646 4.5358984c1.1688485.674835 2.5938608.7123258 3.791172.1124725l.208828-.1124725 7.8564065-4.5358984c1.1724672-.6769243 1.9184314-1.897717 1.9937061-3.2394348l.0062939-.2246668v-9.0717968c0-1.3538485-.6842555-2.61026887-1.8085798-3.34631759l-.1914202-.11778401-7.8564065-4.53589838c-1.1688485-.67483501-2.5938608-.71232584-3.791172-.11247251zm8.8114886 8.20574889c.259282.4876385.0741624 1.0931371-.4134761 1.3524191l-5.6183556 2.9868539.0000413 6.7689186c0 .5522848-.4477152 1-1 1-.5522847 0-1-.4477152-1-1l-.0000413-6.7689186-5.61827304-2.9868539c-.48763849-.259282-.67275801-.8647806-.41347603-1.3524191.25928199-.4876385.86478067-.672758 1.35241917-.4134761l5.6793299 3.0187491 5.6794125-3.0187491c.4876385-.2592819 1.0931372-.0741624 1.3524192.4134761z"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            stroke-width="0.5"
-                            fill-rule="nonzero"
-                          />
-                        </g>
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="nome_produto"
-                        placeholder="Colar Dourado"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label
-                      for="marca_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Marca</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          d="M8 5.00005C7.01165 5.00082 6.49359 5.01338 6.09202 5.21799C5.71569 5.40973 5.40973 5.71569 5.21799 6.09202C5 6.51984 5 7.07989 5 8.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.07989 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V8.2C19 7.07989 19 6.51984 18.782 6.09202C18.5903 5.71569 18.2843 5.40973 17.908 5.21799C17.5064 5.01338 16.9884 5.00082 16 5.00005M8 5.00005V7H16V5.00005M8 5.00005V4.70711C8 4.25435 8.17986 3.82014 8.5 3.5C8.82014 3.17986 9.25435 3 9.70711 3H14.2929C14.7456 3 15.1799 3.17986 15.5 3.5C15.8201 3.82014 16 4.25435 16 4.70711V5.00005M15 12H12M15 16H12M9 12H9.01M9 16H9.01"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="marca_produto"
-                        placeholder="Prada"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <label
-                      for="preco_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Preço (R$)</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 5.25C12.4142 5.25 12.75 5.58579 12.75 6V6.31673C14.3804 6.60867 15.75 7.83361 15.75 9.5C15.75 9.91421 15.4142 10.25 15 10.25C14.5858 10.25 14.25 9.91421 14.25 9.5C14.25 8.82154 13.6859 8.10339 12.75 7.84748V11.3167C14.3804 11.6087 15.75 12.8336 15.75 14.5C15.75 16.1664 14.3804 17.3913 12.75 17.6833V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.6833C9.61957 17.3913 8.25 16.1664 8.25 14.5C8.25 14.0858 8.58579 13.75 9 13.75C9.41421 13.75 9.75 14.0858 9.75 14.5C9.75 15.1785 10.3141 15.8966 11.25 16.1525V12.6833C9.61957 12.3913 8.25 11.1664 8.25 9.5C8.25 7.83361 9.61957 6.60867 11.25 6.31673V6C11.25 5.58579 11.5858 5.25 12 5.25ZM11.25 7.84748C10.3141 8.10339 9.75 8.82154 9.75 9.5C9.75 10.1785 10.3141 10.8966 11.25 11.1525V7.84748ZM12.75 12.8475V16.1525C13.6859 15.8966 14.25 15.1785 14.25 14.5C14.25 13.8215 13.6859 13.1034 12.75 12.8475Z"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          stroke-width="0.5"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="preco_produto"
-                        placeholder="0,00"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label
-                      for="categoria_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Categoria</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <path
-                          d="M3 6C3 4.34315 4.34315 3 6 3H7C8.65685 3 10 4.34315 10 6V7C10 8.65685 8.65685 10 7 10H6C4.34315 10 3 8.65685 3 7V6Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M14 6C14 4.34315 15.3431 3 17 3H18C19.6569 3 21 4.34315 21 6V7C21 8.65685 19.6569 10 18 10H17C15.3431 10 14 8.65685 14 7V6Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M14 17C14 15.3431 15.3431 14 17 14H18C19.6569 14 21 15.3431 21 17V18C21 19.6569 19.6569 21 18 21H17C15.3431 21 14 19.6569 14 18V17Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M3 17C3 15.3431 4.34315 14 6 14H7C8.65685 14 10 15.3431 10 17V18C10 19.6569 8.65685 21 7 21H6C4.34315 21 3 19.6569 3 18V17Z"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="categoria_produto"
-                        placeholder="Anéis"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <label
-                      for="estoque"
-                      class="form-label text-muted small fw-medium"
-                      >Estoque</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <g
-                          stroke="currentColor"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                <div class="row mb-3">
+                  <div class="col-md-7 mb-3">
+                    <div class="row g-3">
+                      <div class="col-12 col-md-2">
+                        <label
+                          for="produto_id"
+                          class="form-label text-muted small fw-medium"
+                          >ID</label
                         >
-                          <path d="M4 8l8-4 8 4-8 4-8-4z" />
-                          <path stroke-linecap="round" d="M4 12l8 4 8-4" />
-                          <path stroke-linecap="round" d="M4 16l8 4 8-4" />
-                        </g>
-                      </svg>
-                      <input
-                        type="number"
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="estoque"
-                        placeholder="0"
-                        min="0"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label
-                      for="disponivel"
-                      class="form-label text-muted small fw-medium"
-                      >Disponível</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 -3 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
-                      >
-                        <g
-                          stroke="none"
-                          stroke-width="1"
-                          fill="none"
-                          fill-rule="evenodd"
-                        >
-                          <g
-                            transform="translate(-100.000000, -4242.000000)"
-                            fill="currentColor"
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
                           >
-                            <g transform="translate(56.000000, 160.000000)">
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M3 5C2.44772 5 2 5.44771 2 6V18C2 18.5523 2.44772 19 3 19H21C21.5523 19 22 18.5523 22 18V6C22 5.44772 21.5523 5 21 5H3ZM0 6C0 4.34315 1.34314 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12C6.67157 12 6 11.3284 6 10.5ZM10.1756 12.7565C10.69 12.1472 11 11.3598 11 10.5C11 8.567 9.433 7 7.5 7C5.567 7 4 8.567 4 10.5C4 11.3598 4.31002 12.1472 4.82438 12.7565C3.68235 13.4994 3 14.7069 3 16C3 16.5523 3.44772 17 4 17C4.55228 17 5 16.5523 5 16C5 15.1145 5.80048 14 7.5 14C9.19952 14 10 15.1145 10 16C10 16.5523 10.4477 17 11 17C11.5523 17 12 16.5523 12 16C12 14.7069 11.3177 13.4994 10.1756 12.7565ZM13 8C12.4477 8 12 8.44772 12 9C12 9.55228 12.4477 10 13 10H19C19.5523 10 20 9.55228 20 9C20 8.44772 19.5523 8 19 8H13ZM14 12C13.4477 12 13 12.4477 13 13C13 13.5523 13.4477 14 14 14H18C18.5523 14 19 13.5523 19 13C19 12.4477 18.5523 12 18 12H14Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2 text-muted"
+                            id="produto_id"
+                            placeholder="Auto"
+                            readonly
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label
+                          for="nome_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Nome</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 32 32"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <g fill="none" fill-rule="evenodd">
+                              <path d="m0 0h32v32h-32z" />
                               <path
-                                d="M53.708,4088.932 C53.708,4087.275 55.051,4085.932 56.708,4085.932 C58.365,4085.932 59.708,4087.275 59.708,4088.932 C59.708,4090.589 58.365,4091.932 56.708,4091.932 C55.051,4091.932 53.708,4090.589 53.708,4088.932 L53.708,4088.932 Z M50.884,4084 L56.884,4084 C59.641,4084 61.884,4086.243 61.884,4089 C61.884,4091.757 59.641,4094 56.884,4094 L50.884,4094 C48.127,4094 45.884,4091.757 45.884,4089 C45.884,4086.243 48.127,4084 50.884,4084 L50.884,4084 Z M64,4089 C64,4085.134 60.866,4082 57,4082 L51,4082 C47.134,4082 44,4085.134 44,4089 L44,4089 C44,4092.866 47.134,4096 51,4096 L57,4096 C60.866,4096 64,4092.866 64,4089 L64,4089 Z"
+                                d="m19 1.73205081 7.8564065 4.53589838c1.8564064 1.07179677 3 3.05255889 3 5.19615241v9.0717968c0 2.1435935-1.1435936 4.1243556-3 5.1961524l-7.8564065 4.5358984c-1.8564065 1.0717968-4.1435935 1.0717968-6 0l-7.85640646-4.5358984c-1.85640646-1.0717968-3-3.0525589-3-5.1961524v-9.0717968c0-2.14359352 1.14359354-4.12435564 3-5.19615241l7.85640646-4.53589838c1.8564065-1.07179677 4.1435935-1.07179677 6 0zm-4.791172 1.6195783-.208828.11247251-7.85640646 4.53589838c-1.17246724.67692428-1.91843145 1.89771701-1.99370617 3.2394348l-.00629383.2246668v9.0717968c0 1.3538485.68425541 2.6102689 1.80857977 3.3463176l.19142023.117784 7.85640646 4.5358984c1.1688485.674835 2.5938608.7123258 3.791172.1124725l.208828-.1124725 7.8564065-4.5358984c1.1724672-.6769243 1.9184314-1.897717 1.9937061-3.2394348l.0062939-.2246668v-9.0717968c0-1.3538485-.6842555-2.61026887-1.8085798-3.34631759l-.1914202-.11778401-7.8564065-4.53589838c-1.1688485-.67483501-2.5938608-.71232584-3.791172-.11247251zm8.8114886 8.20574889c.259282.4876385.0741624 1.0931371-.4134761 1.3524191l-5.6183556 2.9868539.0000413 6.7689186c0 .5522848-.4477152 1-1 1-.5522847 0-1-.4477152-1-1l-.0000413-6.7689186-5.61827304-2.9868539c-.48763849-.259282-.67275801-.8647806-.41347603-1.3524191.25928199-.4876385.86478067-.672758 1.35241917-.4134761l5.6793299 3.0187491 5.6794125-3.0187491c.4876385-.2592819 1.0931372-.0741624 1.3524192.4134761z"
+                                fill="currentColor"
+                                stroke="currentColor"
+                                stroke-width="0.5"
+                                fill-rule="nonzero"
                               />
                             </g>
-                          </g>
-                        </g>
-                      </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="disponivel"
-                      >
-                        <option value="">Carregando disponibilidade...</option>
-                      </select>
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="nome_produto"
+                            placeholder="Colar Dourado"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <label
+                          for="marca_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Marca</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M8 5.00005C7.01165 5.00082 6.49359 5.01338 6.09202 5.21799C5.71569 5.40973 5.40973 5.71569 5.21799 6.09202C5 6.51984 5 7.07989 5 8.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.07989 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V8.2C19 7.07989 19 6.51984 18.782 6.09202C18.5903 5.71569 18.2843 5.40973 17.908 5.21799C17.5064 5.01338 16.9884 5.00082 16 5.00005M8 5.00005V7H16V5.00005M8 5.00005V4.70711C8 4.25435 8.17986 3.82014 8.5 3.5C8.82014 3.17986 9.25435 3 9.70711 3H14.2929C14.7456 3 15.1799 3.17986 15.5 3.5C15.8201 3.82014 16 4.25435 16 4.70711V5.00005M15 12H12M15 16H12M9 12H9.01M9 16H9.01"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="marca_produto"
+                            placeholder="Prada"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-3">
+                        <label
+                          for="preco_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Preço (R$)</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 5.25C12.4142 5.25 12.75 5.58579 12.75 6V6.31673C14.3804 6.60867 15.75 7.83361 15.75 9.5C15.75 9.91421 15.4142 10.25 15 10.25C14.5858 10.25 14.25 9.91421 14.25 9.5C14.25 8.82154 13.6859 8.10339 12.75 7.84748V11.3167C14.3804 11.6087 15.75 12.8336 15.75 14.5C15.75 16.1664 14.3804 17.3913 12.75 17.6833V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.6833C9.61957 17.3913 8.25 16.1664 8.25 14.5C8.25 14.0858 8.58579 13.75 9 13.75C9.41421 13.75 9.75 14.0858 9.75 14.5C9.75 15.1785 10.3141 15.8966 11.25 16.1525V12.6833C9.61957 12.3913 8.25 11.1664 8.25 9.5C8.25 7.83361 9.61957 6.60867 11.25 6.31673V6C11.25 5.58579 11.5858 5.25 12 5.25ZM11.25 7.84748C10.3141 8.10339 9.75 8.82154 9.75 9.5C9.75 10.1785 10.3141 10.8966 11.25 11.1525V7.84748ZM12.75 12.8475V16.1525C13.6859 15.8966 14.25 15.1785 14.25 14.5C14.25 13.8215 13.6859 13.1034 12.75 12.8475Z"
+                              fill="currentColor"
+                              stroke="currentColor"
+                              stroke-width="0.5"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="preco_produto"
+                            placeholder="0,00"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-5">
+                        <label
+                          for="categoria_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Categoria</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              d="M3 6C3 4.34315 4.34315 3 6 3H7C8.65685 3 10 4.34315 10 6V7C10 8.65685 8.65685 10 7 10H6C4.34315 10 3 8.65685 3 7V6Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M14 6C14 4.34315 15.3431 3 17 3H18C19.6569 3 21 4.34315 21 6V7C21 8.65685 19.6569 10 18 10H17C15.3431 10 14 8.65685 14 7V6Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M14 17C14 15.3431 15.3431 14 17 14H18C19.6569 14 21 15.3431 21 17V18C21 19.6569 19.6569 21 18 21H17C15.3431 21 14 19.6569 14 18V17Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M3 17C3 15.3431 4.34315 14 6 14H7C8.65685 14 10 15.3431 10 17V18C10 19.6569 8.65685 21 7 21H6C4.34315 21 3 19.6569 3 18V17Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            />
+                          </svg>
+                          <input
+                            type="text"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="categoria_produto"
+                            placeholder="Anéis"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <label
+                          for="estoque"
+                          class="form-label text-muted small fw-medium"
+                          >Estoque</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <g
+                              stroke="currentColor"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                            >
+                              <path d="M4 8l8-4 8 4-8 4-8-4z" />
+                              <path stroke-linecap="round" d="M4 12l8 4 8-4" />
+                              <path stroke-linecap="round" d="M4 16l8 4 8-4" />
+                            </g>
+                          </svg>
+                          <input
+                            type="number"
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="estoque"
+                            placeholder="0"
+                            min="0"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label
+                          for="disponivel"
+                          class="form-label text-muted small fw-medium"
+                          >Disponível</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 -3 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <g
+                              stroke="none"
+                              stroke-width="1"
+                              fill="none"
+                              fill-rule="evenodd"
+                            >
+                              <g
+                                transform="translate(-100.000000, -4242.000000)"
+                                fill="currentColor"
+                              >
+                                <g transform="translate(56.000000, 160.000000)">
+                                  <path
+                                    d="M53.708,4088.932 C53.708,4087.275 55.051,4085.932 56.708,4085.932 C58.365,4085.932 59.708,4087.275 59.708,4088.932 C59.708,4090.589 58.365,4091.932 56.708,4091.932 C55.051,4091.932 53.708,4090.589 53.708,4088.932 L53.708,4088.932 Z M50.884,4084 L56.884,4084 C59.641,4084 61.884,4086.243 61.884,4089 C61.884,4091.757 59.641,4094 56.884,4094 L50.884,4094 C48.127,4094 45.884,4091.757 45.884,4089 C45.884,4086.243 48.127,4084 50.884,4084 L50.884,4084 Z M64,4089 C64,4085.134 60.866,4082 57,4082 L51,4082 C47.134,4082 44,4085.134 44,4089 L44,4089 C44,4092.866 47.134,4096 51,4096 L57,4096 C60.866,4096 64,4092.866 64,4089 L64,4089 Z"
+                                  />
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="disponivel"
+                          >
+                            <option value="">
+                              Carregando disponibilidade...
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label
+                          for="promocao_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Promoção</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M7.25 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5zm-1.543 9.207a1 1 0 0 1-1.414-1.414l14-14a1 1 0 1 1 1.414 1.414l-14 14zM13 17.25a3.75 3.75 0 1 0 7.5 0 3.75 3.75 0 0 0-7.5 0zM7.25 8.5a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5zm11.25 8.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <select
+                            class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
+                            id="promocao_produto"
+                          >
+                            <option value="">Carregando promoções...</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-12">
+                        <label
+                          for="descricao_produto"
+                          class="form-label text-muted small fw-medium"
+                          >Descrição</label
+                        >
+                        <div class="position-relative">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="position-absolute ms-3 mt-3 text-muted"
+                          >
+                            <path
+                              d="M2,3 L14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M2,7 L14,7 C14.5522847,7 15,7.44771525 15,8 C15,8.55228475 14.5522847,9 14,9 L2,9 C1.44771525,9 1,8.55228475 1,8 C1,7.44771525 1.44771525,7 2,7 Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M1.88888889,11 L8.11111111,11 C8.60203089,11 9,11.4477153 9,12 C9,12.5522847 8.60203089,13 8.11111111,13 L1.88888889,13 C1.39796911,13 1,12.5522847 1,12 C1,11.4477153 1.39796911,11 1.88888889,11 Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <textarea
+                            class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-3"
+                            id="descricao_produto"
+                            placeholder="Ex: Descrição do produto"
+                            rows="3"
+                          ></textarea>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <label
-                      for="promocao_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Promoção</label
+                  <div class="col-md-5">
+                    <div
+                      class="d-flex flex-column justify-content-center h-100"
                     >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute top-50 translate-middle-y ms-3 text-muted"
+                      <label
+                        for="imagem_produto"
+                        class="form-label text-muted small fw-medium"
+                        >Imagem</label
                       >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M7.25 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5zm-1.543 9.207a1 1 0 0 1-1.414-1.414l14-14a1 1 0 1 1 1.414 1.414l-14 14zM13 17.25a3.75 3.75 0 1 0 7.5 0 3.75 3.75 0 0 0-7.5 0zM7.25 8.5a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5zm11.25 8.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0z"
-                          fill="currentColor"
+                      <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                        <img
+                          id="preview_imagem_produto"
+                          src="/public/assets/images/placeholder-image.svg"
+                          alt="Preview da imagem"
+                          class="img-fluid rounded-4 d-block bg-body-secondary"
+                          style="max-height: 300px"
                         />
-                      </svg>
-                      <select
-                        class="form-select border-0 bg-body-secondary rounded-4 ps-5 py-2"
-                        id="promocao_produto"
-                      >
-                        <option value="">Carregando promoções...</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-5 mb-3">
-                    <label
-                      for="imagem_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Imagem</label
-                    >
-                    <input
-                      type="file"
-                      class="form-control border-0 bg-body-secondary rounded-4"
-                      id="imagem_produto"
-                      accept="image/*"
-                    />
-                  </div>
-                  <div class="col-12 col-md-7">
-                    <label
-                      for="descricao_produto"
-                      class="form-label text-muted small fw-medium"
-                      >Descrição</label
-                    >
-                    <div class="position-relative">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="position-absolute ms-3 mt-3 text-muted"
-                      >
-                        <path
-                          d="M2,3 L14,3 C14.5522847,3 15,3.44771525 15,4 C15,4.55228475 14.5522847,5 14,5 L2,5 C1.44771525,5 1,4.55228475 1,4 C1,3.44771525 1.44771525,3 2,3 Z"
-                          fill="currentColor"
+                        <input
+                          type="file"
+                          class="form-control border-0 bg-body-secondary rounded-4 flex-grow-1 mt-3 mt-md-0"
+                          id="imagem_produto"
+                          accept="image/*"
                         />
-                        <path
-                          d="M2,7 L14,7 C14.5522847,7 15,7.44771525 15,8 C15,8.55228475 14.5522847,9 14,9 L2,9 C1.44771525,9 1,8.55228475 1,8 C1,7.44771525 1.44771525,7 2,7 Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M1.88888889,11 L8.11111111,11 C8.60203089,11 9,11.4477153 9,12 C9,12.5522847 8.60203089,13 8.11111111,13 L1.88888889,13 C1.39796911,13 1,12.5522847 1,12 C1,11.4477153 1.39796911,11 1.88888889,11 Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <textarea
-                        class="form-control border-0 bg-body-secondary rounded-4 ps-5 py-3"
-                        id="descricao_produto"
-                        placeholder="Ex: Descrição do produto"
-                        rows="3"
-                      ></textarea>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -693,7 +719,11 @@
                   </button>
                 </div>
                 <!-- Mensagem de sucesso/erro -->
-                <div id="produtoMsg" class="text-center mt-3" style="display:none;"></div>
+                <div
+                  id="produtoMsg"
+                  class="text-center mt-3"
+                  style="display: none"
+                ></div>
               </form>
             </div>
 

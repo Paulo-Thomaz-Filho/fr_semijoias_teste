@@ -19,6 +19,7 @@ html {
   --color-primary: #e3e7fd;
   --color-primary-text: #3b5bfd;
   --color-focus: #003d82;
+  --bs-body-secondary: #dee2e6;
 }
 
 .gap-6 {
@@ -322,15 +323,11 @@ button:focus {
   opacity: 1;
 }
 
-.categoria-link.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: var(--bs-dark);
+.categoria-link.active {
+  background-color: var(--bs-body-secondary);
+  color: var(--bs-dark);
   border-radius: 50px;
+  padding: 8px 24px;
 }
 
 #categorias-menu span {

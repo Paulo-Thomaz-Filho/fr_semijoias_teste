@@ -62,34 +62,19 @@ try {
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {
-        // 3. SE SALVOU NO BANCO, ENVIAR O E-MAIL DE ATIVAÇÃO
-        // URL base do sistema (ajuste conforme seu ambiente)
+        // 1. Enviar e-mail de ativação de conta
         $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
         $linkDeAtivacao = $baseUrl . "/ativar?token=" . $token;
-        
-        // Gerar o HTML do email usando o template profissional
-        $corpoEmail = app\core\utils\EmailTemplate::emailAtivacaoConta($nome, $linkDeAtivacao, $token);
-        
-        // Enviar email usando PHPMailer
+        $corpoEmailAtivacao = app\core\utils\EmailTemplate::emailAtivacaoConta($nome, $linkDeAtivacao, $token);
         try {
-            // 1. Email de ativação de conta
-            $mail = new app\core\utils\Mail($email, 'Ative sua conta - FR Semijoias', $corpoEmail);
-            $mail->send();
-            
-            // 2. Email de boas-vindas
-            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-            $linkLogin = $baseUrl . "/login";
-            $corpoBoasVindas = app\core\utils\EmailTemplate::emailBoasVindas($nome, $email, $linkLogin);
-            $mailBoasVindas = new app\core\utils\Mail($email, 'Bem-vindo(a) à FR Semijoias!', $corpoBoasVindas);
-            $mailBoasVindas->send();
-            
+            $mailAtivacao = new app\core\utils\Mail($email, 'Confirmação de cadastro - FR Semijoias', $corpoEmailAtivacao);
+            $mailAtivacao->send();
             http_response_code(201);
             echo json_encode([
-                'sucesso' => 'Cadastro realizado com sucesso!', 
+                'sucesso' => 'Cadastro realizado com sucesso!',
                 'mensagem' => 'Enviamos um email para ' . $email . ' com as instruções para ativar sua conta.'
             ], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
-            // Mesmo que o email falhe, o usuário foi cadastrado
             http_response_code(201);
             echo json_encode([
                 'sucesso' => 'Cadastro realizado!',

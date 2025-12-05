@@ -51,17 +51,28 @@ try {
     $usuario->setTokenAtivacao(null);
     
     if ($usuarioDAO->update($usuario)) {
+        $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+        $linkLogin = $baseUrl . "/login";
+        $nomeUsuario = $usuario->getNome();
+        $emailUsuario = $usuario->getEmail();
+        // Enviar email de conta ativada
         try {
-            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-            $linkLogin = $baseUrl . "/login";
-            
-            $corpoEmail = app\core\utils\EmailTemplate::emailContaAtivada($usuario->getNome(), $linkLogin);
-            $mail = new app\core\utils\Mail($usuario->getEmail(), 'Conta Ativada - FR Semijoias', $corpoEmail);
-            $mail->send();
+            $corpoEmailAtivada = app\core\utils\EmailTemplate::emailContaAtivada($nomeUsuario, $linkLogin);
+            $mailAtivada = new app\core\utils\Mail($emailUsuario, 'Conta Ativada - FR Semijoias', $corpoEmailAtivada);
+            $mailAtivada->send();
         } catch (\Exception $e) {
-            error_log("Erro ao enviar email de confirmação: " . $e->getMessage());
+            error_log("Erro ao enviar email de confirmação de ativação: " . $e->getMessage());
         }
-        
+
+        // Enviar email de boas-vindas
+        try {
+            $corpoEmailBoasVindas = app\core\utils\EmailTemplate::emailBoasVindas($nomeUsuario, $emailUsuario, $linkLogin);
+            $mailBoasVindas = new app\core\utils\Mail($emailUsuario, 'Bem-vindo(a) à FR Semijoias!', $corpoEmailBoasVindas);
+            $mailBoasVindas->send();
+        } catch (\Exception $e) {
+            error_log("Erro ao enviar email de boas-vindas: " . $e->getMessage());
+        }
+
         echo json_encode([
             'sucesso' => 'Conta ativada com sucesso!',
             'mensagem' => 'Sua conta foi ativada. Agora você pode fazer login.'

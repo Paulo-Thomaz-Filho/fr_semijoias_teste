@@ -1,5 +1,6 @@
 // Script completo para gerenciamento de produtos
 document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
     // Atualiza promoções/produtos ao receber evento global
     window.addEventListener('promocaoAtualizada', async function() {
         await carregarPromocoes();
@@ -21,6 +22,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCadastrarProduto = document.getElementById('btnCadastrarProduto');
     const btnAtualizarProduto = document.getElementById('btnAtualizarProduto');
     const btnExcluirProduto = document.getElementById('btnExcluirProduto');
+
+    // Atualiza preview da imagem ao selecionar arquivo
+    inputImagem.addEventListener('change', function(e) {
+        const previewImg = document.getElementById('preview_imagem_produto');
+        const file = e.target.files[0];
+        // Não bloqueia o comportamento padrão do input
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                previewImg.src = ev.target.result;
+                previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImg.src = '/public/assets/images/placeholder-image.svg';
+            previewImg.style.display = 'block';
+        }
+    });
 
     // Mapeamento de promoções por id
     let mapaPromocoes = {};
@@ -336,6 +355,15 @@ document.addEventListener('DOMContentLoaded', function() {
             btnCadastrarProduto.disabled = true;
             btnAtualizarProduto.disabled = false;
             btnExcluirProduto.disabled = false;
+            // Preview da imagem cadastrada
+            const previewImg = document.getElementById('preview_imagem_produto');
+            if (produto.caminhoImagem) {
+                previewImg.src = 'assets/images/' + produto.caminhoImagem;
+                previewImg.style.display = 'block';
+            } else {
+                previewImg.src = '/public/assets/images/placeholder-image.svg';
+                previewImg.style.display = 'block';
+            }
             formProduto.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {
             console.error('Erro ao selecionar produto:', error);
@@ -353,18 +381,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Produto cadastrado com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
@@ -398,18 +424,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Produto atualizado com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
@@ -445,19 +469,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             const msgDiv = document.getElementById('produtoMsg');
             if (response.ok) {
+                // Limpa apenas os campos do formulário, mas mantém a mensagem visível
+                limparFormulario();
                 if (msgDiv) {
                     msgDiv.textContent = 'Produto excluído com sucesso!';
                     msgDiv.className = 'text-success text-center mt-3';
                     msgDiv.style.display = 'block';
-                }
-                setTimeout(() => {
-                    limparFormulario();
-                    if (msgDiv) {
+                    setTimeout(() => {
                         msgDiv.style.display = 'none';
                         msgDiv.textContent = '';
                         msgDiv.className = 'text-center mt-3';
-                    }
-                }, 1500);
+                    }, 1500);
+                }
                 carregarProdutos();
                 if (typeof window.carregarGraficoPizza === 'function') window.carregarGraficoPizza();
                 if (typeof window.atualizarDashboard === 'function') window.atualizarDashboard();
@@ -485,6 +508,17 @@ document.addEventListener('DOMContentLoaded', function() {
         btnAtualizarProduto.disabled = true;
         btnExcluirProduto.disabled = true;
         tabelaProdutos && tabelaProdutos.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+
+        // Resetar preview da imagem para o SVG padrão
+        const previewImg = document.getElementById('preview_imagem_produto');
+        if (previewImg) {
+            previewImg.src = '/public/assets/images/placeholder-image.svg';
+            previewImg.style.display = 'block';
+        }
+        // Limpar input file
+        if (inputImagem) {
+            inputImagem.value = '';
+        }
     };
 
     // Event listener para o formulário

@@ -74,9 +74,9 @@ try {
     $preference = $client->create([
         "items" => $items,
         "back_urls" => [
-            "success" => "https://frsemijoias.ifhost.gru.br/sucesso",
-            "failure" => "https://frsemijoias.ifhost.gru.br/erro",
-            "pending" => "https://frsemijoias.ifhost.gru.br/pendente"
+            "success" => "https://frsemijoias.ifhost.gru.br/pagamento/sucesso",
+            "failure" => "https://frsemijoias.ifhost.gru.br/pagamento/cancelado",
+            "pending" => "https://frsemijoias.ifhost.gru.br/pagamento/pendente"
         ],
         "auto_return" => "approved",
         "external_reference" => $id_pedido

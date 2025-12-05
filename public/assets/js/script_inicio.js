@@ -40,14 +40,14 @@ function criarCardCatalogoHtml(product) {
   const imagemSrc = "assets/images/" + product.caminhoImagem;
   return `
     <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
-      <div class="w-100 d-flex flex-column rounded-4 bg-white border border-1">
+      <div class="w-100 d-flex flex-column pt-3 px-3 rounded-4 bg-white border border-1">
         <div class="position-relative overflow-hidden" style="padding-top: 100%;">
-          <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+          <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute rounded-3 top-0 start-0 w-100 h-100 object-fit-cover">
         </div>
         <div class="p-3 d-flex flex-column flex-grow-1">
           <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
           <p class="product-card-price fs-5 fw-bold text-dark">${precoFormatado}</p>
-          <div class="mt-auto pt-2">
+          <div class="mt-3">
             <button class="btn btn-outline-dark rounded-4 fw-medium px-5 py-2 w-100 border-2"
               data-bs-toggle="modal"
               data-bs-target="#productModal"
@@ -172,7 +172,7 @@ class CatalogPage {
         id: product.idProduto,
         nome: product.nome,
         preco: product.preco,
-        imagem: product.caminhoImagem,
+        caminhoImagem: product.caminhoImagem,
         quantity: quantityToAdd,
       });
     }

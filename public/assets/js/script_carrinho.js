@@ -44,14 +44,14 @@ $(document).ready(function () {
               item.preco
             }" data-id="${item.id}"> 
                 <div class="card-body">
-                    <div class="row g-3 align-items-center">
+                    <div class="row g-4 align-items-center">
                         <div class="col-12 col-md-2 text-center">
-                            <img src="assets/images/${
-                              item.imagem
-                            }" class="img-fluid rounded" alt="${item.nome}" style="max-height: 100px;">
+                            <img src="../assets/images/${
+                              item.caminhoImagem && item.caminhoImagem !== 'undefined' && item.caminhoImagem !== '' ? item.caminhoImagem : 'placeholder-image.svg'
+                            }" class="img-fluid rounded" alt="${item.nome}"">
                         </div>
                         <div class="col-12 col-md-6">
-                            <h6 class="mb-1">${item.nome}</h6>
+                            <h6 class="mb-2">${item.nome}</h6>
                             <div class="input-group" style="max-width: 120px;">
                                 <button class="btn btn-outline-secondary btn-decrease rounded-start-pill" type="button">−</button>
                                 <input type="number" class="form-control text-center quantity" value="${
@@ -257,4 +257,83 @@ $(document).ready(function () {
     );
   }
   carregarCarrinho();
+    // ----------- FINALIZAR COMPRA -----------
+    $("#btn-finalizar-compra").on("click", function () {
+      // Coleta produtos do carrinho
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.length === 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "Carrinho vazio",
+          text: "Adicione produtos ao carrinho antes de finalizar a compra."
+        });
+        return;
+      }
+
+      // Coleta cliente logado
+      const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+      if (!usuario || !usuario.id) {
+        Swal.fire({
+          icon: "warning",
+          title: "Usuário não identificado",
+          text: "Faça login para finalizar a compra."
+        });
+        return;
+      }
+
+      // Monta payload para o backend
+      const produtos = cart.map(item => ({
+        produto_nome: item.nome,
+        preco: item.preco,
+        quantidade: item.quantity
+      }));
+      const formData = new FormData();
+      formData.append('id_cliente', usuario.id);
+      formData.append('produtos', JSON.stringify(produtos));
+      formData.append('endereco', usuario.endereco || 'Endereço não informado');
+      // Apenas os campos esperados pelo backend
+      fetch('/pedidos/salvar', {
+        method: 'POST',
+        body: formData
+      })
+        .then(async response => {
+          let data;
+          try {
+            data = await response.json();
+          } catch (e) {
+            data = { erro: 'Resposta inválida do servidor.' };
+          }
+          if (response.ok || response.status === 201) {
+            if (data.sucesso) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Pedido realizado!',
+                text: data.sucesso
+              });
+              localStorage.removeItem('cart');
+              carregarCarrinho();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erro ao finalizar',
+                text: data.erro || 'Ocorreu um erro ao finalizar a compra. Tente novamente.'
+              });
+            }
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro ao finalizar',
+              text: data.erro || 'Ocorreu um erro ao finalizar a compra. Tente novamente.'
+            });
+          }
+        })
+        .catch((err) => {
+          console.log('Erro no fetch:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro de conexão',
+            text: 'Não foi possível conectar ao servidor. Tente novamente.'
+          });
+        });
+    });
 });

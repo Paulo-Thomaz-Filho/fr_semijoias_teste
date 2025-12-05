@@ -329,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(endpoint, { method: 'POST', body: dados });
             const resultado = await response.json();
             if (!response.ok) throw new Error(resultado.erro || 'Erro ao salvar promoção.');
+            limparFormulario();
             exibirMensagemPromocao(`Promoção ${promocaoSelecionada ? 'atualizada' : 'cadastrada'} com sucesso!`, 'success');
             setTimeout(() => {
-                limparFormulario();
                 limparMensagemPromocao();
             }, 1500);
             carregarPromocoes();
@@ -356,9 +356,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/promocoes/deletar?id=${promocaoSelecionada}`, { method: 'DELETE' });
             const resultado = await response.json();
             if (!response.ok) throw new Error(resultado.erro || 'Erro ao excluir promoção.');
+            // Limpa apenas os campos do formulário, mas mantém a mensagem visível
+            limparFormulario();
             exibirMensagemPromocao('Promoção excluída com sucesso!', 'success');
             setTimeout(() => {
-                limparFormulario();
                 limparMensagemPromocao();
             }, 1500);
             carregarPromocoes();

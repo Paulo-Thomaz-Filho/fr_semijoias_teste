@@ -46,7 +46,6 @@ try {
         exit;
     }
 
-
     if (!$id_status || !is_numeric($id_status)) {
         http_response_code(400);
         echo json_encode(['erro' => 'Status inválido.'], JSON_UNESCAPED_UNICODE);
@@ -73,8 +72,32 @@ try {
         $descricao
     );
 
+    $statusNome = strtolower($statusObj->getNome());
+    $emailEnviado = false;
+    if ($statusNome === 'aprovado' || $statusNome === 'sucesso') {
+        // Enviar email de confirmação de pedido realizado
+        require_once $rootPath . '/app/models/UsuarioDAO.php';
+        require_once $rootPath . '/app/core/utils/EmailTemplate.php';
+        require_once $rootPath . '/app/core/utils/Mail.php';
+        $usuarioDAO = new \app\models\UsuarioDAO();
+        $usuario = $usuarioDAO->getById($id_cliente);
+        if ($usuario) {
+            $nomeUsuario = $usuario->getNome();
+            $emailUsuario = $usuario->getEmail();
+            $numeroPedido = $pedidoArray['idPedido'];
+            $linkPedido = $_ENV['SITE_URL'] . '/pedido.html?id=' . $numeroPedido;
+            $htmlEmail = \app\core\utils\EmailTemplate::emailPedidoRealizado($nomeUsuario, $numeroPedido, $linkPedido);
+            $mail = new \app\core\utils\Mail($emailUsuario, 'Pedido Confirmado - FR Semijoias', $htmlEmail);
+            $emailEnviado = $mail->send();
+        }
+    }
+
     if ($pedidoDAO->update($pedidoExistente)) {
-        echo json_encode(['sucesso' => 'Pedido atualizado com sucesso!'], JSON_UNESCAPED_UNICODE);
+        $response = ['sucesso' => 'Pedido atualizado com sucesso!'];
+        if ($emailEnviado) {
+            $response['email'] = 'Email de confirmação enviado.';
+        }
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(500);
         echo json_encode(['erro' => 'Erro ao atualizar o pedido.'], JSON_UNESCAPED_UNICODE);

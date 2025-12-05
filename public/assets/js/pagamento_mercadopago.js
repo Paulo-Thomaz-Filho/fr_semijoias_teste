@@ -80,9 +80,14 @@ $(document).ready(function () {
       processData: false,
       contentType: false,
       success: function (pedidoResponse) {
-        if (pedidoResponse.id) {
-          const idPedido = pedidoResponse.id;
+        let idPedido = null;
+        if (pedidoResponse.ids && Array.isArray(pedidoResponse.ids) && pedidoResponse.ids.length > 0) {
+          idPedido = pedidoResponse.ids[0];
+        } else if (pedidoResponse.id) {
+          idPedido = pedidoResponse.id;
+        }
 
+        if (idPedido) {
           // PASSO 2: Criar preferência de pagamento com o ID do pedido
           const items = cart.map((item) => ({
             title: item.nome,

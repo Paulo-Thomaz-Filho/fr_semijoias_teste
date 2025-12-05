@@ -38,6 +38,10 @@ try {
         echo json_encode(['erro' => 'Erro ao excluir o produto.'], JSON_UNESCAPED_UNICODE);
     }
 } catch (\Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        http_response_code(500);
+        if (strpos($e->getMessage(), 'Integrity constraint violation') !== false && strpos($e->getMessage(), 'FOREIGN KEY') !== false) {
+            echo json_encode(['erro' => 'Não é possível excluir o produto porque ele está vinculado a pedidos.'], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        }
 }

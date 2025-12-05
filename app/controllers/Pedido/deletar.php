@@ -39,5 +39,9 @@ try {
     }
 } catch (\Throwable $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    if (strpos($e->getMessage(), 'Integrity constraint violation') !== false && strpos($e->getMessage(), 'FOREIGN KEY') !== false) {
+        echo json_encode(['erro' => 'Não é possível excluir o pedido porque ele está vinculado a outros dados.'], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(['erro' => 'Erro interno: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    }
 }

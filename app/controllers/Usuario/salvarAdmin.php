@@ -49,21 +49,21 @@ try {
     $novoUsuario->setCpf($cpf);
     $novoUsuario->setDataNascimento($data_nascimento);
     $novoUsuario->setStatus('ativo'); 
-    $novoUsuario->setTokenAtivacao(null);
+    $novoUsuario->setTokenAtivacao(null); // Não envia email de ativação
     
     $idInserido = $usuarioDAO->insert($novoUsuario);
     
     if ($idInserido) {
         // Enviar email de boas-vindas
         try {
+            require_once $rootPath . '/vendor/autoload.php';
             require_once $rootPath . '/app/core/utils/Mail.php';
             require_once $rootPath . '/app/core/utils/EmailTemplate.php';
-            
-            $linkLogin = 'http://frsemijoias.ifhost.gru.br/public/views/login.html';
+            // Só envia email de boas-vindas, sem ativação
+            $linkLogin = 'https://frsemijoias.ifhost.gru.br/public/views/login.html';
             $htmlEmail = \app\core\utils\EmailTemplate::emailBoasVindas($nome, $email, $linkLogin);
-            
-            $mail = new \app\core\utils\Mail();
-            $mail->enviarEmail($email, $nome, 'Bem-vindo à FR Semijoias', $htmlEmail);
+            $mail = new \app\core\utils\Mail($email, 'Bem-vindo à FR Semijoias', $htmlEmail);
+            $mail->send();
         } catch (\Exception $e) {
             // Falha no email não deve impedir o cadastro
             error_log("Erro ao enviar email de boas-vindas: " . $e->getMessage());

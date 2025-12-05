@@ -46,7 +46,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -152,7 +152,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -219,7 +219,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -311,7 +311,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -337,7 +337,7 @@ class EmailTemplate {
                                                     <strong>Email:</strong> {$email}
                                                 </p>
                                                 <p style='margin: 0; color: #555555; font-size: 14px;'>
-                                                    <strong>Senha:</strong> A senha que você cadastrou
+                                                    <strong>Senha:</strong> A senha que foi cadastrada
                                                 </p>
                                             </td>
                                         </tr>
@@ -391,6 +391,7 @@ class EmailTemplate {
      * @return string HTML do email
      */
     public static function emailPedidoRealizado($nomeUsuario, $numeroPedido, $linkPedido) {
+        $linkDetalhes = 'https://frsemijoias.ifhost.gru.br/dados-usuario';
         $conteudo = "
             <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 40px 20px;'>
                 <tr>
@@ -399,7 +400,7 @@ class EmailTemplate {
                             <!-- Header -->
                             <tr>
                                 <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
-                                    <img src='http://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
                                 </td>
                             </tr>
                             
@@ -420,7 +421,7 @@ class EmailTemplate {
                                     <table role='presentation' style='width: 100%; margin: 32px 0;'>
                                         <tr>
                                             <td align='center'>
-                                                <a href='{$linkPedido}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
+                                                <a href='{$linkDetalhes}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
                                                     📦 Ver Detalhes do Pedido
                                                 </a>
                                             </td>

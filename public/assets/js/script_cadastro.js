@@ -104,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     const realizarCadastro = async (cadastroData) => {
         try {
-            console.log('Enviando dados do cadastro via FormData');
-            
             const formData = new FormData();
             formData.append('nome', cadastroData.nome);
             formData.append('email', cadastroData.email);
@@ -136,7 +134,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     btnSignIn.click();
                 }
             } else {
-                alert('Erro ao cadastrar: ' + (data.erro || 'Verifique os dados e tente novamente.'));
+                const errorDiv = document.getElementById('cadastroErrorMsg');
+                let errorMsg = data.erro || 'Verifique os dados e tente novamente.';
+                if (errorDiv) {
+                    errorDiv.textContent = errorMsg;
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => {
+                        errorDiv.style.display = 'none';
+                        errorDiv.textContent = '';
+                    }, 4000);
+                } else {
+                    alert('Erro ao cadastrar: ' + errorMsg);
+                }
             }
             
         } catch (error) {

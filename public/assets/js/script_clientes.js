@@ -105,13 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnExcluirCliente.disabled = true;
         // Remover seleção da tabela
         tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
-        // Esconder mensagem
-        const msgDiv = document.getElementById('clienteMsg');
-        if (msgDiv) {
-            msgDiv.style.display = 'none';
-            msgDiv.textContent = '';
-            msgDiv.className = 'text-center mt-3';
-        }
+        // Não limpa a mensagem aqui, para não sumir ao excluir
     };
 
     // -------------------------------------------------------------------------
@@ -387,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     try {
-        const response = await fetch('/usuario/salvarAdmin', {
+        const response = await fetch('/usuario/salvar-admin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -409,15 +403,15 @@ document.addEventListener('DOMContentLoaded', function() {
             msgDiv.className = 'text-success text-center mt-3';
             msgDiv.style.display = 'block';
         }
+        formCliente.reset();
+        inputId.value = 'Auto';
+        inputStatus.value = 'Pendente';
+        clienteSelecionado = null;
+        btnCadastrarCliente.disabled = false;
+        btnAtualizarCliente.disabled = true;
+        btnExcluirCliente.disabled = true;
+        tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
         setTimeout(() => {
-            formCliente.reset();
-            inputId.value = 'Auto';
-            inputStatus.value = 'Pendente';
-            clienteSelecionado = null;
-            btnCadastrarCliente.disabled = false;
-            btnAtualizarCliente.disabled = true;
-            btnExcluirCliente.disabled = true;
-            tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
             if (msgDiv) {
                 msgDiv.style.display = 'none';
                 msgDiv.textContent = '';
@@ -493,8 +487,17 @@ const atualizarCliente = async () => {
             msgDiv.className = 'text-success text-center mt-3';
             msgDiv.style.display = 'block';
         }
+        // Limpa apenas os campos do formulário, mas mantém a mensagem visível
+        formCliente.reset();
+        inputId.value = 'Auto';
+        inputStatus.value = 'Pendente';
+        clienteSelecionado = null;
+        btnCadastrarCliente.disabled = false;
+        btnAtualizarCliente.disabled = true;
+        btnExcluirCliente.disabled = true;
+        tabelaCorpo && tabelaCorpo.querySelectorAll('tr').forEach(row => row.classList.remove('table-active'));
+        // Só limpa a mensagem após o timeout
         setTimeout(() => {
-            limparFormulario();
             if (msgDiv) {
                 msgDiv.style.display = 'none';
                 msgDiv.textContent = '';
@@ -543,8 +546,8 @@ const excluirCliente = async () => {
             msgDiv.className = 'text-success text-center mt-3';
             msgDiv.style.display = 'block';
         }
+        limparFormulario();
         setTimeout(() => {
-            limparFormulario();
             if (msgDiv) {
                 msgDiv.style.display = 'none';
                 msgDiv.textContent = '';

@@ -740,49 +740,29 @@
                         Itens do Pedido
                       </h5>
                       <div class="rounded table-scroll">
+                        <!-- Tabela para desktop -->
                         <table
                           id="tabelaItensPedido"
-                          class="table table-borderless table-transparent table-sm mb-0"
+                          class="table table-borderless table-transparent table-sm mb-0 d-none d-md-table"
                         >
                           <thead class="position-sticky bg-body-secondary">
                             <tr class="border-bottom">
-                              <th
-                                scope="col"
-                                class="text-muted fw-medium small pb-2"
-                              >
-                                Produto
-                              </th>
-                              <th
-                                scope="col"
-                                class="text-muted fw-medium small pb-2"
-                              >
-                                Quantidade
-                              </th>
-                              <th
-                                scope="col"
-                                class="text-muted fw-medium small pb-2"
-                              >
-                                Preço (R$)
-                              </th>
-                              <th
-                                scope="col"
-                                class="text-muted fw-medium small pb-2"
-                              >
-                                Ação
-                              </th>
+                              <th scope="col" class="text-muted fw-medium small pb-2">Produto</th>
+                              <th scope="col" class="text-muted fw-medium small pb-2">Quantidade</th>
+                              <th scope="col" class="text-muted fw-medium small pb-2">Preço (R$)</th>
+                              <th scope="col" class="text-muted fw-medium small pb-2">Ação</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr id="linhaVaziaItensPedido">
-                              <td
-                                colspan="4"
-                                class="text-center py-3 text-muted"
-                              >
-                                Nenhum item adicionado.
-                              </td>
+                              <td colspan="4" class="text-center py-3 text-muted">Nenhum item adicionado.</td>
                             </tr>
                           </tbody>
                         </table>
+                        <!-- Cards para mobile -->
+                        <div id="cardsItensPedido" class="d-block d-md-none">
+                          <div class="text-center py-3 text-muted">Nenhum item adicionado.</div>
+                        </div>
                       </div>
                     </div>
                   </div>

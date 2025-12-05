@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (emailError) {
                     emailError.textContent = data.erro || 'Credenciais inválidas.';
                     emailError.style.display = 'block';
+                    setTimeout(() => {
+                        emailError.style.display = 'none';
+                        emailError.textContent = '';
+                    }, 4000);
                 }
             }
             
