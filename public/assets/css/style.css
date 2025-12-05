@@ -256,15 +256,6 @@ button:focus {
   outline: none !important;
 }
 
-#produto-mais-vendido {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 130px;
-  display: block;
-  padding-right: 0.5rem;
-}
-
 #mobileSignIn.btn-dark,
 #mobileSignUp.btn-dark {
   background-color: #212529 !important;
@@ -794,6 +785,25 @@ aside {
     text-overflow: ellipsis;
     max-width: 100px;
   }
+}
+
+/* Promo Badge for Product Cards */
+.promo-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: linear-gradient(90deg, #ff5e62 0%, #ff9966 100%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: bold;
+  padding: 0.35em 0.85em;
+  border-radius: 1.5em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Ajustar paginação no mobile */

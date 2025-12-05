@@ -62,6 +62,7 @@ const carregarEstatisticas = async () => {
         const produtoMaisVendido = document.getElementById('produto-mais-vendido');
         if (produtoMaisVendido) {
             produtoMaisVendido.textContent = dados.produto_mais_pedido || 'N/A';
+            produtoMaisVendido.title = dados.produto_mais_pedido || 'N/A';
         }
         
     } catch (error) {

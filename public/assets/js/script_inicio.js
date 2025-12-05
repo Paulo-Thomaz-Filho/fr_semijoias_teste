@@ -38,11 +38,27 @@ function criarCardCatalogoHtml(product) {
     });
   }
   const imagemSrc = "assets/images/" + product.caminhoImagem;
+
+  // Promo badge logic
+  let promoBadgeHtml = "";
+  if (product.promocao && product.promocao.valor) {
+    let valor = product.promocao.valor;
+    let tipo = product.promocao.tipo; // 'percent' or 'currency'
+    let badgeText = "";
+    if (tipo === "percent") {
+      badgeText = `${valor}% OFF`;
+    } else if (tipo === "currency") {
+      badgeText = `R$ ${parseInt(valor)} OFF`;
+    }
+    promoBadgeHtml = `<span class=\"promo-badge\">${badgeText}</span>`;
+  }
+
   return `
     <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
       <div class="w-100 d-flex flex-column pt-3 px-3 rounded-4 bg-white border border-1">
         <div class="position-relative overflow-hidden" style="padding-top: 100%;">
           <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute rounded-3 top-0 start-0 w-100 h-100 object-fit-cover">
+          ${promoBadgeHtml}
         </div>
         <div class="p-3 d-flex flex-column flex-grow-1">
           <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
@@ -220,6 +236,27 @@ class CatalogPage {
       this.modalDescription.textContent = product.descricao;
     if (this.modalPrice) this.modalPrice.textContent = precoFormatado;
     if (this.modalMaterial) this.modalMaterial.textContent = product.marca;
+
+    // Promo badge in modal
+    var badgeEl = document.getElementById("modal-promo-badge");
+    if (badgeEl) {
+      if (product.promocao && product.promocao.valor) {
+        let valor = product.promocao.valor;
+        let tipo = product.promocao.tipo;
+        let badgeText = "";
+        if (tipo === "percent") {
+          badgeText = `${valor}% OFF`;
+        } else if (tipo === "currency") {
+          badgeText = `R$ ${parseInt(valor)} OFF`;
+        }
+        badgeEl.className = "promo-badge";
+        badgeEl.textContent = badgeText;
+        badgeEl.style.display = "inline-block";
+      } else {
+        badgeEl.style.display = "none";
+        badgeEl.textContent = "";
+      }
+    }
   }
 }
 
@@ -375,21 +412,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     } else {
-      var swiperWrapper = document.querySelector(".swiper-wrapper");
-      if (swiperWrapper) {
-        swiperWrapper.innerHTML =
-          "<p class='text-center text-danger p-5'>Não foi possível carregar os produtos.</p>";
-      }
       console.error("Erro fatal ao buscar produtos: ", xhr.status);
+          var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
+          if (catalogoWrapper) {
+            catalogoWrapper.innerHTML =
+              "<div class='d-flex justify-content-center align-items-center w-100' style='min-height:300px;'><p class='text-center text-danger fs-5'>Não foi possível carregar os produtos.</p></div>";
+          }
     }
   };
   xhr.onerror = function () {
-    var swiperWrapper = document.querySelector(".swiper-wrapper");
-    if (swiperWrapper) {
-      swiperWrapper.innerHTML =
-        "<p class='text-center text-danger p-5'>Não foi possível carregar os produtos.</p>";
-    }
     console.error("Erro fatal ao buscar produtos: ", xhr.status);
+    var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
+    if (catalogoWrapper) {
+      catalogoWrapper.innerHTML =
+        "<div class='d-flex justify-content-center align-items-center w-100' style='min-height:300px;'><p class='text-center text-danger fs-5'>Não foi possível carregar os produtos.</p></div>";
+    }
   };
   xhr.send();
 });

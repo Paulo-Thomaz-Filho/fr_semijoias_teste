@@ -14,10 +14,29 @@ try {
     $promocaoDAO->removerPromocoesExpiradasDosProdutos();
 
     $produtoDAO = new \app\models\ProdutoDAO();
+    $promocaoDAO = new \app\models\PromocaoDAO();
     $produtos = $produtoDAO->getAll();
     $produtosArray = [];
     foreach ($produtos as $produto) {
-        $produtosArray[] = $produto->toArray();
+        $arr = $produto->toArray();
+        // Se o produto tem promoção, inclui detalhes
+        if (!empty($arr['idPromocao'])) {
+            $promocao = $promocaoDAO->getById($arr['idPromocao']);
+            if ($promocao) {
+                $tipo = $promocao->getTipoDesconto();
+                $valor = $promocao->getDesconto();
+                if ($tipo === 'percentual') {
+                    $valorFormatado = intval($valor);
+                } else {
+                    $valorFormatado = round($valor);
+                }
+                $arr['promocao'] = [
+                    'valor' => $valorFormatado,
+                    'tipo' => ($tipo === 'percentual' ? 'percent' : 'currency'),
+                ];
+            }
+        }
+        $produtosArray[] = $arr;
     }
     echo json_encode($produtosArray, JSON_UNESCAPED_UNICODE);
 } catch (\Throwable $e) {
