@@ -1,4 +1,19 @@
-﻿// =============================================================================
+﻿// Logout global para dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    var btnsLogout = document.querySelectorAll('.btn-logout-dashboard');
+    btnsLogout.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/usuario/logout')
+                .then(function() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '/login';
+                });
+        });
+    });
+});
+// =============================================================================
 // SCRIPT DO DASHBOARD
 // =============================================================================
 
@@ -58,11 +73,11 @@ const carregarEstatisticas = async () => {
             vendasMes.textContent = vendas + (vendas === 1 ? ' Venda' : ' Vendas');
         }
         
-        // Card 4: Produto Mais Vendido
-        const produtoMaisVendido = document.getElementById('produto-mais-vendido');
-        if (produtoMaisVendido) {
-            produtoMaisVendido.textContent = dados.produto_mais_pedido || 'N/A';
-            produtoMaisVendido.title = dados.produto_mais_pedido || 'N/A';
+        // Card 4: Categoria Mais Vendida
+        const categoriaMaisVendida = document.getElementById('categoria-mais-vendida');
+        if (categoriaMaisVendida) {
+            categoriaMaisVendida.textContent = dados.categoria_mais_vendida || 'N/A';
+            categoriaMaisVendida.title = dados.categoria_mais_vendida || 'N/A';
         }
         
     } catch (error) {
@@ -150,6 +165,7 @@ const carregarPedidosRecentes = async () => {
             if (statusClass === 'pendente') statusClass = 'pending';
             if (statusClass === 'enviado') statusClass = 'sent';
             if (statusClass === 'aprovado') statusClass = 'green';
+            if (statusClass === 'entregue') statusClass = 'green';
             if (statusClass === 'cancelado') statusClass = 'danger';
             
             const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;

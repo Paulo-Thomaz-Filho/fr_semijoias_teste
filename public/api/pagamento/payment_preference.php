@@ -4,14 +4,14 @@ header('Content-Type: application/json; charset=utf-8');
 
 try {
     // 1. Carregar autoload do Composer
-    $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+    $autoloadPath = __DIR__ . '/../../../vendor/autoload.php';
     if (!file_exists($autoloadPath)) {
         throw new Exception('Vendor autoload não encontrado');
     }
     require_once $autoloadPath;
     
     // 2. Carregar variáveis de ambiente do .env
-    $envPath = __DIR__ . '/../.env';
+    $envPath = __DIR__ . '/../../../.env';
     if (file_exists($envPath)) {
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {

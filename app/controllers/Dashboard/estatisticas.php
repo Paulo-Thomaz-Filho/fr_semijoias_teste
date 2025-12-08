@@ -27,25 +27,28 @@ try {
     $stmtVendasMes->execute();
     $vendasMes = $stmtVendasMes->fetch(\PDO::FETCH_ASSOC)['vendas_mes'];
 
-    // 4. Produto Mais Pedido
-    $sqlMaisPedido = "
-        SELECT produto_nome, SUM(quantidade) as total_pedido
-        FROM pedidos
-        GROUP BY produto_nome
-        ORDER BY total_pedido DESC
+
+    // 4. Categoria Mais Vendida
+    $sqlCategoriaMaisVendida = "
+        SELECT p.categoria, SUM(pe.quantidade) as total_vendida
+        FROM pedidos pe
+        JOIN produtos p ON pe.id_produto = p.id_produto
+        GROUP BY p.categoria
+        ORDER BY total_vendida DESC
         LIMIT 1
     ";
-    $stmtMaisPedido = $conn->prepare($sqlMaisPedido);
-    $stmtMaisPedido->execute();
-    $maisPedido = $stmtMaisPedido->fetch(\PDO::FETCH_ASSOC);
-    $produtoMaisPedido = $maisPedido ? $maisPedido['produto_nome'] : 'N/A';
+    $stmtCategoriaMaisVendida = $conn->prepare($sqlCategoriaMaisVendida);
+    $stmtCategoriaMaisVendida->execute();
+    $catMaisVendida = $stmtCategoriaMaisVendida->fetch(\PDO::FETCH_ASSOC);
+    $categoriaMaisVendida = $catMaisVendida ? $catMaisVendida['categoria'] : 'N/A';
 
     // Monta o objeto de resposta
+
     $resposta = [
         'total_ganhos' => (float) $totalGanhos,
         'total_usuarios' => (int) $totalUsuarios,
         'vendas_mes' => (int) $vendasMes,
-        'produto_mais_pedido' => $produtoMaisPedido
+        'categoria_mais_vendida' => $categoriaMaisVendida
     ];
 
     echo json_encode($resposta, JSON_UNESCAPED_UNICODE);

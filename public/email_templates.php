@@ -64,6 +64,14 @@ use app\core\utils\EmailTemplate;
                 </div>
             </div>
         </div>
+        <div class="template-block">
+            <div class="template-title">Pedido Enviado</div>
+            <div class="template-preview">
+                <div class="template-preview-inner">
+                    <?php echo EmailTemplate::emailPedidoEnviado('Usuário Exemplo', '12345', 'https://frsemijoias.ifhost.gru.br/pedido.html?id=12345'); ?>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

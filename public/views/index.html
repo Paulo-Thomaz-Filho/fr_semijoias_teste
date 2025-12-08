@@ -41,10 +41,10 @@
 
           <!-- Search Form (Desktop) -->
           <form class="d-none d-lg-flex mx-auto w-100" style="max-width: 550px">
-            <div class="input-group ms-5">
+            <div class="input-group ms-5 position-relative">
               <input
                 type="search"
-                class="form-control border border-secondary border-opacity-25 bg-light rounded-start-pill px-4 py-2"
+                class="form-control border border-secondary border-opacity-25 bg-light rounded-pill px-4 py-2"
                 placeholder="Buscar produtos"
                 id="input-search"
                 style="
@@ -53,69 +53,64 @@
                   border-color: rgba(108, 117, 125, 0.25) !important;
                 "
               />
-              <button
-                type="submit"
-                class="btn btn-dark rounded-end-pill px-4 d-flex align-items-center justify-content-center"
-                id="btn-pesquisar"
-              >
+                <span class="bg-dark rounded-circle p-2 position-absolute end-0 top-50 translate-middle-y d-flex align-items-center justify-content-center shadow-sm me-1" style="z-index: 99;">
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                    stroke="currentColor"
+                    stroke="#fff"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-              </button>
+              </span>
             </div>
           </form>
 
           <!-- Search Form (Mobile) -->
           <form class="d-lg-none my-3">
-            <div class="input-group">
+            <div class="input-group position-relative">
               <input
                 type="search"
-                class="form-control border border-secondary border-opacity-25 bg-light rounded-start-pill px-4 py-2"
+                class="form-control border border-secondary border-opacity-25 bg-light rounded-pill px-4 py-2"
                 placeholder="Buscar produtos"
+                id="input-search-mobile"
                 style="
                   outline: none !important;
                   box-shadow: none !important;
                   border-color: rgba(108, 117, 125, 0.25) !important;
+                  padding-right: 2.5rem !important;
                 "
               />
-              <button
-                type="submit"
-                class="btn btn-dark rounded-end-pill px-4 d-flex align-items-center justify-content-center"
-              >
+              <span class="bg-dark rounded-pill p-2 position-absolute end-0 top-50 translate-middle-y d-flex align-items-center justify-content-center shadow-sm me-1" style="z-index: 99;">
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                    stroke="currentColor"
+                    stroke="#fff"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-              </button>
+              </span>
             </div>
           </form>
 
           <!-- User Actions -->
           <div class="d-flex align-items-center gap-5 ms-lg-3">
-            <a href="/dados-usuario" class="text-decoration-none text-secondary" id="user-greeting">
+            <a href="#" class="text-decoration-none text-secondary" id="user-greeting">
               <svg
                 width="32"
                 height="32"
@@ -160,27 +155,26 @@
           </div>
         </div>
       </nav>
+      <!-- Menu de Categorias -->
+      <div class="bg-light border-bottom border-top py-3 w-100">
+        <nav class="container d-flex justify-content-center align-items-center flex-wrap gap-4" id="categorias-menu">
+            <a
+              href="#"
+              class="text-decoration-none text-dark fw-semibold categoria-link active rounded-4 px-3 py-2 fs-6 d-inline-block"
+              data-categoria="inicio"
+            >
+              Início
+            </a>
+            <span class="text-muted"></span>
+            <!-- Categorias serão inseridas aqui via JavaScript -->
+          </nav>
+        </div>
+      </div>
     </header>
 
-    <!-- Menu de Categorias -->
-    <div class="bg-light border-bottom py-3 w-100" style="position:fixed; z-index:100;">
-      <nav class="container d-flex justify-content-center align-items-center flex-wrap gap-4" id="categorias-menu">
-          <a
-            href="#"
-            class="text-decoration-none text-dark fw-semibold categoria-link active rounded-pill px-3 py-2 fs-6 d-inline-block"
-            data-categoria="inicio"
-          >
-            Início
-          </a>
-          <span class="text-muted"></span>
-          <!-- Categorias serão inseridas aqui via JavaScript -->
-        </nav>
-      </div>
-    </div>
-
     <!-- Carrossel Infinite Loop -->
-    <section class="py-5">
-      <div class="px-5"">
+    <section class="pt-5">
+      <div class="px-5">
         <div class="banner-carousel swiper">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
@@ -391,7 +385,7 @@
                   <label class="form-label fw-bold">Quantidade:</label>
                   <div class="input-group" style="max-width: 120px">
                     <button
-                      class="btn btn-outline-secondary modal-btn-decrease rounded-start-pill"
+                      class="btn btn-outline-secondary modal-btn-decrease rounded-start-4"
                       type="button"
                     >
                       −
@@ -404,7 +398,7 @@
                       min="1"
                     />
                     <button
-                      class="btn btn-outline-secondary modal-btn-increase rounded-end-pill"
+                      class="btn btn-outline-secondary modal-btn-increase rounded-end-4"
                       type="button"
                     >
                       +
@@ -414,12 +408,12 @@
 
                 <div class="d-grid gap-2">
                   <button
-                    class="btn btn-dark rounded-pill fw-medium px-5 py-2 w-100"
+                    class="btn btn-dark rounded-4 fw-medium px-5 py-2 w-100"
                   >
                     Comprar Agora
                   </button>
                   <button
-                    class="btn btn-outline-dark rounded-pill fw-medium px-5 py-2 w-100 btn-add-to-cart"
+                    class="btn btn-outline-dark rounded-4 fw-medium px-5 py-2 w-100 btn-add-to-cart"
                   >
                     Adicionar ao Carrinho
                   </button>
@@ -436,6 +430,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/public/assets/js/script_inicio.js"></script>
+    <script src="/public/assets/js/script_index.js"></script>
   </body>
 </html>

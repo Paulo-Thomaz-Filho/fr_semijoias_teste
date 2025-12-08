@@ -30,7 +30,13 @@ class PedidoDAO {
         $pedidos = [];
         $dados = $this->dbQuery->select();
 
-        foreach($dados as $row){ 
+        // Inclui dependências para buscar produto e status
+        require_once __DIR__.'/ProdutoDAO.php';
+        require_once __DIR__.'/StatusDAO.php';
+        $produtoDAO = new \app\models\ProdutoDAO();
+        $statusDAO = new \app\models\StatusDAO();
+
+        foreach($dados as $row){
             $pedido = new Pedido(
                 $row['id_pedido'],
                 $row['produto_nome'],
@@ -42,7 +48,26 @@ class PedidoDAO {
                 $row['id_status'],
                 $row['descricao']
             );
-            $pedidos[] = $pedido->toArray();
+            $arr = $pedido->toArray();
+
+            // Buscar marca e categoria do produto pelo nome (ajuste se tiver id_produto)
+            $produto = null;
+            $produtos = $produtoDAO->getAll();
+            foreach ($produtos as $prod) {
+                if (strtolower($prod->getNome()) === strtolower($row['produto_nome'])) {
+                    $produto = $prod;
+                    break;
+                }
+            }
+            $arr['marca'] = $produto ? $produto->getMarca() : null;
+            $arr['categoria'] = $produto ? $produto->getCategoria() : null;
+            $arr['caminhoImagem'] = $produto ? $produto->getCaminhoImagem() : null;
+
+            // Buscar nome do status
+            $statusObj = $statusDAO->getById($row['id_status']);
+            $arr['status'] = $statusObj ? $statusObj->getNome() : null;
+
+            $pedidos[] = $arr;
         }
 
         return $pedidos;

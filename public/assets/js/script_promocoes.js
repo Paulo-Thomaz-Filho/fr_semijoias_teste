@@ -1,3 +1,18 @@
+// Logout global para promoções
+document.addEventListener('DOMContentLoaded', function() {
+    var btnsLogout = document.querySelectorAll('.btn-logout-dashboard');
+    btnsLogout.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/usuario/logout')
+                .then(function() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '/login';
+                });
+        });
+    });
+});
 // =============================================================================
 // SCRIPT DE GERENCIAMENTO DE PROMOÇÕES
 // =============================================================================

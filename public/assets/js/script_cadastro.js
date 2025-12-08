@@ -168,17 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Remover máscara de telefone e CPF antes de enviar
+            const telefoneLimpo = inputTelefone.value.replace(/\D/g, '');
+            const cpfLimpo = inputCpf.value.replace(/\D/g, '');
             // Preparar dados para envio
             const cadastroData = {
                 nome: inputNome.value,
                 email: inputEmail.value,
                 senha: inputSenha.value,
-                telefone: inputTelefone.value,
+                telefone: telefoneLimpo,
                 data_nascimento: inputNascimento.value,
-                cpf: inputCpf.value,
+                cpf: cpfLimpo,
                 endereco: inputEndereco.value
             };
-            
             // Realizar cadastro
             realizarCadastro(cadastroData);
         });

@@ -1,3 +1,18 @@
+// Logout global para clientes
+document.addEventListener('DOMContentLoaded', function() {
+    var btnsLogout = document.querySelectorAll('.btn-logout-dashboard');
+    btnsLogout.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/usuario/logout')
+                .then(function() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '/login';
+                });
+        });
+    });
+});
 // =============================================================================
 // SCRIPT DE GERENCIAMENTO DE CLIENTES
 // =============================================================================
@@ -133,17 +148,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Funções de formatação
+            function formatarTelefone(numero) {
+                if (!numero) return '';
+                let v = String(numero).replace(/\D/g, '');
+                if (v.length === 11) {
+                    return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+                } else if (v.length === 10) {
+                    return `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+                } else if (v.length > 2) {
+                    return `(${v.slice(0,2)}) ${v.slice(2)}`;
+                }
+                return v;
+            }
+            function formatarCPF(cpf) {
+                if (!cpf) return '';
+                let v = String(cpf).replace(/\D/g, '');
+                if (v.length !== 11) return cpf;
+                return `${v.slice(0,3)}.${v.slice(3,6)}.${v.slice(6,9)}-${v.slice(9)}`;
+            }
             // Renderizar tabela
             tabelaCorpo.innerHTML = clientes.map(cliente => {
                 const dataFormatada = formatarDataBR(cliente.dataNascimento);
                 const badge = gerarBadgeNivel(cliente.idNivel);
+                const telefoneFormatado = formatarTelefone(cliente.telefone);
                 return `
                     <tr class="border-bottom border-light" data-id="${cliente.idUsuario}">
                         <td class="py-4 text-dark">${cliente.idUsuario ?? ''}</td>
                         <td class="py-4 text-dark">${cliente.nome ?? ''}</td>
                         <td class="py-4 text-dark">${cliente.email ?? ''}</td>
                         <td class="py-4 text-dark">${cliente.endereco ?? ''}</td>
-                        <td class="py-4 text-dark">${cliente.telefone ?? ''}</td>
+                        <td class="py-4 text-dark">${telefoneFormatado}</td>
                         <td class="py-4 text-dark">${dataFormatada}</td>
                         <td class="py-4">${badge}</td>
                         <td class="py-4">
@@ -158,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 cardsContainer.innerHTML = clientes.map(cliente => {
                     const dataFormatada = formatarDataBR(cliente.dataNascimento);
                     const badge = gerarBadgeNivel(cliente.idNivel);
-                    
+                    const telefoneFormatado = formatarTelefone(cliente.telefone);
                     return `
                         <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">
                             <div class="card-body p-3">
@@ -173,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <strong>Email:</strong> ${cliente.email ?? ''}
                                 </div>
                                 <div class="small text-muted mb-1">
-                                    <strong>Telefone:</strong> ${cliente.telefone ?? ''}
+                                    <strong>Telefone:</strong> ${telefoneFormatado}
                                 </div>
                                 <div class="small text-muted mb-1">
                                     <strong>Endereço:</strong> ${cliente.endereco ?? ''}
@@ -183,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 <div class="mt-2 pt-2 border-top">
                                     <button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 w-100 btn-selecionar-cliente-mobile" data-id="${cliente.idUsuario}">
-                                        Selecionar Cliente
+                                        Selecionar
                                     </button>
                                 </div>
                             </div>
@@ -231,7 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
             inputSenha.value = cliente.senha || '';
             inputEndereco.value = cliente.endereco || '';
             inputTelefone.value = cliente.telefone || '';
+            if (typeof maskTelefone === 'function') maskTelefone(inputTelefone);
             inputCpf.value = cliente.cpf || '';
+            if (typeof maskCPF === 'function') maskCPF(inputCpf);
             inputNascimento.value = cliente.dataNascimento || '';
             selectNivel.value = String(cliente.idNivel || '');
             // Atualizar estado
@@ -369,13 +406,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 1. Criar um objeto JS simples
+    // Remover máscara de telefone e CPF antes de enviar
+    const telefoneLimpo = inputTelefone.value.replace(/\D/g, '');
+    const cpfLimpo = inputCpf.value.replace(/\D/g, '');
     const dadosCliente = {
         nome: inputNome.value,
         email: inputEmail.value,
         senha: inputSenha.value,
         endereco: inputEndereco.value,
-        telefone: inputTelefone.value,
-        cpf: inputCpf.value,
+        telefone: telefoneLimpo,
+        cpf: cpfLimpo,
         data_nascimento: inputNascimento.value,
         id_nivel: selectNivel.value
     };
@@ -452,14 +492,17 @@ const atualizarCliente = async () => {
     }
 
     // 1. Criar um objeto JS simples
+    // Remover máscara de telefone e CPF antes de enviar
+    const telefoneLimpo = inputTelefone.value.replace(/\D/g, '');
+    const cpfLimpo = inputCpf.value.replace(/\D/g, '');
     const dadosCliente = {
         idUsuario: clienteSelecionado, // Incluir o ID
         nome: inputNome.value,
         email: inputEmail.value,
         senha: inputSenha.value, // (O back-end deve tratar se a senha vier vazia)
         endereco: inputEndereco.value,
-        telefone: inputTelefone.value,
-        cpf: inputCpf.value,
+        telefone: telefoneLimpo,
+        cpf: cpfLimpo,
         data_nascimento: inputNascimento.value,
         id_nivel: selectNivel.value
     };

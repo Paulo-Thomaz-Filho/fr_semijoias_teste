@@ -23,7 +23,7 @@ html {
 }
 
 .gap-6 {
-  gap: 8rem !important;
+  gap: 7rem !important;
 }
 
 .logo-container {
@@ -317,11 +317,19 @@ button:focus {
 .categoria-link.active {
   background-color: var(--bs-body-secondary);
   color: var(--bs-dark);
-  border-radius: 50px;
+  border-radius: 16px;
   padding: 8px 24px;
 }
 
 #categorias-menu span {
+  width: 2px;
+  height: 16px;
+  background-color: currentColor;
+  border-radius: 50px;
+  opacity: 0.3;
+}
+
+.separator-vertical {
   width: 2px;
   height: 16px;
   background-color: currentColor;
@@ -342,16 +350,58 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
   .carousel-container .swiper-button-next,
   .carousel-container .swiper-button-prev {
     display: none;
   }
+}
+
+/* Garante que o modal fique acima do overlay-container e de todo o conteúdo */
+.overlay-container {
+  z-index: 1 !important;
+  position: relative !important;
+}
+.modal {
+  z-index: 99999 !important;
+}
+.modal-content {
+  z-index: 100000 !important;
+}
+.modal-backdrop {
+  z-index: 99998 !important;
+}
+.modal {
+  z-index: 10500 !important;
+}
+.modal-content {
+  z-index: 10600 !important;
+}
+/* Modal Bootstrap sem backdrop opaco e sempre acima do conteúdo */
+.modal-backdrop {
+  display: none !important;
+}
+.modal {
+  z-index: 10000 !important;
+  background: none !important;
+}
+.modal-content {
+  z-index: 10001 !important;
+}
+/* Não esconder overlay-container ao abrir modal */
+body.modal-open .overlay-container {
+  display: block !important;
+}
+/* Garante que o modal Bootstrap fique acima de todo o conteúdo */
+.modal-backdrop {
+  z-index: 3000 !important;
+}
+.modal {
+  z-index: 3100 !important;
+}
+.modal-content {
+  z-index: 3200 !important;
 }
 
 /* =============================================================================
@@ -431,12 +481,12 @@ aside {
 
   /* Reduzir gap do header */
   .gap-6 {
-    gap: 2rem !important;
+    gap: 4rem !important;
   }
 
   /* Ajustar logo */
   .logo-large {
-    width: 6rem !important;
+    width: 7rem !important;
   }
 
   /* Menu compacto */
@@ -799,9 +849,9 @@ aside {
   font-weight: bold;
   padding: 0.35em 0.85em;
   border-radius: 1.5em;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   pointer-events: none;
   user-select: none;
 }
@@ -854,6 +904,67 @@ aside,
 .mobile-menu-toggle,
 .sidebar-overlay {
   will-change: transform, opacity;
+}
+/* Mobile Bottom Nav */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+.mobile-nav-link.active {
+  color: var(--bs-dark);
+}
+
+.mobile-nav-link svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-nav-link span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Desktop only */
+@media (min-width: 992px) {
+  .desktop-header {
+    display: block !important;
+  }
+
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Mobile only */
+@media (max-width: 991.98px) {
+  .desktop-header {
+    display: none !important;
+  }
+
+  #avatar-img {
+    height: 120px !important;
+  }
+}
+
+.catalogo-produto-nome,
+.product-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 /* =============================================================================
@@ -1166,4 +1277,12 @@ body.bg-light {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
+}
+
+#compras-lista {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+#compras-lista::-webkit-scrollbar {
+  display: none;
 }

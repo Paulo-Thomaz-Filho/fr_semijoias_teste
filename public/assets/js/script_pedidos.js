@@ -1,4 +1,19 @@
-﻿// =============================================================================
+﻿// Logout global para pedidos
+document.addEventListener('DOMContentLoaded', function() {
+    var btnsLogout = document.querySelectorAll('.btn-logout-dashboard');
+    btnsLogout.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/usuario/logout')
+                .then(function() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '/login';
+                });
+        });
+    });
+});
+// =============================================================================
 // SCRIPT DE GERENCIAMENTO DE PEDIDOS
 // =============================================================================
 
@@ -283,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (statusClass === 'pendente') statusClass = 'pending';
                 if (statusClass === 'enviado') statusClass = 'sent';
                 if (statusClass === 'aprovado') statusClass = 'green';
+                if (statusClass === 'entregue') statusClass = 'green';
                 if (statusClass === 'cancelado') statusClass = 'danger';
                 const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
                 const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';

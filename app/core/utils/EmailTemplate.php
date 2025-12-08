@@ -6,7 +6,7 @@ namespace app\core\utils;
  * Classe para gerar templates de email padronizados com CSS inline
  */
 class EmailTemplate {
-    
+
     /**
      * Template base HTML para emails
      */
@@ -247,20 +247,7 @@ class EmailTemplate {
                                         </tr>
                                     </table>";
         
-        if ($token) {
-            $conteudo .= "
-                                    <div style='border-top: 2px solid #e0e0e0; margin: 32px 0;'></div>
-                                    <p style='margin: 0 0 16px 0; color: #333333; font-size: 16px; font-weight: 600;'>Ou use o código:</p>
-                                    <table role='presentation' style='width: 100%; margin: 16px 0;'>
-                                        <tr>
-                                            <td align='center'>
-                                                <div style='background-color: #f8f9fa; border: 2px dashed #667eea; border-radius: 8px; padding: 20px 40px; display: inline-block;'>
-                                                    <span style='font-size: 28px; font-weight: 700; color: #667eea; letter-spacing: 4px; font-family: monospace;'>{$token}</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>";
-        }
+        // Não exibe token, pois não é usado na interface
         
         $conteudo .= "
                                     <div style='border-top: 2px solid #e0e0e0; margin: 32px 0;'></div>
@@ -303,6 +290,8 @@ class EmailTemplate {
      * @return string HTML do email
      */
     public static function emailBoasVindas($nomeUsuario, $email, $linkLogin) {
+        // Força o link de login correto
+        $linkLogin = 'https://frsemijoias.ifhost.gru.br/login';
         $conteudo = "
             <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 40px 20px;'>
                 <tr>
@@ -387,11 +376,12 @@ class EmailTemplate {
      * 
      * @param string $nomeUsuario Nome do usuário
      * @param string $numeroPedido Número do pedido
-     * @param string $linkPedido Link para ver detalhes do pedido
+     * @param string $linkDetalhes Link para ver detalhes do pedido
      * @return string HTML do email
      */
-    public static function emailPedidoRealizado($nomeUsuario, $numeroPedido, $linkPedido) {
-        $linkDetalhes = 'https://frsemijoias.ifhost.gru.br/dados-usuario';
+    public static function emailPedidoRealizado($nomeUsuario, $numeroPedido, $linkDetalhes) {
+        // Força o link correto de detalhes do pedido
+        $linkDetalhes = 'https://frsemijoias.ifhost.gru.br/pedidos';
         $conteudo = "
             <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 40px 20px;'>
                 <tr>
@@ -459,4 +449,75 @@ class EmailTemplate {
         
         return self::getBaseTemplate('Pedido Confirmado - FR Semijoias', $conteudo);
     }
+
+    /**
+         * Template de email de pedido enviado
+         * 
+         * @param string $nomeUsuario Nome do usuário
+         * @param string $numeroPedido Número do pedido
+         * @param string $linkPedido Link para ver detalhes do pedido
+         * @return string HTML do email
+         */
+        public static function emailPedidoEnviado($nomeUsuario, $numeroPedido, $linkPedido) {
+            // Força o link correto de acompanhamento de pedido
+            $linkPedido = 'https://frsemijoias.ifhost.gru.br/pedidos';
+            $conteudo = "
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 40px 20px;'>
+                    <tr>
+                        <td align='center'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>
+                                <!-- Header -->
+                                <tr>
+                                    <td style='background-color: #6c757d; padding: 40px 30px; text-align: center;'>
+                                        <img src='https://frsemijoias.ifhost.gru.br/public/assets/images/logo.svg' alt='FR Semijoias' style='height: 80px; display: block; margin: 0 auto;' />
+                                    </td>
+                                </tr>
+                                <!-- Body -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #333333; font-size: 24px; font-weight: 600;'>Seu pedido foi enviado! 🚚</h2>
+                                        <p style='margin: 0 0 16px 0; color: #555555; font-size: 16px; line-height: 1.6;'>
+                                            Olá, <strong>{$nomeUsuario}</strong>!
+                                        </p>
+                                        <p style='margin: 0 0 24px 0; color: #555555; font-size: 16px; line-height: 1.6;'>
+                                            Seu pedido <strong>#{$numeroPedido}</strong> foi despachado e está a caminho do endereço informado.
+                                        </p>
+                                        <!-- Button -->
+                                        <table role='presentation' style='width: 100%; margin: 32px 0;'>
+                                            <tr>
+                                                <td align='center'>
+                                                    <a href='{$linkPedido}' style='display: inline-block; background-color: #6c757d; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;'>
+                                                        📦 Acompanhar Pedido
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div style='border-top: 2px solid #e0e0e0; margin: 32px 0;'></div>
+                                        <table role='presentation' style='width: 100%; background-color: #d4edda; border-left: 4px solid #28a745; border-radius: 4px; margin: 24px 0;'>
+                                            <tr>
+                                                <td style='padding: 16px; color: #155724; font-size: 14px; line-height: 1.6;'>
+                                                    <strong>🚚 Entrega:</strong> Você receberá atualizações sobre o status do seu pedido por email.
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e0e0e0;'>
+                                        <p style='margin: 0 0 10px 0; color: #666666; font-size: 14px;'>
+                                            &copy; " . date('Y') . " FR Semijoias. Todos os direitos reservados.
+                                        </p>
+                                        <p style='margin: 0; color: #999999; font-size: 12px;'>
+                                            Este é um email automático, por favor não responda.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            ";
+            return self::getBaseTemplate('Pedido Enviado - FR Semijoias', $conteudo);
+        }
 }

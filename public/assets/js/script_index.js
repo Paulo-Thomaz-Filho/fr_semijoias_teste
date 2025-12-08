@@ -64,7 +64,8 @@ function criarCardCatalogoHtml(product) {
           <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
           <p class="product-card-price fs-5 fw-bold text-dark">${precoFormatado}</p>
           <div class="mt-3">
-            <button class="btn btn-outline-dark rounded-4 fw-medium px-5 py-2 w-100 border-2"
+            <button class="btn btn-outline-dark rounded-4 fw-medium py-2 w-100 border-2 text-nowrap d-flex align-items-center justify-content-center"
+              style="padding-left:1rem;padding-right:1rem;white-space:nowrap;min-height:40px;"
               data-bs-toggle="modal"
               data-bs-target="#productModal"
               data-product-id="${product.idProduto}">
@@ -351,6 +352,26 @@ document.addEventListener("DOMContentLoaded", function () {
   // Inicialização do catálogo
   exibirSaudacaoUsuario();
   atualizarContadorCarrinho();
+
+  // Redirecionamento do link de saudação
+  var userGreeting = document.getElementById("user-greeting");
+  if (userGreeting) {
+    userGreeting.addEventListener("click", function (e) {
+      e.preventDefault();
+      try {
+        var usuario = JSON.parse(sessionStorage.getItem("usuario"));
+        if (usuario && usuario.nivel == 1) {
+          window.location.href = "/dashboard";
+        } else if (usuario) {
+          window.location.href = "/conta";
+        } else {
+          window.location.href = "/login";
+        }
+      } catch (err) {
+        window.location.href = "/login";
+      }
+    });
+  }
   // Lógica AJAX para carregar produtos
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "produtos", true);
@@ -413,11 +434,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } else {
       console.error("Erro fatal ao buscar produtos: ", xhr.status);
-          var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
-          if (catalogoWrapper) {
-            catalogoWrapper.innerHTML =
-              "<div class='d-flex justify-content-center align-items-center w-100' style='min-height:300px;'><p class='text-center text-danger fs-5'>Não foi possível carregar os produtos.</p></div>";
-          }
+      var catalogoWrapper = document.getElementById(
+        "catalogo-completo-wrapper"
+      );
+      if (catalogoWrapper) {
+        catalogoWrapper.innerHTML =
+          "<div class='d-flex justify-content-center align-items-center w-100' style='min-height:300px;'><p class='text-center text-danger fs-5'>Não foi possível carregar os produtos.</p></div>";
+      }
     }
   };
   xhr.onerror = function () {

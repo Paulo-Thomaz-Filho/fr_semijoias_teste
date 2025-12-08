@@ -20,6 +20,5 @@ if (ini_get("session.use_cookies")) {
 
 // Finalmente, destrói a sessão
 session_destroy();
-
-header('Location: /inicio');
+echo json_encode(["success" => true]);
 exit;

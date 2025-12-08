@@ -90,6 +90,17 @@ CREATE TABLE IF NOT EXISTS pedidos (
 ) ENGINE=InnoDB;
 
 -- ==========================================
+-- TABELA: redefinicao_senha
+-- ==========================================
+CREATE TABLE IF NOT EXISTS redefinicao_senha (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expira DATETIME NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ==========================================
 -- POPULAÇÃO DAS TABELAS
 -- ==========================================
 
@@ -129,19 +140,20 @@ INSERT INTO nivel_acesso (id_nivel, tipo) VALUES
 -- 123456   -> $2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW
 
 INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, data_nascimento, id_nivel, status) VALUES
-(1, 'Fernanda Cristina', 'admin@frsemijoias.com', '$2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u', '111.111.111-11', '(11) 99999-9999', 'Rua das Flores, 100 - São Paulo, SP', '1990-01-01', 1, 'ativo'),
-(2, 'Maria Silva', 'maria.silva@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '222.222.222-22', '(11) 98888-8888', 'Avenida Brasil, 200 - São Paulo, SP', '1985-05-15', 2, 'ativo'),
-(3, 'João Santos', 'joao.santos@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '333.333.333-33', '(11) 97777-7777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2, 'ativo'),
-(4, 'Ana Costa', 'ana.costa@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '444.444.444-44', '(11) 96666-6666', 'Praça Central, 400 - São Paulo, SP', '1988-12-10', 2, 'ativo'),
-(5, 'Pedro Oliveira', 'pedro.oliveira@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '555.555.555-55', '(11) 95555-5555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2, 'ativo'),
-(6, 'Carla Mendes', 'carla.mendes@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '666.666.666-66', '(11) 94444-4444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2, 'ativo');
+(1, 'Fernanda Cristina', 'admin@frsemijoias.com', '$2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u', '11111111111', '11999999999', 'Rua das Flores, 100 - São Paulo, SP', '1990-01-01', 1, 'ativo'),
+(2, 'Maria Silva', 'maria.silva@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '22222222222', '11988888888', 'Avenida Brasil, 200 - São Paulo, SP', '1985-05-15', 2, 'ativo'),
+(3, 'João Santos', 'joao.santos@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '33333333333', '11977777777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2, 'ativo'),
+(4, 'Ana Costa', 'ana.costa@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '44444444444', '11966666666', 'Praça Central, 400 - São Paulo, SP', '1988-12-10', 2, 'ativo'),
+(5, 'Pedro Oliveira', 'pedro.oliveira@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '55555555555', '11955555555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2, 'ativo'),
+(6, 'Carla Mendes', 'carla.mendes@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '66666666666', '11944444444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2, 'ativo');
 
 -- STATUS
 INSERT INTO status (nome) VALUES
 ('Cancelado'),
 ('Pendente'),
 ('Aprovado'),
-('Enviado');
+('Enviado'),
+('Entregue');
 
 -- PEDIDOS
 INSERT INTO pedidos (id_pedido, produto_nome, preco, endereco, data_pedido, quantidade, id_status, descricao, id_produto, id_cliente) VALUES

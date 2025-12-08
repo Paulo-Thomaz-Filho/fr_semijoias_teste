@@ -155,6 +155,16 @@
                     </svg>
                   </button>
                 </div>
+                <div class="text-end mt-1">
+                  <a
+                    href="#"
+                    class="small text-decoration-none text-dark fw-medium"
+                    id="forgotPasswordLink"
+                    data-bs-toggle="modal"
+                    data-bs-target="#forgotPasswordModal"
+                    >Esqueceu a senha?</a
+                  >
+                </div>
               </div>
 
               <div class="col-12">
@@ -174,6 +184,60 @@
               </div>
             </div>
           </form>
+          <!-- Modal Redefinir Senha -->
+          <div
+            class="modal fade"
+            id="forgotPasswordModal"
+            tabindex="-1"
+            aria-labelledby="forgotPasswordModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content p-3">
+                <div class="modal-header border-0 pb-0">
+                  <h5 class="modal-title" id="forgotPasswordModalLabel">
+                    Redefinir senha
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form id="forgotPasswordForm">
+                    <div class="mb-3">
+                      <label for="forgotEmail" class="form-label"
+                        >Digite seu e-mail cadastrado</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control rounded-4 py-2"
+                        id="forgotEmail"
+                        placeholder="seu@email.com"
+                        required
+                        autocomplete="email"
+                      />
+                    </div>
+                    <div
+                      id="forgotPasswordMsg"
+                      class="small text-center mb-2"
+                      style="display: none"
+                    ></div>
+                    <div class="d-grid gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-dark rounded-4 fw-medium px-5 py-2"
+                      >
+                        Enviar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

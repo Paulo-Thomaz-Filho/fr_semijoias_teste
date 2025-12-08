@@ -24,20 +24,14 @@
   "usuario/atualizar": {
     "path": "app/controllers/Usuario/atualizar.php"
   },
-  "usuario/atualizar-dados": {
-    "path": "app/controllers/Usuario/atualizarDados.php"
-  },
-  "usuario/atualizar-endereco": {
-    "path": "app/controllers/Usuario/atualizarEndereco.php"
-  },
-  "usuario/buscar-endereco": {
-    "path": "app/controllers/Usuario/buscarEndereco.php"
+  "usuario/deletar": {
+    "path": "app/controllers/Usuario/deletar.php"
   },
   "usuario/buscar-dados": {
     "path": "app/controllers/Usuario/buscarDados.php"
   },
-  "usuario/deletar": {
-    "path": "app/controllers/Usuario/deletar.php"
+  "usuario/atualizar-dados": {
+    "path": "app/controllers/Usuario/atualizarDados.php"
   },
   "usuario/ativar": {
     "path": "app/controllers/Usuario/ativar.php"
@@ -51,7 +45,10 @@
   "api/usuario/logout": {
     "path": "app/controllers/Usuario/logout.php"
   },
-
+  "api/usuario/redefinir-senha": {
+    "path": "app/controllers/Usuario/redefinirSenha.php"
+  },
+  
   "niveis": {
     "path": "app/controllers/NivelAcesso/listar.php"
   },
@@ -59,17 +56,11 @@
   "produtos": {
     "path": "app/controllers/Produto/listar.php"
   },
-  "produtos/categorias": {
-    "path": "app/controllers/Produto/categorias.php"
-  },
-  "imagem": {
-    "path": "app/controllers/Produto/imagem.php"
+  "produtos/salvar": {
+    "path": "app/controllers/Produto/salvar.php"
   },
   "produtos/buscar": {
     "path": "app/controllers/Produto/buscarPorId.php"
-  },
-  "produtos/salvar": {
-    "path": "app/controllers/Produto/salvar.php"
   },
   "produtos/atualizar": {
     "path": "app/controllers/Produto/atualizar.php"
@@ -77,15 +68,21 @@
   "produtos/deletar": {
     "path": "app/controllers/Produto/deletar.php"
   },
+  "produtos/categorias": {
+    "path": "app/controllers/Produto/categorias.php"
+  },
+  "imagem": {
+    "path": "app/controllers/Produto/imagem.php"
+  },
 
   "pedidos": {
     "path": "app/controllers/Pedido/listar.php"
   },
-  "pedidos/buscar": {
-    "path": "app/controllers/Pedido/buscarPorId.php"
-  },
   "pedidos/salvar": {
     "path": "app/controllers/Pedido/salvar.php"
+  },
+  "pedidos/buscar": {
+    "path": "app/controllers/Pedido/buscarPorId.php"
   },
   "pedidos/atualizar": {
     "path": "app/controllers/Pedido/atualizar.php"
@@ -97,11 +94,11 @@
   "promocoes": {
     "path": "app/controllers/Promocao/listar.php"
   },
-  "promocoes/buscar": {
-    "path": "app/controllers/Promocao/buscarPorId.php"
-  },
   "promocoes/salvar": {
     "path": "app/controllers/Promocao/salvar.php"
+  },
+  "promocoes/buscar": {
+    "path": "app/controllers/Promocao/buscarPorId.php"
   },
   "promocoes/atualizar": {
     "path": "app/controllers/Promocao/atualizar.php"
@@ -117,39 +114,20 @@
     "path": "app/controllers/Status/salvar.php"
   },
 
-  "ativar": {
-    "path": "public/views/ativar.html"
+  "inicio": {
+    "path": "public/views/index.html"
   },
-
   "carrinho": {
     "path": "public/views/carrinho.html"
-  },
-
-  "inicio": {
-    "path": "public/views/inicio.html"
   },
   "login": {
     "path": "public/views/login.html"
   },
-  "dados-usuario": {
-    "path": "public/views/dados-usuario.html",
-    "sessionKey": [
-      {
-        "user_logged_in": true,
-        "usuario_nivel": [2]
-      }
-    ],
-    "errorPath": "login"
+  "ativar": {
+    "path": "public/views/ativar.html"
   },
-  "local_user": {
-    "path": "public/views/local_user.html",
-    "sessionKey": [
-      {
-        "user_logged_in": true,
-        "usuario_nivel": [2]
-      }
-    ],
-    "errorPath": "login"
+  "redefinir-senha": {
+    "path": "public/views/redefinir-senha.html"
   },
 
   "dashboard": {
@@ -198,6 +176,27 @@
       {
         "user_logged_in": true,
         "usuario_nivel": [1]
+      }
+    ],
+    "errorPath": "login"
+  },
+
+  "conta": {
+    "path": "public/views/conta.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [2]
+      }
+    ],
+    "errorPath": "login"
+  },
+  "compras": {
+    "path": "public/views/compras.html",
+    "sessionKey": [
+      {
+        "user_logged_in": true,
+        "usuario_nivel": [2]
       }
     ],
     "errorPath": "login"

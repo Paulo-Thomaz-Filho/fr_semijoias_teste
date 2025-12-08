@@ -1,5 +1,3 @@
-// pagamento_mercadopago.js - Integração do carrinho com Mercado Pago
-
 $(document).ready(function () {
   // Evento de clique no botão "FINALIZAR COMPRA"
   $("#btn-finalizar-compra").on("click", function () {
@@ -96,7 +94,7 @@ $(document).ready(function () {
           }));
 
           $.ajax({
-            url: "/payment_preference.php",
+            url: "/api/pagamento/payment_preference.php",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({

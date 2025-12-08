@@ -20,7 +20,7 @@
       class="min-vh-100 d-flex align-items-center justify-content-center bg-light px-4"
     >
       <div
-        class="card bg-body-secondary rounded-4 shadow p-5 w-100 border-0"
+        class="card bg-white rounded-4 shadow p-5 w-100 border-0"
         style="max-width: 500px"
       >
         <div class="text-center">
@@ -65,7 +65,7 @@
               />
             </svg>
           </div>
-          <h3 class="text-center mb-3">Conta Ativada!</h3>
+          <h3 class="fw-semibold text-center mb-3">Conta Ativada!</h3>
           <p class="text-center text-muted mb-4">
             Sua conta foi ativada com sucesso. Agora você pode fazer login e
             começar suas compras.
@@ -104,7 +104,7 @@
               />
             </svg>
           </div>
-          <h3 class="text-center mb-3">Erro na Ativação</h3>
+          <h3 class="fw-semibold text-center mb-3">Erro na Ativação</h3>
           <p class="text-center text-muted mb-4" id="error-message">
             Token inválido ou expirado. Por favor, solicite um novo email de
             ativação.
@@ -127,7 +127,9 @@
 
         <!-- Formulário para reenviar email -->
         <div id="form-reenviar" class="d-none">
-          <h3 class="text-center mb-3 mt-4">Reenviar Email de Ativação</h3>
+          <h3 class="fw-semibold text-center mb-3 mt-4">
+            Reenviar Email de Ativação
+          </h3>
           <p class="text-center text-muted small mb-4">
             Digite seu e-mail cadastrado para receber um novo código de
             ativação.
@@ -136,7 +138,7 @@
             <div class="mb-4">
               <input
                 type="email"
-                class="form-control rounded-4 py-2"
+                class="form-control bg-body-secondary rounded-4 py-2"
                 id="emailReenviar"
                 name="email"
                 placeholder="seu@email.com"
@@ -164,7 +166,9 @@
 
         <!-- Formulário para digitar token manualmente -->
         <div id="form-token" class="d-none">
-          <h3 class="text-center mb-3 mt-4">Digite o Código de Ativação</h3>
+          <h3 class="fw-semibold text-center mb-3 mt-4">
+            Digite o Código de Ativação
+          </h3>
           <p class="text-center text-muted small mb-4">
             Digite o código de 6 caracteres que você recebeu por email.
           </p>
@@ -172,7 +176,7 @@
             <div class="mb-4">
               <input
                 type="text"
-                class="form-control token-input text-center text-uppercase rounded-4 py-2"
+                class="form-control token-input text-center bg-body-secondary text-uppercase rounded-4 py-2"
                 id="token"
                 name="token"
                 placeholder="A1B2C3"

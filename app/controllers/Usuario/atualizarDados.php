@@ -25,12 +25,13 @@ if (!$idUsuario) {
 }
 
 // Os dados estão sendo enviados via application/x-www-form-urlencoded (data: {...})
+
 $nome = $_POST['nome'] ?? null;
 $email = $_POST['email'] ?? null;
 $cpf = $_POST['cpf'] ?? null;
 $nascimento = $_POST['nascimento'] ?? null;
 $telefone = $_POST['telefone'] ?? null;
-// Nota: A senha não está sendo atualizada neste fluxo.
+$senha = $_POST['senha'] ?? null; // Nova senha, se enviada
 
 if (!$nome || !$email || !$cpf || !$nascimento || !$telefone) {
     http_response_code(400); // Bad Request
@@ -48,13 +49,19 @@ try {
         exit;
     }
 
+
     // 1. Atualizar o objeto Usuario com os novos dados
     $usuario->setNome($nome);
     $usuario->setEmail($email);
     $usuario->setCpf($cpf);
     $usuario->setDataNascimento($nascimento);
     $usuario->setTelefone($telefone);
-    // Preservar outros campos (senha, endereco, idNivel, status, token_ativacao)
+    // Atualizar senha apenas se enviada e não vazia
+    if (!empty($senha)) {
+        // Criptografa a senha antes de salvar
+        $usuario->setSenha(password_hash($senha, PASSWORD_DEFAULT));
+    }
+    // Preservar outros campos (endereco, idNivel, status, token_ativacao)
 
     // 2. Salvar a atualização no banco de dados
     $linhasAfetadas = $usuarioDao->update($usuario);

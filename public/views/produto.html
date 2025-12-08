@@ -205,17 +205,33 @@
                   Promoções
                 </a>
               </li>
+              <li class="d-flex align-items-center">
+                <a
+                  href="/inicio"
+                  class="d-flex align-items-center gap-3 fs-5 text-decoration-none text-black fw-medium py-2 px-3 rounded-4"
+                >
+                  <svg
+                    fill="currentColor"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 200 200"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M160,89.75H56l53-53a9.67,9.67,0,0,0,0-14,9.67,9.67,0,0,0-14,0l-56,56a30.18,30.18,0,0,0-8.5,18.5c0,1-.5,1.5-.5,2.5a6.34,6.34,0,0,0,.5,3,31.47,31.47,0,0,0,8.5,18.5l56,56a9.9,9.9,0,0,0,14-14l-52.5-53.5H160a10,10,0,0,0,0-20Z"
+                    />
+                  </svg>
+                  Inicio
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
         <!-- Button Logout -->
         <div>
           <a
-            href="javascript:void(0);"
-            class="d-flex align-items-center gap-3 text-black text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3"
-            onclick="fetch('/api/usuario/logout').then(() => { sessionStorage.clear(); window.location.href='/login'; });"
-            onmouseover="this.classList.add('bg-danger', 'text-white');"
-            onmouseout="this.classList.remove('bg-danger', 'text-white');"
+            href="#"
+            class="d-flex btn btn-danger align-items-center gap-3 text-white text-decoration-none fs-5 fw-medium rounded-4 py-2 px-3 btn-logout-dashboard"
           >
             <svg
               width="18"
@@ -303,9 +319,8 @@
               <li><hr class="dropdown-divider my-2 opacity-25" /></li>
               <li>
                 <a
-                  class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3"
-                  href="javascript:void(0);"
-                  onclick="fetch('/api/usuario/logout').then(() => { sessionStorage.clear(); window.location.href='/login'; });"
+                  class="dropdown-item d-flex align-items-center gap-3 text-black text-decoration-none fs-6 fw-medium rounded-4 py-2 px-3 btn-logout-dashboard"
+                  href="#"
                   onmouseover="this.classList.add('bg-danger', 'text-white');"
                   onmouseout="this.classList.remove('bg-danger', 'text-white');"
                 >
@@ -671,7 +686,9 @@
                         class="form-label text-muted small fw-medium"
                         >Imagem</label
                       >
-                      <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                      <div
+                        class="d-flex flex-column flex-md-row align-items-center gap-3"
+                      >
                         <img
                           id="preview_imagem_produto"
                           src="/public/assets/images/placeholder-image.svg"
@@ -798,8 +815,6 @@
     <!-- Bootstrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- jQuery -->
-    <script src="/public/assets/js/mask-inputs.js"></script>
-    <!-- Máscara de Inputs -->
     <script src="/public/assets/js/active-menu.js"></script>
     <!-- Menu Ativo -->
     <script src="/public/assets/js/mobile-menu.js"></script>

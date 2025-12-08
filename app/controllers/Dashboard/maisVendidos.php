@@ -22,7 +22,7 @@ try {
         INNER JOIN 
             status s ON ped.id_status = s.id_status
         WHERE 
-            s.nome IN ('Aprovado', 'Enviado')
+            s.nome IN ('Aprovado', 'Enviado', 'Entregue')
         GROUP BY 
             ped.produto_nome, p.categoria
         ORDER BY 

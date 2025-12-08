@@ -34,19 +34,19 @@ try {
         exit;
     }
     
-    // Preparar os dados para retorno no formato esperado pelo JS
     $dados = [
-        'nome' => $usuario->getNome(),
-        'email' => $usuario->getEmail(),
-        'cpf' => $usuario->getCpf(),
-        'nascimento' => $usuario->getDataNascimento(), // Nome do campo no JS: nascimento
-        'telefone' => $usuario->getTelefone()
+        'idUsuario'  => $usuario->getIdUsuario(),
+        'nome'       => $usuario->getNome(),
+        'email'      => $usuario->getEmail(),
+        'cpf'        => $usuario->getCpf(),
+        'nascimento' => $usuario->getDataNascimento(),
+        'telefone'   => $usuario->getTelefone(),
+        'endereco'   => $usuario->getEndereco(),
+        'senha'      => $usuario->getSenha()
     ];
 
     http_response_code(200);
-    // Retornamos os dados dentro de uma chave 'dados', conforme esperado pelo JS
     echo json_encode(['sucesso' => true, 'dados' => $dados], JSON_UNESCAPED_UNICODE);
-    
 } catch (\Exception $e) {
     http_response_code(500);
     error_log("Erro ao buscar dados do usuário: " . $e->getMessage());
