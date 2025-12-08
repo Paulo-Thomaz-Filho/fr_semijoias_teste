@@ -14,7 +14,6 @@ class Router {
         foreach ($routes as $path => $route) {
             $this->addRoute($path, $rootPath . "/" . $route['path'], $route['sanitize']?? null, $route['sessionKey']?? null, $route['errorPath'] ?? null);
         }
-        //print_r(json_decode($config['path']['routes']));
     }
     
     public function addRoute($requiredPath, $physicalPath, $sanitizeConfig, $sessionKey, $errorPath) {

@@ -127,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     } catch (error) {
-      console.error("Erro ao carregar promoções:", error);
     }
   };
 
@@ -379,7 +378,6 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         });
     } catch (error) {
-      console.error("Erro:", error);
       tabelaProdutos.innerHTML =
         '<tr><td colspan="9" class="text-center py-4 text-danger">Erro ao carregar os produtos</td></tr>';
       if (cardsContainer) {
@@ -458,7 +456,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       formProduto.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (error) {
-      console.error("Erro ao selecionar produto:", error);
       exibirMensagemProduto("Erro ao carregar dados do produto");
     }
   };
@@ -494,7 +491,6 @@ document.addEventListener("DOMContentLoaded", function () {
           msgDiv.className = "text-danger text-center mt-3";
           msgDiv.style.display = "block";
         } else {
-          alert(result.erro || "Erro ao cadastrar produto");
         }
       }
     } catch (error) {
@@ -504,7 +500,6 @@ document.addEventListener("DOMContentLoaded", function () {
         msgDiv.className = "text-danger text-center mt-3";
         msgDiv.style.display = "block";
       }
-      console.error("Erro ao cadastrar produto:", error);
     }
   };
 

@@ -108,7 +108,6 @@ class CatalogPage {
         if (product) {
           this.populateModal(product);
         } else {
-          alert("Erro: Produto não encontrado.");
         }
       }
     });

@@ -231,7 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectStatus.innerHTML = '<option value="" disabled selected>Nenhum status disponível - cadastre pedidos primeiro</option>';
             }
         } catch (error) {
-            console.error('Erro ao carregar status:', error);
             selectStatus.innerHTML = '<option value="" disabled selected>Erro ao carregar status - tente novamente</option>';
         }
     };
@@ -391,7 +390,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         } catch (error) {
-            console.error('Erro:', error);
             tabelaPedidos.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Erro ao carregar os pedidos</td></tr>';
         }
     };
@@ -472,7 +470,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 msgDiv.className = 'text-danger text-center mt-3';
                 msgDiv.style.display = 'block';
             }
-            console.error('Erro:', error);
         }
     };
 
@@ -522,7 +519,6 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch(`/pedidos/buscar?idPedido=${id}`);
             const pedido = await response.json();
-            console.log('Pedido recebido:', pedido); // Debug
             inputId.value = pedido.idPedido;
             
             // Buscar opção do select que corresponde ao produtoNome

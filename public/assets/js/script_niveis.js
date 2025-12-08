@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             selectNivel.dispatchEvent(new CustomEvent('niveisLoaded'));
             
         } catch (error) {
-            console.error('Erro ao carregar níveis:', error);
             selectNivel.innerHTML = '<option value="">Erro ao carregar níveis</option>';
         }
     };
