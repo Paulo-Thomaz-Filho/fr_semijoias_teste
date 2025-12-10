@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
         } catch (error) {
-            console.error('Erro ao realizar login:', error);
+            // ...
             alert('Ocorreu um erro de comunicação. Tente novamente.');
         }
     };

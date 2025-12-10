@@ -26,6 +26,8 @@ function atualizarContadorCarrinho() {
   });
   var cartCounterEl = document.getElementById("cart-counter");
   if (cartCounterEl) cartCounterEl.textContent = totalItems;
+  var cartCounterDesktopEl = document.getElementById("cart-counter-desktop");
+  if (cartCounterDesktopEl) cartCounterDesktopEl.textContent = totalItems;
 }
 
 // ----------- RENDERIZAÇÃO DE CARDS -----------
@@ -55,23 +57,21 @@ function criarCardCatalogoHtml(product) {
 
   return `
     <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
-      <div class="w-100 d-flex flex-column pt-3 px-3 rounded-4 bg-white border border-1">
-        <div class="position-relative overflow-hidden" style="padding-top: 100%;">
+      <div class="w-100 d-flex flex-column p-3 rounded-4 bg-white border border-1">
+        <div class="position-relative overflow-hidden mb-3" style="padding-top: 100%;">
           <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute rounded-3 top-0 start-0 w-100 h-100 object-fit-cover">
           ${promoBadgeHtml}
         </div>
-        <div class="p-3 d-flex flex-column flex-grow-1">
+        <div class="d-flex flex-column flex-grow-1">
           <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
           <p class="product-card-price fs-5 fw-bold text-dark">${precoFormatado}</p>
-          <div class="mt-3">
-            <button class="btn btn-outline-dark rounded-4 fw-medium py-2 w-100 border-2 text-nowrap d-flex align-items-center justify-content-center"
-              style="padding-left:1rem;padding-right:1rem;white-space:nowrap;min-height:40px;"
-              data-bs-toggle="modal"
-              data-bs-target="#productModal"
-              data-product-id="${product.idProduto}">
-              Ver Detalhes
-            </button>
-          </div>
+          <button class="btn btn-outline-dark rounded-4 fw-medium py-2 w-100 border-2 mt-2 text-nowrap d-flex align-items-center justify-content-center"
+            style="padding-left:1rem;padding-right:1rem;white-space:nowrap;min-height:40px;"
+            data-bs-toggle="modal"
+            data-bs-target="#productModal"
+            data-product-id="${product.idProduto}">
+            Ver Detalhes
+          </button>
         </div>
       </div>
     </div>
@@ -299,11 +299,11 @@ function carregarCategorias() {
         });
       }
     } else {
-      console.error("Erro ao carregar categorias:", xhr.status);
+      // ...
     }
   };
   xhr.onerror = function () {
-    console.error("Erro ao carregar categorias:", xhr.status);
+    // ...
   };
   xhr.send();
 }
@@ -371,6 +371,25 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+    // Redirecionamento do link de saudação (Desktop)
+    var userGreetingDesktop = document.getElementById("user-greeting-desktop");
+    if (userGreetingDesktop) {
+      userGreetingDesktop.addEventListener("click", function (e) {
+        e.preventDefault();
+        try {
+          var usuario = JSON.parse(sessionStorage.getItem("usuario"));
+          if (usuario && usuario.nivel == 1) {
+            window.location.href = "/dashboard";
+          } else if (usuario) {
+            window.location.href = "/conta";
+          } else {
+            window.location.href = "/login";
+          }
+        } catch (err) {
+          window.location.href = "/login";
+        }
+      });
+    }
   // Lógica AJAX para carregar produtos
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "produtos", true);
@@ -432,7 +451,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     } else {
-      console.error("Erro fatal ao buscar produtos: ", xhr.status);
+      // ...
       var catalogoWrapper = document.getElementById(
         "catalogo-completo-wrapper"
       );
@@ -443,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
   xhr.onerror = function () {
-    console.error("Erro fatal ao buscar produtos: ", xhr.status);
+    // ...
     var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
     if (catalogoWrapper) {
       catalogoWrapper.innerHTML =
@@ -451,4 +470,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
   xhr.send();
+
+  // ----------- EVENTO DE CLIQUE NAS CATEGORIAS -----------
+  document.querySelectorAll('.categoria-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.categoria-link').forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
 });

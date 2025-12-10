@@ -310,7 +310,7 @@ const carregarDadosUsuario = async () => {
       atualizarAvatar(dados.nome);
     }
   } catch (error) {
-    console.error("Erro ao carregar dados do usuário:", error);
+    // ...
     alert("Erro ao carregar os dados do usuário: " + error.message);
   }
 };
@@ -407,7 +407,7 @@ const salvarAlteracoes = async () => {
       throw new Error("Erro na resposta do servidor");
     }
   } catch (error) {
-    console.error("Erro ao atualizar dados:", error);
+    // ...
     alert("Erro ao atualizar os dados: " + error.message);
   }
 };

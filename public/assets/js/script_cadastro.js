@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const data = await response.json();
-            console.log('Resposta do servidor:', data);
+            // ...
             
             if (data.sucesso) {
                 let mensagem = data.mensagem;
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
         } catch (error) {
-            console.error('Erro ao realizar cadastro:', error);
+            // ...
             alert('Ocorreu um erro de comunicação. Tente novamente.');
         }
     };

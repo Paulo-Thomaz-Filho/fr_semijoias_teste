@@ -102,7 +102,7 @@
         <!-- Perfil -->
         <div class="col-12 col-lg-5">
           <div
-            class="d-flex flex-column align-items-center border border-1 rounded-4 p-4 text-center"
+            class="d-flex flex-column align-items-center rounded-4 p-4 text-center"
           >
             <img
               id="avatar-img"
@@ -224,6 +224,7 @@
                     id="email"
                     value="usuario@email.com"
                     readonly
+                     autocomplete="username"
                   />
                 </div>
               </div>
@@ -249,13 +250,18 @@
                       stroke-linejoin="round"
                     />
                   </svg>
-                  <input
-                    type="password"
-                    class="form-control border-0 border-bottom bg-transparent shadow-none ps-5 py-2 rounded-0"
-                    id="senha"
-                    placeholder="*******"
-                    readonly
-                  />
+                  <form autocomplete="on">
+                    <input type="hidden" name="username" autocomplete="username" value="usuario@email.com" />
+                    <input
+                      type="password"
+                      class="form-control border-0 border-bottom bg-transparent shadow-none ps-5 py-2 rounded-0"
+                      id="senha"
+                      placeholder="*******"
+                      readonly
+                      autocomplete="current-password"
+                    />
+                  </form>
+                  </form>
                 </div>
               </div>
               <!-- Telefone -->
@@ -490,6 +496,7 @@
                     id="modal-email"
                     placeholder="seu@email.com"
                     required
+                    autocomplete="username"
                   />
                 </div>
                 <div class="col-md-6 col-12">

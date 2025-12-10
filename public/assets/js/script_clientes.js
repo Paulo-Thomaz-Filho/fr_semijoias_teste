@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cardsContainer) {
                 cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar lista de clientes</div>';
             }
-            console.error('Erro ao carregar clientes:', error);
+            // ...
         }
     };
 
@@ -633,7 +633,7 @@ const excluirCliente = async () => {
     // Evento de excluir cliente
     btnExcluirCliente.addEventListener('click', function(e) {
         e.preventDefault();
-        if (clienteSelecionado && confirm(`Tem certeza que deseja excluir o cliente ID ${clienteSelecionado}?`)) {
+        if (clienteSelecionado && confirm(`Tem certeza que deseja excluir o cliente?`)) {
             excluirCliente();
         }
     });

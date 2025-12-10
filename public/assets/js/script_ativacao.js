@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
         } catch (error) {
-            console.error('Erro ao ativar conta:', error);
+            // ...
             mostrarErro('Erro ao processar a ativação. Tente novamente mais tarde.');
         }
     };
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
             } catch (error) {
-                console.error('Erro ao reenviar email:', error);
+                // ...
                 messageDiv.innerHTML = '<div class="alert alert-danger rounded-4">Erro ao processar solicitação.</div>';
             }
         });

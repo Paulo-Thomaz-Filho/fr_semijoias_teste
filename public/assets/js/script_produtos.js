@@ -544,7 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
         msgDiv.className = "text-danger text-center mt-3";
         msgDiv.style.display = "block";
       }
-      console.error("Erro ao atualizar produto:", error);
+      // ...
     }
   };
 

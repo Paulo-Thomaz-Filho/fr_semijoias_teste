@@ -23,23 +23,60 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <title>FR Semijoias | Início</title>
   </head>
-
   <body>
     <!-- Header -->
     <header class="bg-white border-bottom sticky-top shadow-sm">
       <nav class="navbar navbar-expand-lg py-3">
         <div class="container">
-          <!-- Logo -->
-          <a class="navbar-brand logo-login" href="inicio">
+          <!-- Mobile: Logo + User/Cart icons -->
+          <div class="d-flex d-lg-none align-items-center justify-content-between w-100 mb-2">
+            <a class="navbar-brand logo-login m-0" href="inicio">
+              <img src="assets/images/logo.svg" alt="FR Semijoias" />
+            </a>
+            <div class="d-flex align-items-center gap-3">
+              <a href="#" class="text-decoration-none text-secondary p-0" id="user-greeting">
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9ZM15.8243 13.6235C17.1533 12.523 18 10.8604 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 10.8604 6.84668 12.523 8.17572 13.6235C4.98421 14.7459 3 17.2474 3 20C3 20.5523 3.44772 21 4 21C4.55228 21 5 20.5523 5 20C5 17.7306 7.3553 15 12 15C16.6447 15 19 17.7306 19 20C19 20.5523 19.4477 21 20 21C20.5523 21 21 20.5523 21 20C21 17.2474 19.0158 14.7459 15.8243 13.6235Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+              <a href="carrinho" class="text-decoration-none text-secondary position-relative p-0">
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span class="position-absolute top-0 start-80 translate-middle badge rounded-pill bg-danger" id="cart-counter">0</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Desktop: Logo -->
+          <a class="navbar-brand logo-login d-none d-lg-block" href="inicio">
             <img src="assets/images/logo.svg" alt="FR Semijoias" />
           </a>
 
-          <!-- Mobile Toggle -->
-          <button class="navbar-toggler border-0" type="button">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <!-- Search Form (Desktop) -->
+          <!-- Search Form -->
           <form class="d-none d-lg-flex mx-auto w-100" style="max-width: 550px">
             <div class="input-group ms-5 position-relative">
               <input
@@ -74,18 +111,17 @@
           </form>
 
           <!-- Search Form (Mobile) -->
-          <form class="d-lg-none my-3">
-            <div class="input-group position-relative">
+          <form class="d-lg-none my-3 w-100">
+            <div class="input-group position-relative w-100">
               <input
                 type="search"
-                class="form-control border border-secondary border-opacity-25 bg-light rounded-pill px-4 py-2"
+                class="form-control border border-secondary border-opacity-25 bg-light rounded-pill px-4 py-2 w-100"
                 placeholder="Buscar produtos"
                 id="input-search-mobile"
                 style="
                   outline: none !important;
                   box-shadow: none !important;
                   border-color: rgba(108, 117, 125, 0.25) !important;
-                  padding-right: 2.5rem !important;
                 "
               />
               <span class="bg-dark rounded-pill p-2 position-absolute end-0 top-50 translate-middle-y d-flex align-items-center justify-content-center shadow-sm me-1" style="z-index: 99;">
@@ -108,12 +144,12 @@
             </div>
           </form>
 
-          <!-- User Actions -->
-          <div class="d-flex align-items-center gap-5 ms-lg-3">
-            <a href="#" class="text-decoration-none text-secondary" id="user-greeting">
+          <!-- User Actions (Desktop) -->
+          <div class="d-none d-lg-flex align-items-center gap-5 ms-lg-3">
+            <a href="#" class="text-decoration-none text-secondary" id="user-greeting-desktop">
               <svg
-                width="32"
-                height="32"
+                width="36"
+                height="36"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -132,8 +168,8 @@
               class="text-decoration-none text-secondary position-relative"
             >
               <svg
-                width="32"
-                height="32"
+                width="36"
+                height="36"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +184,7 @@
               </svg>
               <span
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                id="cart-counter"
+                id="cart-counter-desktop"
                 >0</span
               >
             </a>
@@ -156,26 +192,22 @@
         </div>
       </nav>
       <!-- Menu de Categorias -->
-      <div class="bg-light border-bottom border-top py-3 w-100">
-        <nav class="container d-flex justify-content-center align-items-center flex-wrap gap-4" id="categorias-menu">
-            <a
-              href="#"
-              class="text-decoration-none text-dark fw-semibold categoria-link active rounded-4 px-3 py-2 fs-6 d-inline-block"
-              data-categoria="inicio"
-            >
-              Início
-            </a>
-            <span class="text-muted"></span>
-            <!-- Categorias serão inseridas aqui via JavaScript -->
+      <div class="bg-light border-bottom border-top categorias-scroll-wrapper">
+          <nav class="d-flex align-items-center p-3" id="categorias-menu">
+              <a href="#" class="text-decoration-none text-dark fw-semibold categoria-link active rounded-4 px-3 py-2 fs-6" data-categoria="inicio">
+                  Início
+              </a>
+              <span class="text-muted"></span>
+              <!-- Categorias serão inseridas aqui via JavaScript -->
           </nav>
         </div>
       </div>
     </header>
 
     <!-- Carrossel Infinite Loop -->
-    <section class="pt-5">
-      <div class="px-5">
-        <div class="banner-carousel swiper">
+    <section class="pt-4">
+      <div class="px-4">
+        <div class="banner-carousel rounded-4 w-100 swiper">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
               <img
@@ -217,13 +249,13 @@
           <div class="section-divider mx-auto mb-4"></div>
           <p class="text-muted mb-0">Todos os nossos produtos</p>
         </div>
-        <div class="row g-4" id="catalogo-completo-wrapper"></div>
+        <div class="row gx-5 gy-3" id="catalogo-completo-wrapper"></div>
       </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-white border-top">
-      <div class="container pt-5">
+      <div class="container pt-5 ps-4">
         <div class="row g-4">
           <div class="col-md-4">
             <img
@@ -246,13 +278,13 @@
                 >
               </li>
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted"
+                <a href="/public/assets/documents/politica-de-privacidade.pdf" target="_blank" rel="noopener" class="text-decoration-none text-muted"
                   >Política de Privacidade</a
                 >
               </li>
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted"
-                  >Política de Devolução e Troca</a
+                <a href="/public/assets/documents/politica-de-troca-e-devolucao.pdf" target="_blank" rel="noopener" class="text-decoration-none text-muted"
+                  >Política de Troca e Devolução</a
                 >
               </li>
             </ul>
@@ -262,13 +294,13 @@
             <h6 class="fw-semibold mb-3 small">Ajuda</h6>
             <ul class="list-unstyled small">
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted">Garantia</a>
+                <a href="/public/assets/documents/politica-de-garantia.pdf" target="_blank" rel="noopener" class="text-decoration-none text-muted">Garantia</a>
               </li>
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted">Entregas</a>
+                <a href="/public/assets/documents/politica-de-entrega-e-prazos.pdf" target="_blank" rel="noopener" class="text-decoration-none text-muted">Entregas</a>
               </li>
               <li class="mb-2">
-                <a href="#" class="text-decoration-none text-muted">Prazos</a>
+                <a href="/public/assets/documents/politica-de-entrega-e-prazos.pdf" target="_blank" rel="noopener" class="text-decoration-none text-muted">Prazos</a>
               </li>
             </ul>
           </div>
@@ -382,8 +414,8 @@
                 </p>
 
                 <div class="mb-5">
-                  <label class="form-label fw-bold">Quantidade:</label>
-                  <div class="input-group" style="max-width: 120px">
+                  <strong>Quantidade:</strong>
+                  <div class="input-group mt-2" style="max-width: 120px">
                     <button
                       class="btn btn-outline-secondary modal-btn-decrease rounded-start-4"
                       type="button"

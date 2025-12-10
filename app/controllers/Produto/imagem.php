@@ -8,7 +8,8 @@ $rootPath = dirname(dirname(dirname(__DIR__)));
 $filename = $_GET['file'] ?? null;
 if (!$filename || $filename !== basename($filename)) {
     http_response_code(400); // Bad Request
-    exit('Nome de arquivo inválido.');
+    // ...
+    return;
 }
 
 // 3. Monta o caminho completo e seguro para o arquivo na pasta privada
@@ -16,7 +17,8 @@ $fullPath = $rootPath . '/public/assets/images/' . $filename;
 
 if (!file_exists($fullPath)) {
     http_response_code(404); // Not Found
-    exit('Arquivo de imagem não encontrado.');
+    // ...
+    return;
 }
 
 try {
@@ -48,10 +50,10 @@ try {
     header('Content-Type: ' . $mime_type);
     header('Content-Length: ' . strlen($image_binary));
     echo $image_binary;
-    exit;
+    // ...
 
 } catch (Exception $e) {
     http_response_code(500);
-    exit('Erro ao processar a imagem: ' . $e->getMessage());
+    // ...
 }
 ?>

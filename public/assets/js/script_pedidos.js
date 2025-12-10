@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/promocoes');
             promocoesArray = await response.json();
         } catch (error) {
-            console.error('Erro ao carregar promoções:', error);
+            // ...
             promocoesArray = [];
         }
     };
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         } catch (error) {
-            console.error('Erro ao carregar produtos:', error);
+            // ...
         }
     };
 
@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btnExcluirPedido.disabled = false;
             formPedido.scrollIntoView({behavior: 'smooth', block: 'start'});
         } catch (error) {
-            console.error('Erro ao selecionar pedido:', error);
+            // ...
             exibirMensagemPedido('Erro ao carregar dados do pedido', 'danger');
         }
     };

@@ -16,7 +16,7 @@ use core\utils\Sanitize;
  * $where->addCondition('AND', 'nome', '=', 'João');
  * $where->addCondition('OR', 'idade', '>', 30);
  * $query = $where->build();
- * echo $query; // Produz: WHERE nome = ? AND idade > ?
+ * // echo $query; // Produz: WHERE nome = ? AND idade > ?
  * ```
  */
 class Where {

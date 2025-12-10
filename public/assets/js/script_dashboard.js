@@ -81,7 +81,7 @@ const carregarEstatisticas = async () => {
         }
         
     } catch (error) {
-        console.error('Erro ao carregar estatísticas:', error);
+        // ...
     }
 };
 
@@ -107,7 +107,7 @@ const carregarPedidosRecentes = async () => {
                 });
             }
         } catch (error) {
-            console.error('Erro ao carregar status:', error);
+            // ...
         }
         
         // Carregar mapeamento de clientes
@@ -121,27 +121,25 @@ const carregarPedidosRecentes = async () => {
                 });
             }
         } catch (error) {
-            console.error('Erro ao carregar clientes:', error);
+            // ...
         }
         // Carregar pedidos
         const response = await fetch('/pedidos');
         let pedidos = await response.json();
         
         if (!response.ok || !Array.isArray(pedidos)) {
-            console.error('Erro ao carregar pedidos:', pedidos);
+            // ...
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-danger">Erro ao carregar pedidos</td></tr>';
             cardsContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar pedidos</div>';
             return;
         }
         
-        // Filtrar apenas pedidos pendentes e limitar aos 10 mais recentes
+        // Filtrar apenas pedidos pendentes e mostrar todos
         pedidos = pedidos
             .filter(p => {
                 const statusNome = statusMap[p.idStatus] ? statusMap[p.idStatus].toLowerCase() : '';
                 return statusNome === 'pendente';
-            })
-            .reverse()
-            .slice(0, 10);
+            });
         
         if (pedidos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">Nenhum pedido pendente</td></tr>';
@@ -228,7 +226,7 @@ const carregarPedidosRecentes = async () => {
         }).join('');
         
     } catch (error) {
-        console.error('Erro ao carregar pedidos recentes:', error);
+        // ...
         const tbody = document.querySelector('#tabelaPedidosRecentes tbody');
         const cardsContainer = document.getElementById('cardsPedidosRecentes');
         

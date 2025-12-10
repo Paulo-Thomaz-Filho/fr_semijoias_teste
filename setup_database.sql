@@ -135,17 +135,13 @@ INSERT INTO nivel_acesso (id_nivel, tipo) VALUES
 (1, 'Administrador'),
 (2, 'Cliente');
 
--- Senhas com password_hash (BCRYPT - seguro):
--- admin123 -> $2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u
--- 123456   -> $2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW
-
+-- USUÁRIOS
+-- Regina!180913# -> $2y$10$8UzfczGzBXlW.3TtDaX/beHAPC9zChH8.CQPgukIk0xOI5DSIURAu
+-- 123456 -> $2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW
 INSERT INTO usuarios (id_usuario, nome, email, senha, cpf, telefone, endereco, data_nascimento, id_nivel, status) VALUES
-(1, 'Fernanda Cristina', 'admin@frsemijoias.com', '$2y$10$j7HX35qfCBuB8Z47ZFUrcesQpocsrm9awqDZ0Gj/bcMEcDSz3S10u', '11111111111', '11999999999', 'Rua das Flores, 100 - São Paulo, SP', '1990-01-01', 1, 'ativo'),
+(1, 'Fernanda Cristina', 'nogueira.fer1979@gmail.com', '$2y$10$8UzfczGzBXlW.3TtDaX/beHAPC9zChH8.CQPgukIk0xOI5DSIURAu', '27416824885', '11930651979', 'Avenida da Paz, 478, Apto. 55-B - Guarulhos, SP', '1979-05-18', 1, 'ativo'),
 (2, 'Maria Silva', 'maria.silva@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '22222222222', '11988888888', 'Avenida Brasil, 200 - São Paulo, SP', '1985-05-15', 2, 'ativo'),
-(3, 'João Santos', 'joao.santos@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '33333333333', '11977777777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2, 'ativo'),
-(4, 'Ana Costa', 'ana.costa@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '44444444444', '11966666666', 'Praça Central, 400 - São Paulo, SP', '1988-12-10', 2, 'ativo'),
-(5, 'Pedro Oliveira', 'pedro.oliveira@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '55555555555', '11955555555', 'Alameda Santos, 500 - São Paulo, SP', '1995-03-25', 2, 'ativo'),
-(6, 'Carla Mendes', 'carla.mendes@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '66666666666', '11944444444', 'Rua Verde, 600 - São Paulo, SP', '1990-07-30', 2, 'ativo');
+(3, 'João Santos', 'joao.santos@email.com', '$2y$10$3DsJ05LgzAy.SJjeddxY2eOh4VfQZhv7lAd6RTXOi5ISLaXNrxWDW', '33333333333', '11977777777', 'Rua do Sol, 300 - São Paulo, SP', '1992-08-20', 2, 'ativo');
 
 -- STATUS
 INSERT INTO status (nome) VALUES
@@ -157,18 +153,4 @@ INSERT INTO status (nome) VALUES
 
 -- PEDIDOS
 INSERT INTO pedidos (id_pedido, produto_nome, preco, endereco, data_pedido, quantidade, id_status, descricao, id_produto, id_cliente) VALUES
-(1, 'Brinco Argola Média', 239.80, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-14', 2, 2, 'Dois colares ponto de luz', 5, 2),
-(2, 'Conjunto Delicado', 799.90, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-14', 1, 2, 'Conjunto presente', 7, 3),
-(3, 'Pulseira Elos', 399.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-13', 1, 4, 'Pedido especial', 17, 4),
-(4, 'Anel Meia Aliança', 159.80, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-13', 1, 4, 'Dois anéis diferentes', 2, 5),
-(5, 'Pulseira Riviera', 299.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-12', 1, 3, 'Pulseira Riviera', 15, 6),
-(6, 'Ear Cuff Estrelas', 349.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-11', 1, 3, 'Colar premium', 8, 2),
-(7, 'Brinco Argola Pequena', 259.70, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-10', 3, 3, '3 brincos argola', 9, 3),
-(8, 'Bracelete Liso', 449.90, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-09', 1, 1, 'Conjunto dourado', 16, 4),
-(9, 'Brinco Gota Luxo', 329.85, 'Rua do Ouro, 321 - São Paulo, SP', '2025-10-08', 2, 4, 'Brincos para presente', 10, 5),
-(10, 'Gargantilha Choker', 189.90, 'Rua das Pedras, 654 - São Paulo, SP', '2025-10-08', 1, 3, 'Brinco Pandora', 12, 6),
-(11, 'Conjunto Noiva', 599.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-10-05', 1, 4, 'Conjunto de noiva', 3, 2),
-(12, 'Colar Gravatinha', 319.80, 'Avenida Brasil, 456 - São Paulo, SP', '2025-10-03', 1, 3, 'Pulseira berloque', 14, 3),
-(13, 'Anel Solitário', 449.75, 'Rua das Acácias, 789 - São Paulo, SP', '2025-10-02', 5, 3, '5 anéis solitário', 1, 4),
-(14, 'Brinco Argola Média', 299.70, 'Rua do Ouro, 321 - São Paulo, SP', '2025-09-28', 3, 3, '3 colares ponto de luz', 5, 5),
-(15, 'Colar Ponto de Luz', 219.80, 'Rua das Pedras, 654 - São Paulo, SP', '2025-09-25', 2, 3, '2 ear cuff', 11, 6);
+(1, 'Colar Canutilho Duo', 53.30, 'Rua das Flores, 123 - São Paulo, SP', '2025-12-09', 1, 3, 'Colar bonito', 1, 2);

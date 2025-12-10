@@ -131,7 +131,7 @@ window.carregarGraficoBarras = async function () {
       },
     });
   } catch (error) {
-    console.error("Erro gráfico barras:", error);
+    // ...
   }
 };
 
@@ -139,14 +139,14 @@ window.carregarGraficoPizza = async function () {
   try {
     const response = await fetch("/dashboard/estoque");
     const dados = await response.json();
-    console.log("Dados do gráfico pizza:", dados);
+    // ...
     if (!Array.isArray(dados) || dados.length === 0) {
-      console.error("Dados vazios ou inválidos para gráfico pizza");
+      // ...
       return;
     }
     const labels = dados.map((item) => item.categoria || "Sem categoria");
     const valores = dados.map((item) => parseInt(item.total || 0));
-    console.log("Labels:", labels, "Valores:", valores);
+    // ...
 
     // Cores modernas para o gráfico de pizza
     // Gerar todas as cores automaticamente via HSL
@@ -162,7 +162,7 @@ window.carregarGraficoPizza = async function () {
     const coresHover = gerarCoresHSL(labels.length, 1);
     const ctx = document.getElementById("graficoPizza");
     if (!ctx) {
-      console.error("Elemento graficoPizza não encontrado");
+      // ...
       return;
     }
     if (graficoPizza) graficoPizza.destroy();
@@ -251,7 +251,7 @@ window.carregarGraficoPizza = async function () {
       },
     });
   } catch (error) {
-    console.error("Erro gráfico pizza:", error);
+    // ...
   }
 };
 

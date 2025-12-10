@@ -23,10 +23,10 @@ class CurlRequest {
                 
                 if ( is_array($this->url )){
                     curl_setopt($ch, CURLOPT_URL, $this->url . '?' . http_build_query($this->data));
-                    echo $this->url . '?' . http_build_query($this->data);
+                    // ...
                 } else{
                     curl_setopt($ch, CURLOPT_URL, $this->url );
-                    echo $this->url . '?' . http_build_query($this->data);
+                    // ...
                 }
                 
                 
@@ -47,10 +47,10 @@ class CurlRequest {
         
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            echo 'Erro no cURL: ' . curl_error($ch);
+            // ...
         }
         curl_close($ch);
-        echo $response;
+        // ...
     }
 }
 

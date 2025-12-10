@@ -13,8 +13,9 @@ $uploader = new UploadedCtrl(); // Instancia a classe UploadedCtrl
 // Verifica se o método de requisição é POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica se o método de requisição é POST
     if (!isset($_FILES['file'])) {  // Verifica se o arquivo foi enviado
-        echo "No file sent"; // Retorna mensagem de erro
-        exit;
+        http_response_code(400);
+        // ...
+        return;
     }
 
     // Processa o arquivo enviado
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica se o método de requisi�
     $uploader->registerUploadedfile($owner, $filePath, $accessCtrl, $shareMails); // Registra o arquivo no banco de dados
 
     // Retornar o nome do arquivo para o cliente
-    echo $fileBase64Name;
+    // ...
 }
 
 ?>

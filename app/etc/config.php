@@ -79,11 +79,11 @@ if (file_exists($envPath)) {
     }
 }
 
-$config['database']['host']   = getenv('DB_HOST');
-$config['database']['schema'] = getenv('DB_NAME');
-$config['database']['user']   = getenv('DB_USER');
-$config['database']['pass']   = getenv('DB_PASS');
-$config['database']['port']   = getenv('DB_PORT');
+$config['database']['host']   = getenv('DB_HOST') ?: 'mysql';
+$config['database']['schema'] = getenv('DB_NAME') ?: 'fr_semijoias';
+$config['database']['user']   = getenv('DB_USER') ?: 'root';
+$config['database']['pass']   = getenv('DB_PASS') ?: 'root';
+$config['database']['port']   = getenv('DB_PORT') ?: '3306';
 
 $config['email']['host']	    = getenv('MAIL_HOST');
 $config['email']['port']	    = getenv('MAIL_PORT');
