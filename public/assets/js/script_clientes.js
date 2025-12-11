@@ -97,11 +97,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gerar badge de nível de acesso
     function gerarBadgeNivel(idNivel) {
         if (idNivel == 1) {
-            return '<span class="status-badge status-danger">• Administrador</span>';
+            return '<span class="status-badge status-danger">Administrador</span>';
         } else if (idNivel == 2) {
-            return '<span class="status-badge status-sent">• Cliente</span>';
+            return '<span class="status-badge status-sent">Cliente</span>';
         }
-        return '<span class="status-badge status-pending">• Desconhecido</span>';
+        return '<span class="status-badge status-pending">Desconhecido</span>';
     }
 
     // -------------------------------------------------------------------------

@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (statusClass === 'aprovado') statusClass = 'green';
                 if (statusClass === 'entregue') statusClass = 'green';
                 if (statusClass === 'cancelado') statusClass = 'danger';
-                const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
+                const statusBadge = '<span class="status-badge status-' + statusClass + '">' + statusNome + '</span>';
                 const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';
                 return '<tr class="border-bottom border-light"><td class="py-4 text-dark">' + p.idPedido + '</td><td class="py-4 text-dark">' + (p.produtoNome || 'N/A') + '</td><td class="py-4 text-dark">' + clienteNome + '</td><td class="py-4 text-dark">' + valor + '</td><td class="py-4 text-dark">' + (p.endereco || '-') + '</td><td class="py-4 text-dark">' + data + '</td><td class="py-4">' + statusBadge + '</td><td class="py-4 text-dark">' + quantidade + '</td><td class="py-4"><button class="btn btn-sm btn-success px-3 py-2 fw-medium rounded-4 btn-selecionar-pedido" data-id="' + p.idPedido + '">Selecionar</button></td></tr>';
             }).join('');
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (statusClass === 'enviado') statusClass = 'sent';
                     if (statusClass === 'aprovado') statusClass = 'green';
                     if (statusClass === 'cancelado') statusClass = 'danger';
-                    const statusBadge = '<span class="status-badge status-' + statusClass + '">• ' + statusNome + '</span>';
+                    const statusBadge = '<span class="status-badge status-' + statusClass + '">' + statusNome + '</span>';
                     const clienteNome = clientesMap && p.idCliente ? (clientesMap[p.idCliente] || 'N/A') : 'N/A';
                     
                     return `

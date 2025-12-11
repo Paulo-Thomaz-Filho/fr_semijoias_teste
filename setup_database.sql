@@ -186,4 +186,13 @@ INSERT INTO status (nome) VALUES
 
 -- PEDIDOS
 INSERT INTO pedidos (id_pedido, produto_nome, preco, endereco, data_pedido, quantidade, id_status, descricao, id_produto, id_cliente) VALUES
-(1, 'Colar Canutilho Duo', 53.30, 'Rua das Flores, 123 - São Paulo, SP', '2025-12-09', 1, 3, 'Colar bonito', 1, 2);
+(1, 'Colar Canutilho Duo', 53.30, 'Rua das Flores, 123 - São Paulo, SP', '2025-12-09', 1, 3, 'Colar bonito', 1, 2),
+(2, 'Brinco Coração Olho de Gato', 78.00, 'Avenida Brasil, 200 - São Paulo, SP', '2025-12-10', 2, 2, 'Brinco delicado', 2, 2),
+(3, 'Conjunto Jade Coração Rosa', 159.00, 'Rua do Sol, 300 - São Paulo, SP', '2025-12-11', 1, 1, 'Conjunto feminino', 3, 3),
+(4, 'Brinco Rubi Pérola', 55.90, 'Avenida da Paz, 478 - Guarulhos, SP', '2025-12-12', 1, 3, 'Brinco clássico', 4, 1),
+(5, 'Colar Duplo Jade/Coração', 161.20, 'Rua das Flores, 123 - São Paulo, SP', '2025-12-13', 1, 2, 'Colar moderno', 5, 2),
+(6, 'Escapulário Deus é Fiel', 68.90, 'Avenida Brasil, 200 - São Paulo, SP', '2025-12-14', 1, 1, 'Escapulário religioso', 6, 2),
+(7, 'Conjunto Laços Dourados', 64.35, 'Rua do Sol, 300 - São Paulo, SP', '2025-12-15', 1, 3, 'Conjunto delicado', 7, 3),
+(8, 'Anel Dedinho Duo Dourado', 69.50, 'Avenida da Paz, 478 - Guarulhos, SP', '2025-12-16', 1, 2, 'Anel moderno', 8, 1),
+(9, 'Brinco Triângulo Duo', 53.90, 'Rua das Flores, 123 - São Paulo, SP', '2025-12-17', 1, 1, 'Brinco geométrico', 9, 2),
+(10, 'Colar Esferas Diamantada Prata', 175.00, 'Avenida Brasil, 200 - São Paulo, SP', '2025-12-18', 1, 3, 'Colar sofisticado', 10, 2);

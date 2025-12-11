@@ -239,8 +239,8 @@ document.addEventListener("DOMContentLoaded", function () {
           const precoFormatado = formatarPreco(precoFinal);
           const disponivelBadge =
             p.disponivel == 1
-              ? '<span class="status-badge status-green">• Sim</span>'
-              : '<span class="status-badge status-danger">• Não</span>';
+              ? '<span class="status-badge status-green">Sim</span>'
+              : '<span class="status-badge status-danger">Não</span>';
           return (
             '<tr class="border-bottom border-light">' +
             '<td class="py-4 text-dark">' +
@@ -310,8 +310,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const precoFormatado = formatarPreco(precoFinal);
             const disponivelBadge =
               p.disponivel == 1
-                ? '<span class="status-badge status-green">• Sim</span>'
-                : '<span class="status-badge status-danger">• Não</span>';
+                ? '<span class="status-badge status-green">Sim</span>'
+                : '<span class="status-badge status-danger">Não</span>';
 
             return `
                         <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">

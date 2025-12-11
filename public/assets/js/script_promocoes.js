@@ -157,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 let statusBadge = p.status == 1
-                    ? '<span class="status-badge status-green">• Ativo</span>'
-                    : '<span class="status-badge status-danger">• Inativo</span>';
+                    ? '<span class="status-badge status-green">Ativo</span>'
+                    : '<span class="status-badge status-danger">Inativo</span>';
                 return `<tr class="border-bottom border-light">
                     <td class="py-4 text-dark">${p.idPromocao}</td>
                     <td class="py-4 text-dark">${p.nome || ''}</td>
@@ -184,8 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     let statusBadge = p.status == 1
-                        ? '<span class="status-badge status-green">• Ativo</span>'
-                        : '<span class="status-badge status-danger">• Inativo</span>';
+                        ? '<span class="status-badge status-green">Ativo</span>'
+                        : '<span class="status-badge status-danger">Inativo</span>';
                     
                     return `
                         <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">

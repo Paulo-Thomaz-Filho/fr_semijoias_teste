@@ -166,7 +166,7 @@ const carregarPedidosRecentes = async () => {
             if (statusClass === 'entregue') statusClass = 'green';
             if (statusClass === 'cancelado') statusClass = 'danger';
             
-            const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;
+            const statusBadge = `<span class="status-badge status-${statusClass}">${status}</span>`;
             
             return `
                 <tr class="border-bottom border-light">
@@ -199,7 +199,7 @@ const carregarPedidosRecentes = async () => {
             if (statusClass === 'aprovado') statusClass = 'green';
             if (statusClass === 'cancelado') statusClass = 'danger';
             
-            const statusBadge = `<span class="status-badge status-${statusClass}">• ${status}</span>`;
+            const statusBadge = `<span class="status-badge status-${statusClass}">${status}</span>`;
             
             return `
                 <div class="card border-0 bg-white mb-3 shadow-sm rounded-4">

@@ -221,18 +221,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---------------------------------------------------------------------------
   // ATUALIZA TOTAL DE UM ITEM
   // ---------------------------------------------------------------------------
-  const atualizarTotalItem = (itemElement) => {
+const atualizarTotalItem = (itemElement) => {
     const precoBase = parseFloat(itemElement.getAttribute("data-price"));
-    const quantidade = parseInt(itemElement.querySelector(".quantity").value);
+    
+    // Pega o valor de qualquer um dos inputs (já que vamos sincronizá-los)
+    const inputReferencia = itemElement.querySelector(".quantity");
+    const quantidade = inputReferencia ? parseInt(inputReferencia.value) : 1;
+    
     const totalItem = precoBase * quantidade;
 
-    itemElement.querySelector(".item-total").textContent =
-      formatarMoeda(totalItem);
+    // CORREÇÃO: Seleciona TODOS os elementos de total (mobile e desktop) e atualiza
+    const totalElements = itemElement.querySelectorAll(".item-total");
+    totalElements.forEach((el) => {
+        el.textContent = formatarMoeda(totalItem);
+    });
+
     atualizarResumoCarrinho();
-  }
+}
 
   // ----------- ATUALIZAÇÃO DE RESUMO DO CARRINHO -----------
-  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------ev
   // ATUALIZA RESUMO DO CARRINHO (SUBTOTAL, FRETE, TOTAL)
   // ---------------------------------------------------------------------------
   const atualizarResumoCarrinho = () => {
@@ -312,25 +320,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (cartItemsContainer) {
     cartItemsContainer.addEventListener("click", (event) => {
       const target = event.target;
-      // Aumentar quantidade
+      // AUMENTAR QUANTIDADE
       if (target.classList.contains("btn-increase")) {
         var item = target.closest(".cart-item");
-        var quantityInput = item.querySelector(".quantity");
-        var quantidade = parseInt(quantityInput.value);
+        
+        // 1. Pega o input que está DO LADO do botão clicado para saber o valor atual
+        var inputAtual = target.parentElement.querySelector(".quantity");
+        var quantidade = parseInt(inputAtual.value);
         quantidade++;
-        quantityInput.value = quantidade;
+
+        // 2. Seleciona TODOS os inputs (mobile e desktop) e atualiza todos eles
+        var todosInputs = item.querySelectorAll(".quantity");
+        todosInputs.forEach(function(input) {
+            input.value = quantidade;
+        });
+
         atualizarTotalItem(item);
         var itemId = item.getAttribute("data-id");
         updateCartInLocalStorage(itemId, quantidade);
       }
-      // Diminuir quantidade
+
+      // DIMINUIR QUANTIDADE
       if (target.classList.contains("btn-decrease")) {
         var item = target.closest(".cart-item");
-        var quantityInput = item.querySelector(".quantity");
-        var quantidade = parseInt(quantityInput.value);
+        
+        // 1. Pega o input vizinho ao botão
+        var inputAtual = target.parentElement.querySelector(".quantity");
+        var quantidade = parseInt(inputAtual.value);
+
         if (quantidade > 1) {
           quantidade--;
-          quantityInput.value = quantidade;
+          
+          // 2. Atualiza TODOS os inputs (mobile e desktop)
+          var todosInputs = item.querySelectorAll(".quantity");
+          todosInputs.forEach(function(input) {
+              input.value = quantidade;
+          });
+
           atualizarTotalItem(item);
           var itemId = item.getAttribute("data-id");
           updateCartInLocalStorage(itemId, quantidade);
