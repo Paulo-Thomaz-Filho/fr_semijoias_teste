@@ -1,5 +1,11 @@
-// Função para pegar iniciais do nome
-function getInitials(nome) {
+// =============================================================================
+// SCRIPTS DE COMPRAS
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// UTILITÁRIOS DE USUÁRIO
+// -----------------------------------------------------------------------------
+const getInitials = (nome) => {
   if (!nome) return "US";
   nome = nome.trim();
   const preposicoes = ["da", "de", "do", "das", "dos", "e"];
@@ -24,25 +30,23 @@ function getInitials(nome) {
     ultimo = partes[1];
   }
   return partes[0][0].toUpperCase() + (ultimo ? ultimo[0].toUpperCase() : "");
-}
+};
 
-function getRandomColor() {
+// -----------------------------------------------------------------------------
+// COR ALEATÓRIA PARA AVATAR
+// -----------------------------------------------------------------------------
+const getRandomColor = () => {
   const colors = [
-    "6c757d",
-    "007bff",
-    "28a745",
-    "dc3545",
-    "ffc107",
-    "17a2b8",
-    "6610f2",
-    "fd7e14",
-    "20c997",
-    "e83e8c",
+    "6c757d", "007bff", "28a745", "dc3545", "ffc107",
+    "17a2b8", "6610f2", "fd7e14", "20c997", "e83e8c",
   ];
   return colors[Math.floor(Math.random() * colors.length)];
-}
+};
 
-async function carregarHeaderUsuario() {
+// -----------------------------------------------------------------------------
+// CARREGA HEADER DO USUÁRIO
+// -----------------------------------------------------------------------------
+const carregarHeaderUsuario = async () => {
   try {
     const response = await fetch("/usuario/buscar-dados", {
       method: "GET",
@@ -66,29 +70,28 @@ async function carregarHeaderUsuario() {
       }
       avatarImg.src = `https://ui-avatars.com/api/?name=${initials}&background=${bg}&color=fff&size=128`;
     }
-  } catch (e) {
-    // Não faz nada, mantém padrão
-  }
-}
+  } catch (e) {}
+};
 
-// Função para definir a classe customizada do badge de status (do seu CSS)
-function getStatusBadgeClass(status) {
+// -----------------------------------------------------------------------------
+// CLASSE DE BADGE DE STATUS
+// -----------------------------------------------------------------------------
+const getStatusBadgeClass = (status) => {
   if (!status) return "status-badge";
   const s = status.toLowerCase();
-  if (s.includes("pago") || s.includes("aprovado"))
-    return "status-badge status-green";
+  if (s.includes("pago") || s.includes("aprovado")) return "status-badge status-green";
   if (s.includes("pendente")) return "status-badge status-pending";
-  if (s.includes("cancelado") || s.includes("recusado"))
-    return "status-badge status-danger";
-  if (s.includes("enviado"))
-    return "status-badge status-sent";
-  if (s.includes("entregue"))
-    return "status-badge status-green";
+  if (s.includes("cancelado") || s.includes("recusado")) return "status-badge status-danger";
+  if (s.includes("enviado")) return "status-badge status-sent";
+  if (s.includes("entregue")) return "status-badge status-green";
   return "status-badge";
-}
+};
 
-document.addEventListener("DOMContentLoaded", async function () {
-  carregarHeaderUsuario();
+// -----------------------------------------------------------------------------
+// INICIALIZAÇÃO PRINCIPAL
+// -----------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", async () => {
+  await carregarHeaderUsuario();
   const pedidosContainer = document.getElementById("compras-lista");
   let usuarioId = null;
 
@@ -241,29 +244,28 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Evento de logout para o botão sair
   const btnSair = document.getElementById("btn-sair");
   if (btnSair) {
-    btnSair.addEventListener("click", function (e) {
+    btnSair.addEventListener("click", async (e) => {
       e.preventDefault();
-      fetch("/api/usuario/logout")
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.success) {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = "/inicio";
-          } else {
-            alert("Erro ao sair. Tente novamente.");
-          }
-        })
-        .catch(() => {
+      try {
+        const res = await fetch("/api/usuario/logout");
+        const json = await res.json();
+        if (json.success) {
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = "/inicio";
+        } else {
           alert("Erro ao sair. Tente novamente.");
-        });
+        }
+      } catch {
+        alert("Erro ao sair. Tente novamente.");
+      }
     });
   }
 
   // Evento para o botão Editar perfil
   const btnEditar = document.getElementById("btn-editar");
   if (btnEditar) {
-    btnEditar.addEventListener("click", function (e) {
+    btnEditar.addEventListener("click", (e) => {
       e.preventDefault();
       window.location.href = "/conta";
     });

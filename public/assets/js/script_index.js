@@ -1,58 +1,94 @@
-// =====================================
-// INÍCIO - SCRIPTS DE CATÁLOGO E MODAL
-// =====================================
+// =============================================================================
+// SCRIPTS DE CATÁLOGO E MODAL
+// =============================================================================
 
-// ----------- UTILITÁRIOS DE USUÁRIO -----------
-function exibirSaudacaoUsuario() {
+// -----------------------------------------------------------------------------
+// MODAL QUEM SOMOS
+// -----------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const quemSomosLink = document.getElementById("quem-somos-link");
+  if (quemSomosLink) {
+    quemSomosLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(
+        document.getElementById("quemSomosModal")
+      );
+      modal.show();
+    });
+  }
+});
+
+// -----------------------------------------------------------------------------
+// UTILITÁRIOS DE USUÁRIO
+// -----------------------------------------------------------------------------
+const exibirSaudacaoUsuario = () => {
   try {
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
     if (usuario && usuario.nome) {
       const primeiroNome = usuario.nome.split(" ")[0];
-      var greetingEl = document.getElementById("user-greeting-text");
+      const greetingEl = document.getElementById("user-greeting-text");
       if (greetingEl) greetingEl.textContent = `Olá, ${primeiroNome}`;
     }
   } catch (e) {}
-}
+};
 // ----------- VARIÁVEIS GLOBAIS -----------
 let globalProductDatabase = [];
 let categoriaAtual = "inicio";
 
-// ----------- CARRINHO -----------
-function atualizarContadorCarrinho() {
+// -----------------------------------------------------------------------------
+// ATUALIZA CONTADOR DO CARRINHO NA NAVBAR
+// -----------------------------------------------------------------------------
+const atualizarContadorCarrinho = () => {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   let totalItems = 0;
   cart.forEach((item) => {
     totalItems += item.quantity;
   });
-  var cartCounterEl = document.getElementById("cart-counter");
+  const cartCounterEl = document.getElementById("cart-counter");
   if (cartCounterEl) cartCounterEl.textContent = totalItems;
-  var cartCounterDesktopEl = document.getElementById("cart-counter-desktop");
+  const cartCounterDesktopEl = document.getElementById("cart-counter-desktop");
   if (cartCounterDesktopEl) cartCounterDesktopEl.textContent = totalItems;
-}
+};
 
-// ----------- RENDERIZAÇÃO DE CARDS -----------
-function criarCardCatalogoHtml(product) {
-  let precoFormatado = product.preco;
-  if (!isNaN(product.preco)) {
-    precoFormatado = parseFloat(product.preco).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
+// -----------------------------------------------------------------------------
+// RENDERIZAÇÃO DE CARDS DO CATÁLOGO
+// -----------------------------------------------------------------------------
+const criarCardCatalogoHtml = (product) => {
+  let precoOriginal = parseFloat(product.preco);
+  let precoFinal = precoOriginal;
+
+  // Aplica desconto se houver promoção ativa
+  if (product.promocao && product.promocao.valor) {
+    if (product.promocao.tipo === "percent") {
+      precoFinal = precoOriginal * (1 - product.promocao.valor / 100);
+    } else if (product.promocao.tipo === "currency") {
+      precoFinal = precoOriginal - parseFloat(product.promocao.valor);
+    }
+    if (precoFinal < 0) precoFinal = 0;
   }
+
+  let precoFormatado = precoFinal.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+
+  // No card, mostrar apenas o valor atual (com promoção, se houver)
+  let precoHtml = `<span class="fs-5 fw-bold text-dark">${precoFormatado}</span>`;
+
   const imagemSrc = "assets/images/" + product.caminhoImagem;
 
   // Promo badge logic
   let promoBadgeHtml = "";
   if (product.promocao && product.promocao.valor) {
     let valor = product.promocao.valor;
-    let tipo = product.promocao.tipo; // 'percent' or 'currency'
+    let tipo = product.promocao.tipo;
     let badgeText = "";
     if (tipo === "percent") {
       badgeText = `${valor}% OFF`;
     } else if (tipo === "currency") {
       badgeText = `R$ ${parseInt(valor)} OFF`;
     }
-    promoBadgeHtml = `<span class=\"promo-badge\">${badgeText}</span>`;
+    promoBadgeHtml = `<span class="promo-badge">${badgeText}</span>`;
   }
 
   return `
@@ -64,7 +100,7 @@ function criarCardCatalogoHtml(product) {
         </div>
         <div class="d-flex flex-column flex-grow-1">
           <h5 class="product-card-title fs-6 fw-semibold mb-2">${product.nome}</h5>
-          <p class="product-card-price fs-5 fw-bold text-dark">${precoFormatado}</p>
+          <p class="product-card-price mb-2">${precoHtml}</p>
           <button class="btn btn-outline-dark rounded-4 fw-medium py-2 w-100 border-2 mt-2 text-nowrap d-flex align-items-center justify-content-center"
             style="padding-left:1rem;padding-right:1rem;white-space:nowrap;min-height:40px;"
             data-bs-toggle="modal"
@@ -76,7 +112,7 @@ function criarCardCatalogoHtml(product) {
       </div>
     </div>
   `;
-}
+};
 // ----------- CLASSE MODAL PRODUTO -----------
 class CatalogPage {
   constructor(modalSelector, buttonSelector, database) {
@@ -219,13 +255,25 @@ class CatalogPage {
     this.currentProduct = product;
     if (this.modalQtyInput) this.modalQtyInput.value = 1;
 
-    let precoFormatado = product.preco;
-    if (!isNaN(product.preco)) {
-      precoFormatado = parseFloat(product.preco).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      });
+    let precoOriginal = parseFloat(product.preco);
+    let precoFinal = precoOriginal;
+    if (product.promocao && product.promocao.valor) {
+      if (product.promocao.tipo === "percent") {
+        precoFinal = precoOriginal * (1 - product.promocao.valor / 100);
+      } else if (product.promocao.tipo === "currency") {
+        precoFinal = precoOriginal - parseFloat(product.promocao.valor);
+      }
+      if (precoFinal < 0) precoFinal = 0;
     }
+    let precoOriginalFormatado = precoOriginal.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+    let precoFinalFormatado = precoFinal.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
     if (this.modalTitle) this.modalTitle.textContent = product.nome;
     if (this.modalImage)
       this.modalImage.setAttribute(
@@ -234,8 +282,16 @@ class CatalogPage {
       );
     if (this.modalDescription)
       this.modalDescription.textContent = product.descricao;
-    if (this.modalPrice) this.modalPrice.textContent = precoFormatado;
     if (this.modalMaterial) this.modalMaterial.textContent = product.marca;
+
+    // Preço no modal: se houver promoção, mostra original riscado + promocional
+    if (this.modalPrice) {
+      if (precoFinal !== precoOriginal) {
+        this.modalPrice.innerHTML = `<span class='text-muted text-decoration-line-through me-2 small'>${precoOriginalFormatado}</span><span class='text-dark fw-bold'>${precoFinalFormatado}</span>`;
+      } else {
+        this.modalPrice.textContent = precoOriginalFormatado;
+      }
+    }
 
     // Promo badge in modal
     var badgeEl = document.getElementById("modal-promo-badge");
@@ -260,8 +316,10 @@ class CatalogPage {
   }
 }
 
-// ----------- CATEGORIAS -----------
-function carregarCategorias() {
+// -----------------------------------------------------------------------------
+// CATEGORIAS
+// -----------------------------------------------------------------------------
+const carregarCategorias = () => {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "produtos/categorias", true);
   xhr.responseType = "json";
@@ -306,10 +364,12 @@ function carregarCategorias() {
     // ...
   };
   xhr.send();
-}
+};
 
-// ----------- FILTRO DE CATEGORIA -----------
-function renderizarPorCategoria(categoria) {
+// -----------------------------------------------------------------------------
+// FILTRO DE CATEGORIA
+// -----------------------------------------------------------------------------
+const renderizarPorCategoria = (categoria) => {
   if (categoria === "inicio") {
     // Mostrar catálogo completo
     renderizarCatalogo(globalProductDatabase, "Catálogo Completo");
@@ -320,10 +380,12 @@ function renderizarPorCategoria(categoria) {
     );
     renderizarCatalogo(produtosFiltrados, categoria);
   }
-}
+};
 
-// ----------- RENDERIZAÇÃO DE CATÁLOGO -----------
-function renderizarCatalogo(produtos, titulo = "Catálogo Completo") {
+// -----------------------------------------------------------------------------
+// RENDERIZAÇÃO DE CATÁLOGO
+// -----------------------------------------------------------------------------
+const renderizarCatalogo = (produtos, titulo = "Catálogo Completo") => {
   var catalogoWrapper = document.getElementById("catalogo-completo-wrapper");
   var tituloH2 = document.querySelector(
     "#secao-catalogo .container .text-center h2"
@@ -342,54 +404,42 @@ function renderizarCatalogo(produtos, titulo = "Catálogo Completo") {
     if (catalogoWrapper)
       catalogoWrapper.innerHTML = `<div class="col-12"><p class="text-center fs-5">Nenhum produto encontrado.</p></div>`;
   }
-}
+};
 
 // Lógica AJAX para carregar produtos
 
-// ----------- INICIALIZAÇÃO PRINCIPAL -----------
-document.addEventListener("DOMContentLoaded", function () {
+// -----------------------------------------------------------------------------
+// INICIALIZAÇÃO PRINCIPAL
+// -----------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
   // Inicialização do catálogo
   exibirSaudacaoUsuario();
   atualizarContadorCarrinho();
 
-  // Redirecionamento do link de saudação
-  var userGreeting = document.getElementById("user-greeting");
-  if (userGreeting) {
-    userGreeting.addEventListener("click", function (e) {
-      e.preventDefault();
-      try {
-        var usuario = JSON.parse(sessionStorage.getItem("usuario"));
-        if (usuario && usuario.nivel == 1) {
-          window.location.href = "/dashboard";
-        } else if (usuario) {
-          window.location.href = "/conta";
-        } else {
-          window.location.href = "/login";
-        }
-      } catch (err) {
-        window.location.href = "/login";
-      }
-    });
-  }
-    // Redirecionamento do link de saudação (Desktop)
-    var userGreetingDesktop = document.getElementById("user-greeting-desktop");
-    if (userGreetingDesktop) {
-      userGreetingDesktop.addEventListener("click", function (e) {
+  // Redirecionamento dos links de saudação (mobile e desktop)
+  const handleUserGreetingClick = (usuario) => {
+    if (usuario && usuario.nivel == 1) {
+      window.location.href = "/dashboard";
+    } else if (usuario) {
+      window.location.href = "/conta";
+    } else {
+      window.location.href = "/login";
+    }
+  };
+  ["user-greeting", "user-greeting-desktop"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("click", (e) => {
         e.preventDefault();
         try {
-          var usuario = JSON.parse(sessionStorage.getItem("usuario"));
-          if (usuario && usuario.nivel == 1) {
-            window.location.href = "/dashboard";
-          } else if (usuario) {
-            window.location.href = "/conta";
-          } else {
-            window.location.href = "/login";
-          }
-        } catch (err) {
+          const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+          handleUserGreetingClick(usuario);
+        } catch {
           window.location.href = "/login";
         }
       });
     }
+  });
   // Lógica AJAX para carregar produtos
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "produtos", true);
@@ -472,11 +522,13 @@ document.addEventListener("DOMContentLoaded", function () {
   xhr.send();
 
   // ----------- EVENTO DE CLIQUE NAS CATEGORIAS -----------
-  document.querySelectorAll('.categoria-link').forEach(link => {
-    link.addEventListener('click', function(e) {
+  document.querySelectorAll(".categoria-link").forEach((link) => {
+    link.addEventListener("click", function (e) {
       e.preventDefault();
-      document.querySelectorAll('.categoria-link').forEach(l => l.classList.remove('active'));
-      this.classList.add('active');
+      document
+        .querySelectorAll(".categoria-link")
+        .forEach((l) => l.classList.remove("active"));
+      this.classList.add("active");
     });
   });
 });

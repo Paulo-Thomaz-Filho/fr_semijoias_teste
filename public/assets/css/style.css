@@ -23,7 +23,7 @@ html {
 }
 
 .gap-6 {
-  gap: 7rem !important;
+  gap: 5rem !important;
 }
 
 .logo-container {
@@ -1053,7 +1053,6 @@ body.bg-light {
 @media (max-width: 992px) {
   .sign-up-container .form-content {
     overflow-y: auto !important;
-    padding-top: 6rem !important;
     max-height: calc(100vh - 80px);
     padding-bottom: 8rem !important;
   }

@@ -1,105 +1,114 @@
-// =====================================
-// INÍCIO - SCRIPTS DO CARRINHO
-// =====================================
+// =============================================================================
+// SCRIPTS DO CARRINHO
+// =============================================================================
 
-// ----------- UTILITÁRIOS DE USUÁRIO -----------
-function exibirSaudacaoUsuario() {
+// -----------------------------------------------------------------------------
+// UTILITÁRIOS DE USUÁRIO
+// -----------------------------------------------------------------------------
+const exibirSaudacaoUsuario = () => {
   try {
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
     if (usuario && usuario.nome) {
       const primeiroNome = usuario.nome.split(" ")[0];
-      $("#user-greeting-text").text(`Olá, ${primeiroNome}`);
+      const el = document.getElementById("user-greeting-text");
+      if (el) el.textContent = `Olá, ${primeiroNome}`;
     }
   } catch (e) {}
-}
+};
+
+// -----------------------------------------------------------------------------
+// FORMATAÇÃO DE MOEDA
+// -----------------------------------------------------------------------------
+const formatarMoeda = (valor) => {
+  const numero = parseFloat(valor);
+  if (isNaN(numero)) return "R$ 0,00";
+  return numero.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+};
+
+// -----------------------------------------------------------------------------
+// ATUALIZA CONTADOR DO CARRINHO NA NAVBAR
+// -----------------------------------------------------------------------------
+const updateCartCounter = () => {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let totalItems = 0;
+  cart.forEach((item) => { totalItems += item.quantity; });
+  const el1 = document.getElementById("cart-counter");
+  const el2 = document.getElementById("cart-counter-desktop");
+  if (el1) el1.textContent = totalItems;
+  if (el2) el2.textContent = totalItems;
+};
 
 // ----------- INICIALIZAÇÃO PRINCIPAL -----------
-$(document).ready(function () {
-    // Exibir endereço do cliente fora do card de resumo
-    function carregarEnderecoUsuario() {
-      fetch('/api/usuario/buscarDados.php')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.sucesso && data.dados && data.dados.endereco) {
-            $("#user-address").text(data.dados.endereco);
-            $("#user-address-box").show();
-          } else {
-            $("#user-address").text("Endereço não cadastrado.");
-            $("#user-address-box").show();
-          }
-        })
-        .catch(() => {
-          $("#user-address").text("Erro ao buscar endereço.");
-          $("#user-address-box").show();
-        });
+// -----------------------------------------------------------------------------
+// INICIALIZAÇÃO PRINCIPAL
+// -----------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", async () => {
+  // ---------------------------------------------------------------------------
+  // CARREGA ENDEREÇO DO USUÁRIO (PADRÃO NOVO)
+  // ---------------------------------------------------------------------------
+  const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+  const addressEl = document.getElementById("user-address");
+  const boxEl = document.getElementById("user-address-box");
+  if (usuario && usuario.idUsuario && addressEl && boxEl) {
+    try {
+      const res = await fetch(`/usuario/buscar?id=${usuario.idUsuario}`);
+      const data = await res.json();
+      if (data && data.endereco) {
+        addressEl.textContent = data.endereco;
+        boxEl.style.display = "";
+      } else {
+        addressEl.textContent = "Endereço não cadastrado.";
+        boxEl.style.display = "";
+      }
+    } catch {
+      addressEl.textContent = "Erro ao buscar endereço.";
+      boxEl.style.display = "";
     }
-
-    carregarEnderecoUsuario();
+  }
   // Redirecionamento do link de saudação (igual ao index)
-  var userGreeting = document.getElementById("user-greeting");
-  if (userGreeting) {
-    userGreeting.addEventListener("click", function (e) {
-      e.preventDefault();
-      try {
-        var usuario = JSON.parse(sessionStorage.getItem("usuario"));
-        if (usuario && usuario.nivel == 1) {
-          window.location.href = "/dashboard";
-        } else if (usuario) {
-          window.location.href = "/conta";
-        } else {
+  // ---------------------------------------------------------------------------
+  // REDIRECIONAMENTO DE SAUDAÇÃO
+  // ---------------------------------------------------------------------------
+  const handleUserGreetingClick = (usuario) => {
+    if (usuario && usuario.nivel == 1) {
+      window.location.href = "/dashboard";
+    } else if (usuario) {
+      window.location.href = "/conta";
+    } else {
+      window.location.href = "/login";
+    }
+  };
+  ["user-greeting", "user-greeting-desktop"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        try {
+          const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+          handleUserGreetingClick(usuario);
+        } catch {
           window.location.href = "/login";
         }
-      } catch (err) {
-        window.location.href = "/login";
-      }
-    });
-  }
-  var userGreetingDesktop = document.getElementById("user-greeting-desktop");
-  if (userGreetingDesktop) {
-    userGreetingDesktop.addEventListener("click", function (e) {
-      e.preventDefault();
-      try {
-        var usuario = JSON.parse(sessionStorage.getItem("usuario"));
-        if (usuario && usuario.nivel == 1) {
-          window.location.href = "/dashboard";
-        } else if (usuario) {
-          window.location.href = "/conta";
-        } else {
-          window.location.href = "/login";
-        }
-      } catch (err) {
-        window.location.href = "/login";
-      }
-    });
-  }
+      });
+    }
+  });
 
   exibirSaudacaoUsuario();
 
   // ----------- CARRINHO -----------
-  function updateCartCounter() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let totalItems = 0;
-    cart.forEach((item) => {
-      totalItems += item.quantity;
-    });
-    $("#cart-counter").text(totalItems);
-    $("#cart-counter-desktop").text(totalItems);
-  }
+  // updateCartCounter já está no topo como função utilitária
 
   // ----------- FORMATAÇÃO DE MOEDA -----------
-  function formatarMoeda(valor) {
-    const numero = parseFloat(valor);
-    if (isNaN(numero)) {
-      return "R$ 0,00";
-    }
-    return numero.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  }
+  // formatarMoeda já está no topo como função utilitária
 
   // ----------- RENDERIZAÇÃO DE ITEM DO CARRINHO -----------
-  function criarItemHtml(item) {
+  // ---------------------------------------------------------------------------
+  // RENDERIZAÇÃO DE ITEM DO CARRINHO
+  // ---------------------------------------------------------------------------
+  const criarItemHtml = (item) => {
     return `
             <div class="card mb-3 cart-item rounded-4 border border-1" data-price="${
               item.preco
@@ -192,7 +201,10 @@ $(document).ready(function () {
   // ----------- FUNÇÕES DO CARRINHO -----------
 
   // Uma função central para salvar mudanças de quantidade no localStorage
-  function updateCartInLocalStorage(itemId, newQuantity) {
+  // ---------------------------------------------------------------------------
+  // ATUALIZA QUANTIDADE NO LOCALSTORAGE
+  // ---------------------------------------------------------------------------
+  const updateCartInLocalStorage = (itemId, newQuantity) => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     // Encontra o item no array do carrinho
     let itemToUpdate = cart.find((item) => item.id == itemId);
@@ -206,7 +218,10 @@ $(document).ready(function () {
   }
 
   // ----------- ATUALIZAÇÃO DE TOTAL DE ITEM -----------
-  function atualizarTotalItem(itemElement) {
+  // ---------------------------------------------------------------------------
+  // ATUALIZA TOTAL DE UM ITEM
+  // ---------------------------------------------------------------------------
+  const atualizarTotalItem = (itemElement) => {
     const precoBase = parseFloat(itemElement.getAttribute("data-price"));
     const quantidade = parseInt(itemElement.querySelector(".quantity").value);
     const totalItem = precoBase * quantidade;
@@ -217,7 +232,10 @@ $(document).ready(function () {
   }
 
   // ----------- ATUALIZAÇÃO DE RESUMO DO CARRINHO -----------
-  function atualizarResumoCarrinho() {
+  // ---------------------------------------------------------------------------
+  // ATUALIZA RESUMO DO CARRINHO (SUBTOTAL, FRETE, TOTAL)
+  // ---------------------------------------------------------------------------
+  const atualizarResumoCarrinho = () => {
     let subtotal = 0;
     let frete = 0;
 
@@ -237,9 +255,15 @@ $(document).ready(function () {
     // aplicar desconto se houver
     subtotal -= desconto;
 
-    const valorFixoDoFrete = 9.25;
-    if (subtotal > 0) {
-      frete = valorFixoDoFrete;
+    // Frete por faixa de valor
+    if (subtotal > 0 && subtotal <= 100) {
+      frete = 15;
+    } else if (subtotal > 100 && subtotal <= 300) {
+      frete = 18;
+    } else if (subtotal > 300) {
+      frete = 20;
+    } else {
+      frete = 0;
     }
 
     const total = subtotal + frete;
@@ -256,7 +280,10 @@ $(document).ready(function () {
   }
 
   // ----------- CARREGAR CARRINHO -----------
-  function carregarCarrinho() {
+  // ---------------------------------------------------------------------------
+  // CARREGA ITENS DO CARRINHO NA TELA
+  // ---------------------------------------------------------------------------
+  const carregarCarrinho = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const container = document.getElementById("cart-items");
     if (!container) return;
@@ -281,10 +308,10 @@ $(document).ready(function () {
   }
 
   // EVENTOS DO CARRINHO (DOM PURO)
-  var cartItemsContainer = document.getElementById("cart-items");
+  const cartItemsContainer = document.getElementById("cart-items");
   if (cartItemsContainer) {
-    cartItemsContainer.addEventListener("click", function (event) {
-      var target = event.target;
+    cartItemsContainer.addEventListener("click", (event) => {
+      const target = event.target;
       // Aumentar quantidade
       if (target.classList.contains("btn-increase")) {
         var item = target.closest(".cart-item");
@@ -330,8 +357,7 @@ $(document).ready(function () {
               return item.id != itemId;
             });
             localStorage.setItem("cart", JSON.stringify(cart));
-            item.remove();
-            atualizarResumoCarrinho();
+            carregarCarrinho();
             Swal.fire({
               title: "Removido!",
               text: "O item foi removido do seu carrinho.",
@@ -344,8 +370,8 @@ $(document).ready(function () {
     // Validando a digitação
     cartItemsContainer.addEventListener(
       "blur",
-      function (event) {
-        var target = event.target;
+      (event) => {
+        const target = event.target;
         if (target.classList.contains("quantity")) {
           var item = target.closest(".cart-item");
           var itemId = item.getAttribute("data-id");
@@ -370,7 +396,12 @@ $(document).ready(function () {
   carregarCarrinho();
 
   // ----------- FINALIZAR COMPRA -----------
-  $("#btn-finalizar-compra").on("click", function () {
+  // ---------------------------------------------------------------------------
+  // FINALIZAR COMPRA
+  // ---------------------------------------------------------------------------
+  const btnFinalizar = document.getElementById("btn-finalizar-compra");
+  if (btnFinalizar) {
+    btnFinalizar.addEventListener("click", () => {
     // Coleta produtos do carrinho
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     if (cart.length === 0) {
@@ -382,9 +413,10 @@ $(document).ready(function () {
       return;
     }
 
-    // Coleta cliente logado
+
+    // Coleta cliente logado do sessionStorage
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-    if (!usuario || !usuario.id) {
+    if (!usuario || !usuario.idUsuario) {
       Swal.fire({
         icon: "warning",
         title: "Usuário não identificado",
@@ -393,8 +425,8 @@ $(document).ready(function () {
       return;
     }
 
-    // Buscar endereço atualizado do backend
-    fetch(`/usuario/buscarPorId.php?id=${usuario.id}`)
+    // Buscar dados completos do usuário pelo id
+    fetch(`/usuario/buscar?id=${usuario.idUsuario}`)
       .then((res) => res.json())
       .then((userData) => {
         if (!userData || !userData.endereco) {
@@ -413,9 +445,11 @@ $(document).ready(function () {
           quantidade: item.quantity,
         }));
         const formData = new FormData();
-        formData.append("id_cliente", usuario.id);
+        formData.append("id_cliente", usuario.idUsuario);
         formData.append("produtos", JSON.stringify(produtos));
         formData.append("endereco", userData.endereco);
+        // Adiciona status padrão para o pedido
+        formData.append("status", "Pendente");
 
         fetch("/pedidos/salvar", {
           method: "POST",
@@ -428,24 +462,57 @@ $(document).ready(function () {
             } catch (e) {
               data = { erro: "Resposta inválida do servidor." };
             }
-            if (response.ok || response.status === 201) {
-              if (data.sucesso) {
-                Swal.fire({
-                  icon: "success",
-                  title: "Pedido realizado!",
-                  text: data.sucesso,
+            if ((response.ok || response.status === 201) && data.sucesso && data.ids && Array.isArray(data.ids) && data.ids.length > 0) {
+              // Pedido criado com sucesso, agora criar preferência de pagamento Mercado Pago
+              const idPedido = data.ids[0];
+              const items = cart.map((item) => ({
+                title: item.nome,
+                quantity: item.quantity,
+                unit_price: parseFloat(item.preco),
+              }));
+              // Mostra loading
+              Swal.fire({
+                icon: "info",
+                title: "Redirecionando para o pagamento",
+                text: "Aguarde, você será direcionado ao Mercado Pago para finalizar sua compra.",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+              });
+              fetch("/api/pagamento/payment_preference.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: items, id_pedido: idPedido })
+              })
+                .then((res) => res.json())
+                .then((mpData) => {
+                  if (mpData && mpData.init_point) {
+                    localStorage.removeItem("cart");
+                    carregarCarrinho();
+                    window.location.href = mpData.init_point;
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Erro ao redirecionar",
+                      text: mpData.error || "Não foi possível criar a preferência de pagamento.",
+                    });
+                  }
+                })
+                .catch(() => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Erro ao redirecionar",
+                    text: "Falha ao criar preferência de pagamento.",
+                  });
                 });
-                localStorage.removeItem("cart");
-                carregarCarrinho();
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Erro ao finalizar",
-                  text:
-                    data.erro ||
-                    "Ocorreu um erro ao finalizar a compra. Tente novamente.",
-                });
-              }
+            } else if (data.sucesso) {
+              Swal.fire({
+                icon: "success",
+                title: "Pedido realizado!",
+                text: data.sucesso,
+              });
+              localStorage.removeItem("cart");
+              carregarCarrinho();
             } else {
               Swal.fire({
                 icon: "error",
@@ -472,4 +539,5 @@ $(document).ready(function () {
         });
       });
   });
+}
 });

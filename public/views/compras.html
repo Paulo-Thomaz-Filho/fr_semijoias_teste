@@ -28,6 +28,12 @@
         >
         <span class="text-muted separator-vertical"></span>
         <a
+          href="/inicio"
+          class="text-decoration-none text-dark fw-semibold px-3 py-2 fs-6"
+          >Início</a
+        >
+        <span class="text-muted separator-vertical"></span>
+        <a
           href="/compras"
           class="text-decoration-none text-dark fw-semibold categoria-link active rounded-4 px-3 py-2 fs-6 d-inline-block"
           >Meus Pedidos</a
@@ -55,6 +61,23 @@
             />
           </svg>
           <span>Minha Conta</span>
+        </a>
+        <a
+          href="/inicio"
+          class="mobile-nav-link text-decoration-none px-3 py-2"
+        >
+          <svg
+            fill="currentColor"
+            width="24"
+            height="24"
+            viewBox="0 0 200 200"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M160,89.75H56l53-53a9.67,9.67,0,0,0,0-14,9.67,9.67,0,0,0-14,0l-56,56a30.18,30.18,0,0,0-8.5,18.5c0,1-.5,1.5-.5,2.5a6.34,6.34,0,0,0,.5,3,31.47,31.47,0,0,0,8.5,18.5l56,56a9.9,9.9,0,0,0,14-14l-52.5-53.5H160a10,10,0,0,0,0-20Z"
+            />
+          </svg>
+          <span>Início</span>
         </a>
         <a
           href="/compras"
@@ -98,7 +121,9 @@
       >
         <!-- Perfil -->
         <div class="col-12 col-lg-5">
-          <div class="d-flex flex-column align-items-center rounded-4 p-4 text-center">
+          <div
+            class="d-flex flex-column align-items-center rounded-4 p-4 text-center"
+          >
             <img
               id="avatar-img"
               src="https://ui-avatars.com/api/?name=US&background=6c757d&color=fff&size=180"
@@ -149,10 +174,7 @@
         <div class="col-12 col-lg-7 col-xl-6">
           <div class="card border-1 border rounded-4 p-5">
             <h2 class="fw-bold mb-4">Minhas Compras</h2>
-            <div
-              id="compras-lista"
-              style="max-height: 500px; overflow-y: auto"
-            >
+            <div id="compras-lista" style="max-height: 500px; overflow-y: auto">
               <!-- Os pedidos serão carregados aqui via JavaScript -->
             </div>
           </div>

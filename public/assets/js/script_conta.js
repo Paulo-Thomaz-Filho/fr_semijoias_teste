@@ -1,46 +1,34 @@
-// ...existing code...
-// ================= MODAL DE EDIÇÃO DE PERFIL =====================
-document.addEventListener("DOMContentLoaded", function () {
-  // Função para abrir modal e preencher campos
+// =============================================================================
+// SCRIPTS DE CONTA/PERFIL DO USUÁRIO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// MODAL DE EDIÇÃO DE PERFIL
+// -----------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  // Abrir modal e preencher campos
   const btnEditar = document.getElementById("btn-editar");
   if (btnEditar) {
-    btnEditar.addEventListener("click", function () {
-      document.getElementById("modal-nome").value =
-        document.getElementById("nome").value;
-      document.getElementById("modal-email").value =
-        document.getElementById("email").value;
+    btnEditar.addEventListener("click", () => {
+      document.getElementById("modal-nome").value = document.getElementById("nome").value;
+      document.getElementById("modal-email").value = document.getElementById("email").value;
       document.getElementById("modal-senha").value = "";
-      document.getElementById("modal-telefone").value =
-        document.getElementById("telefone").value;
-      document.getElementById("modal-endereco").value =
-        document.getElementById("endereco").value;
-      document.getElementById("modal-nascimento").value =
-        document.getElementById("nascimento").value;
-      document.getElementById("modal-cpf").value =
-        document.getElementById("cpf").value;
-      // Aplica máscaras nos campos do modal
+      document.getElementById("modal-telefone").value = document.getElementById("telefone").value;
+      document.getElementById("modal-endereco").value = document.getElementById("endereco").value;
+      document.getElementById("modal-nascimento").value = document.getElementById("nascimento").value;
+      document.getElementById("modal-cpf").value = document.getElementById("cpf").value;
       aplicarMascarasModal();
-      // Abre o modal
-      var modal = new bootstrap.Modal(
-        document.getElementById("modalEditarPerfil")
-      );
+      const modal = new bootstrap.Modal(document.getElementById("modalEditarPerfil"));
       modal.show();
     });
   }
 
-  // Função para validar email
-  function validarEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-
-  // Função para validar telefone (mínimo 10 dígitos)
-  function validarTelefone(telefone) {
-    return telefone.length >= 10 && telefone.length <= 11;
-  }
-
-  // Função para validar CPF
-  function validarCPF(cpf) {
+  // ---------------------------------------------------------------------------
+  // VALIDAÇÕES DE FORMULÁRIO
+  // ---------------------------------------------------------------------------
+  const validarEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validarTelefone = (telefone) => telefone.length >= 10 && telefone.length <= 11;
+  const validarCPF = (cpf) => {
     cpf = cpf.replace(/\D/g, "");
     if (cpf.length !== 11 || /^([0-9])\1+$/.test(cpf)) return false;
     let soma = 0, resto;
@@ -54,12 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (resto === 10 || resto === 11) resto = 0;
     if (resto !== parseInt(cpf[10])) return false;
     return true;
-  }
+  };
 
-  // Função para salvar alterações do modal
+  // Salvar alterações do modal
   const btnSalvarModal = document.getElementById("btn-salvar-modal");
   if (btnSalvarModal) {
-    btnSalvarModal.addEventListener("click", async function () {
+    btnSalvarModal.addEventListener("click", async () => {
       const nome = document.getElementById("modal-nome").value.trim();
       const email = document.getElementById("modal-email").value.trim();
       const senha = document.getElementById("modal-senha").value;
@@ -109,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
           body: new URLSearchParams(dados),
         });
         if (response.ok) {
-          // Atualiza os campos da página
           document.getElementById("nome").value = nome;
           document.getElementById("email").value = email;
           document.getElementById("telefone").value = telefone;
@@ -126,9 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
           setTimeout(() => {
             msgDiv.style.display = "none";
             msgDiv.textContent = "";
-            bootstrap.Modal.getInstance(
-              document.getElementById("modalEditarPerfil")
-            ).hide();
+            bootstrap.Modal.getInstance(document.getElementById("modalEditarPerfil")).hide();
           }, 1800);
         } else {
           const erro = await response.text();
