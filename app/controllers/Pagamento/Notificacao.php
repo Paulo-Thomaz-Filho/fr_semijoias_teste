@@ -24,8 +24,15 @@ file_put_contents($logPath, "[$timestamp] Body: $body\n", FILE_APPEND);
 // Validação de assinatura HMAC do Mercado Pago
 $xSignature = $_SERVER['HTTP_X_SIGNATURE'] ?? null;
 $xRequestId = $_SERVER['HTTP_X_REQUEST_ID'] ?? null;
-$queryParams = $_GET;
-$dataID = isset($queryParams['data.id']) ? $queryParams['data.id'] : '';
+
+// Extrair data.id do body JSON (não da query string)
+$dataID = '';
+if (!empty($body)) {
+    $jsonData = json_decode($body, true);
+    if ($jsonData && isset($jsonData['data']['id'])) {
+        $dataID = $jsonData['data']['id'];
+    }
+}
 
 file_put_contents($logPath, "[$timestamp] data.id: $dataID | X-Signature: $xSignature | X-Request-Id: $xRequestId\n", FILE_APPEND);
 
