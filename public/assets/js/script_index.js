@@ -217,13 +217,24 @@ class CatalogPage {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let existingItem = cart.find((item) => item.id == product.idProduto);
 
+    // Calcular preço promocional se houver promoção ativa
+    let precoFinal = parseFloat(product.preco);
+    if (product.promocao && product.promocao.valor) {
+      if (product.promocao.tipo === "percent") {
+        precoFinal = precoFinal * (1 - product.promocao.valor / 100);
+      } else if (product.promocao.tipo === "currency") {
+        precoFinal = precoFinal - parseFloat(product.promocao.valor);
+      }
+      if (precoFinal < 0) precoFinal = 0;
+    }
+
     if (existingItem) {
       existingItem.quantity += quantityToAdd;
     } else {
       cart.push({
         id: product.idProduto,
         nome: product.nome,
-        preco: product.preco,
+        preco: precoFinal,
         caminhoImagem: product.caminhoImagem,
         quantity: quantityToAdd,
       });
