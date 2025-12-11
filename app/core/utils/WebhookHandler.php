@@ -16,7 +16,7 @@ require_once __DIR__ . '/Mail.php';
 require_once __DIR__ . '/EmailTemplate.php';
 
 use MercadoPago\MercadoPagoConfig;
-use MercadoPago\Resources\Payment;
+use MercadoPago\Client\Payment\PaymentClient;
 
 class WebhookHandler {
     public static function atualizarPedidoPorPagamento($paymentId) {
@@ -27,8 +27,9 @@ class WebhookHandler {
         }
         MercadoPagoConfig::setAccessToken($accessToken);
 
-        // Consulta o pagamento
-        $payment = Payment::find_by_id($paymentId);
+        // Consulta o pagamento usando PaymentClient
+        $client = new PaymentClient();
+        $payment = $client->get($paymentId);
         if (!$payment) {
             throw new \Exception('Pagamento não encontrado no Mercado Pago.');
         }
