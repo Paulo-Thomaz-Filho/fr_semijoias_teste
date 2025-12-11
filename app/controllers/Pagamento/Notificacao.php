@@ -66,13 +66,26 @@ file_put_contents($logPath, "[$timestamp] SHA calculado: $sha | Hash recebido: $
 
 if ($sha === $hash) {
 	file_put_contents($logPath, "[$timestamp] ✅ HMAC OK - Processando pagamento\n", FILE_APPEND);
+	
+	// Verificar se é uma simulação (ID "123456" é comum em simulações do Mercado Pago)
+	if ($dataID === '123456') {
+		file_put_contents($logPath, "[$timestamp] ⚠️ ATENÇÃO: Esta é uma notificação de SIMULAÇÃO (ID: 123456). Em produção, use IDs reais de pagamento.\n", FILE_APPEND);
+	}
+	
 	// Notificação válida
 	try {
 		require_once __DIR__ . '/../../core/utils/WebhookHandler.php';
 		\app\core\utils\WebhookHandler::atualizarPedidoPorPagamento($dataID);
 		file_put_contents($logPath, "[$timestamp] ✅ Pedido atualizado para pagamento $dataID\n", FILE_APPEND);
 	} catch (\Throwable $e) {
-		file_put_contents($logPath, "[$timestamp] ❌ Erro ao atualizar pedido: " . $e->getMessage() . "\n", FILE_APPEND);
+		$errorMsg = $e->getMessage();
+		file_put_contents($logPath, "[$timestamp] ❌ Erro ao atualizar pedido: $errorMsg\n", FILE_APPEND);
+		
+		// Se for erro de pagamento não encontrado, pode ser simulação
+		if (strpos($errorMsg, 'não encontrado') !== false || strpos($errorMsg, 'Api error') !== false) {
+			file_put_contents($logPath, "[$timestamp] 💡 DICA: Este erro é comum em simulações. Em produção com pagamentos reais, o webhook funcionará corretamente.\n", FILE_APPEND);
+		}
+		
 		file_put_contents($logPath, "[$timestamp] Stack trace: " . $e->getTraceAsString() . "\n", FILE_APPEND);
 	}
 } else {

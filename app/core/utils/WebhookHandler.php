@@ -29,13 +29,34 @@ class WebhookHandler {
 
         // Consulta o pagamento usando PaymentClient
         $client = new PaymentClient();
-        $payment = $client->get($paymentId);
-        if (!$payment) {
-            throw new \Exception('Pagamento não encontrado no Mercado Pago.');
+        try {
+            $payment = $client->get($paymentId);
+        } catch (\Exception $e) {
+            // Log detalhado do erro
+            $errorDetails = $e->getMessage();
+            if (method_exists($e, 'getResponse')) {
+                $response = $e->getResponse();
+                if ($response) {
+                    $errorDetails .= ' | Response: ' . json_encode($response);
+                }
+            }
+            throw new \Exception('Erro ao buscar pagamento no Mercado Pago: ' . $errorDetails);
         }
+        
+        if (!$payment) {
+            throw new \Exception('Pagamento não encontrado no Mercado Pago (ID: ' . $paymentId . ').');
+        }
+        
         // O external_reference é o id do pedido no seu sistema
-        $idPedido = $payment->external_reference;
-        $statusPagamento = $payment->status; // 'pending', 'approved', 'rejected', etc.
+        $idPedido = $payment->external_reference ?? null;
+        if (!$idPedido) {
+            throw new \Exception('Pagamento não possui external_reference (ID do pedido).');
+        }
+        
+        $statusPagamento = $payment->status ?? null; // 'pending', 'approved', 'rejected', etc.
+        if (!$statusPagamento) {
+            throw new \Exception('Pagamento não possui status definido.');
+        }
 
         // Busca o pedido
         $pedidoDAO = new PedidoDAO();
