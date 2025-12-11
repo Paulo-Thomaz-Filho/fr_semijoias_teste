@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Frete por faixa de valor
     if (subtotal > 0 && subtotal <= 100) {
-      frete = 15;
+      frete = 0;
     } else if (subtotal > 100 && subtotal <= 300) {
       frete = 18;
     } else if (subtotal > 300) {
