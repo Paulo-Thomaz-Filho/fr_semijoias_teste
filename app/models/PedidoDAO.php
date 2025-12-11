@@ -158,6 +158,7 @@ class PedidoDAO {
         return null;
     }
 
+
     public function insert(Pedido $pedido){
         $dados = [
             null,  // id_pedido (auto increment)

@@ -203,13 +203,13 @@
   },
 
   "pagamento/sucesso": {
-    "path": "public/views/sucesso.html"
+    "path": "public/api/pagamento/sucesso.php"
   },
   "pagamento/pendente": {
-    "path": "public/views/pendente.html"
+    "path": "public/api/pagamento/pendente.php"
   },
   "pagamento/cancelado": {
-    "path": "public/views/cancelado.html"
+    "path": "public/api/pagamento/cancelado.php"
   },
   "pagamento/notificacao": {
     "path": "app/controllers/Pagamento/Notificacao.php"
