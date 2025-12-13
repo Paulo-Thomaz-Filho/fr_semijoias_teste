@@ -474,8 +474,7 @@ const atualizarTotalItem = (itemElement) => {
         formData.append("id_cliente", usuario.idUsuario);
         formData.append("produtos", JSON.stringify(produtos));
         formData.append("endereco", userData.endereco);
-        // Adiciona status padrão para o pedido
-        formData.append("status", "Pendente");
+        // Não envia mais o status aqui, será definido após o pagamento
 
         fetch("/pedidos/salvar", {
           method: "POST",

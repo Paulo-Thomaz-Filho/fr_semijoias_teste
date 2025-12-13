@@ -91,9 +91,10 @@ const criarCardCatalogoHtml = (product) => {
     promoBadgeHtml = `<span class="promo-badge">${badgeText}</span>`;
   }
 
+  // Adiciona data-card-product-id para o card inteiro
   return `
     <div class="col-lg-3 col-md-4 col-6 mb-4 d-flex align-items-stretch">
-      <div class="w-100 d-flex flex-column p-3 rounded-4 bg-white border border-1">
+      <div class="w-100 d-flex flex-column p-3 rounded-4 bg-white border border-1 card-produto-catalogo" data-card-product-id="${product.idProduto}" style="cursor:pointer;">
         <div class="position-relative overflow-hidden mb-3" style="padding-top: 100%;">
           <img src="${imagemSrc}" alt="${product.nome}" class="position-absolute rounded-3 top-0 start-0 w-100 h-100 object-fit-cover">
           ${promoBadgeHtml}
@@ -479,7 +480,8 @@ document.addEventListener("DOMContentLoaded", () => {
           clickable: true,
         },
       });
-      const catalogPage = new CatalogPage(
+      // Cria a instância do CatalogPage e salva globalmente para uso ao clicar no card
+      window.catalogPageInstance = new CatalogPage(
         "#productModal",
         '[data-bs-toggle="modal"]',
         productDatabase
@@ -541,5 +543,24 @@ document.addEventListener("DOMContentLoaded", () => {
         .forEach((l) => l.classList.remove("active"));
       this.classList.add("active");
     });
+  });
+
+  // Após renderizar os cards, abrir modal ao clicar no card inteiro (exceto no botão)
+  document.addEventListener("click", function (event) {
+    const card = event.target.closest(".card-produto-catalogo");
+    if (card && !event.target.closest("button[data-product-id]")) {
+      const productId = card.getAttribute("data-card-product-id");
+      if (typeof globalProductDatabase !== "undefined") {
+        const product = globalProductDatabase.find((p) => p.idProduto == productId);
+        if (product && window.catalogPageInstance) {
+          window.catalogPageInstance.populateModal(product);
+          const modalEl = document.getElementById("productModal");
+          if (modalEl) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+          }
+        }
+      }
+    }
   });
 });

@@ -304,31 +304,18 @@ document.addEventListener('DOMContentLoaded', function() {
      * Valida CPF (formato e dígitos verificadores)
      */
     const validarCPF = (cpf) => {
-        cpf = cpf.replace(/\D/g, '');
-        
-        if (cpf.length !== 11) return false;
-        
-        // Verifica se todos os dígitos são iguais
-        if (/^(\d)\1+$/.test(cpf)) return false;
-        
-        // Valida primeiro dígito verificador
-        let soma = 0;
-        for (let i = 0; i < 9; i++) {
-            soma += parseInt(cpf.charAt(i)) * (10 - i);
-        }
-        let resto = (soma * 10) % 11;
-        if (resto === 10 || resto === 11) resto = 0;
-        if (resto !== parseInt(cpf.charAt(9))) return false;
-        
-        // Valida segundo dígito verificador
-        soma = 0;
-        for (let i = 0; i < 10; i++) {
-            soma += parseInt(cpf.charAt(i)) * (11 - i);
-        }
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+        let soma = 0, resto;
+        for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i-1]) * (11 - i);
         resto = (soma * 10) % 11;
         if (resto === 10 || resto === 11) resto = 0;
-        if (resto !== parseInt(cpf.charAt(10))) return false;
-        
+        if (resto !== parseInt(cpf[9])) return false;
+        soma = 0;
+        for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i-1]) * (12 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf[10])) return false;
         return true;
     };
 
