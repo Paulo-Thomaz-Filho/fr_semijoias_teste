@@ -25,13 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-
 // Permite receber vários produtos ou produto único
 $id_cliente = $_POST['id_cliente'] ?? null;
 $endereco = $_POST['endereco'] ?? '';
 $data_pedido = $_POST['data_pedido'] ?? date('Y-m-d H:i:s');
 $descricao = $_POST['descricao'] ?? '';
-$statusNome = $_POST['status'] ?? 'N/A';
+$statusNome = $_POST['status'] ?? 'Pendente';
 
 // Se vier array de produtos
 $produtos = [];
