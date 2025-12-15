@@ -23,7 +23,7 @@ html {
 }
 
 .gap-6 {
-  gap: 5rem !important;
+  gap: 6rem !important;
 }
 
 .logo-container {
@@ -106,21 +106,12 @@ input[type="number"]:focus {
   border-color: var(--bs-secondary) !important;
 }
 
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  height: 18px;
-  width: 18px;
-  background: url('data:image/svg+xml;utf8,<svg fill="%23212529" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 8.586l4.95-4.95a1 1 0 111.414 1.414L11.414 10l4.95 4.95a1 1 0 01-1.414 1.414L10 11.414l-4.95 4.95a1 1 0 01-1.414-1.414L8.586 10l-4.95-4.95A1 1 0 115.05 3.636L10 8.586z"/></svg>')
-    no-repeat center;
-  cursor: pointer;
-}
-
 .chart-container-bar {
   height: 200px !important;
 }
 
 .chart-container-doughnut {
-  height: 180px !important;
+  height: 350px !important;
 }
 
 .status-badge {
@@ -176,7 +167,7 @@ aside nav a.active-page {
 }
 
 .table-scroll {
-  max-height: 320px;
+  max-height: 350px;
   overflow-y: auto;
   padding: 0 8px;
 }
@@ -201,23 +192,6 @@ aside nav a.active-page {
 .table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.02);
   transition: background-color 0.2s ease;
-}
-
-.chart-container-bar {
-  min-height: 250px;
-  height: 100%;
-  position: relative;
-}
-
-.chart-container-doughnut {
-  min-height: 250px;
-  height: 100%;
-  position: relative;
-}
-
-#graficoBarras,
-#graficoPizza {
-  max-height: 350px;
 }
 
 .table thead th:last-child {
@@ -263,22 +237,10 @@ button:focus {
   opacity: 1 !important;
 }
 
-@media (max-width: 767px) {
-  .w-mobile-100 {
-    width: 100% !important;
-  }
-}
-
 .swiper-slide img {
   width: 100%;
-  height: auto;
+  height: 700px;
   object-fit: cover;
-}
-
-@media (max-width: 576px) {
-  .swiper-slide img {
-    height: 400px;
-  }
 }
 
 .swiper-button-next,
@@ -338,12 +300,6 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
-  .carousel-container .swiper-button-next,
-  .carousel-container .swiper-button-prev {
-    display: none;
-  }
-}
 
 /* Garante que o modal fique acima do overlay-container e de todo o conteúdo */
 .overlay-container {
@@ -436,176 +392,74 @@ aside {
   z-index: 999;
 }
 
-/* Tablets e dispositivos menores (até 992px) */
-@media (max-width: 992px) {
-  /* Esconder sidebar por padrão no mobile */
-  aside {
-    transform: translateX(-100%);
-  }
-
-  aside.show {
-    transform: translateX(0);
-  }
-
-  .sidebar-overlay.show {
-    display: block;
-  }
-
-  .mobile-menu-toggle {
-    display: block;
-  }
-
-  /* Remover margem do main */
-  .main-with-sidebar {
-    margin-left: 0 !important;
-    width: 100% !important;
-  }
-
-  /* Ajustar padding do main */
-  main {
-    padding: 4rem 1rem 1rem !important;
-  }
-
-  /* Reduzir gap do header */
-  .gap-6 {
-    gap: 3rem !important;
-  }
-
-  /* Ajustar logo */
-  .logo-large {
-    width: 7rem !important;
-  }
-
-  /* Menu compacto */
-  aside nav ul {
-    gap: 1rem !important;
-  }
-
-  aside nav a {
-    font-size: 1rem !important;
-    padding: 0.5rem 1rem !important;
-  }
-
-  aside {
-    padding: 2rem 1.5rem !important;
-  }
-
-  /* Cards em coluna no dashboard */
-  .row > .col-lg-3 {
-    margin-bottom: 1rem;
-  }
-
-  /* Tabelas responsivas */
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .table {
-    min-width: 600px;
-  }
-
-  /* Ajustar formulários */
-  .modal-dialog {
-    margin: 1rem;
-  }
-
-  /* Gráficos */
-  .chart-container-bar,
-  .chart-container-doughnut {
-    min-height: 250px !important;
-  }
-
-  /* Botões em coluna no mobile */
-  .btn-group-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .btn-group-mobile .btn {
-    width: 100%;
-  }
+/* Utilitários responsivos */
+.hide-mobile {
+  display: block;
 }
 
-/* Smartphones (até 576px) */
-@media (max-width: 576px) {
-  /* Header mais compacto */
-  header h1 {
-    font-size: 1.5rem !important;
-  }
-
-  /* Cards full width */
-  .card {
-    margin-bottom: 1rem;
-  }
-
-  /* Formulários */
-  .form-label {
-    font-size: 0.875rem;
-  }
-
-  .form-control,
-  .form-select {
-    font-size: 0.875rem;
-  }
-
-  /* Botões menores */
-  .btn {
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-  }
-
-  /* Tabelas ainda mais compactas */
-  .table {
-    font-size: 0.875rem;
-  }
-
-  .table td,
-  .table th {
-    padding: 0.5rem;
-  }
-
-  /* Modal full screen no mobile */
-  .modal-fullscreen-sm-down {
-    max-width: 100%;
-    margin: 0;
-    height: 100%;
-  }
-
-  .modal-fullscreen-sm-down .modal-content {
-    height: 100%;
-    border-radius: 0;
-  }
-
-  /* Sidebar full width no mobile */
-  aside {
-    width: 80%;
-    max-width: 300px;
-  }
-
-  /* Ajustar padding geral */
-  .p-5 {
-    padding: 1.5rem !important;
-  }
-
-  .p-4 {
-    padding: 1rem !important;
-  }
-
-  /* Status badges menores */
-  .status-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-  }
-
-  /* Dropdown menu */
-  .dropdown-menu {
-    font-size: 0.875rem;
-  }
+.show-mobile {
+  display: none;
 }
 
-/* Telas muito pequenas (até 375px) */
+/* Scroll horizontal para tabelas */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Melhorias de toque para mobile */
+.categorias-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categorias-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#categorias-menu {
+  flex-wrap: nowrap;
+}
+
+.categoria-link {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* =============================================================================
+  AJUSTES ADICIONAIS DE RESPONSIVIDADE
+  ============================================================================= */
+
+/* Container de tabelas com scroll horizontal */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+/* Melhorar aparência do scrollbar em tabelas */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Telas muito pequenas */
 @media (max-width: 375px) {
   .logo-large {
     width: 5rem !important;
@@ -624,117 +478,90 @@ aside {
   }
 }
 
-/* Landscape mobile */
-@media (max-height: 600px) and (orientation: landscape) {
-  aside {
-    overflow-y: auto;
-  }
-
-  .gap-6 {
-    gap: 1rem !important;
-  }
-
-  aside nav ul {
-    gap: 0.5rem !important;
-  }
-}
-
-/* Tablets grandes e desktops pequenos (768px a 1200px) */
-@media (min-width: 768px) and (max-width: 1200px) {
-  aside {
-    width: 240px;
-  }
-
-  .main-with-sidebar {
-    margin-left: 240px;
-  }
-
-  .logo-large {
-    width: 7rem;
-  }
-
-  aside nav a {
-    font-size: 1.1rem;
-  }
-}
-
-/* Utilitários responsivos */
-.hide-mobile {
-  display: block;
-}
-
-.show-mobile {
-  display: none;
-}
-
-@media (max-width: 992px) {
-  .hide-mobile {
-    display: none;
-  }
-
-  .show-mobile {
-    display: block;
-  }
-}
-
-/* Scroll horizontal para tabelas */
-.table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Melhorias de toque para mobile */
-@media (hover: none) and (pointer: coarse) {
-  /* Aumentar área de toque */
-  button,
-  a,
-  .btn {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Remover hover states em touch devices */
-  .table tbody tr:hover {
-    background-color: transparent;
-  }
-}
-
-.categorias-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-
-.categorias-scroll-wrapper::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-#categorias-menu {
-  flex-wrap: nowrap;
-}
-
-.categoria-link {
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* Desktop: manter comportamento original */
-@media (min-width: 992px) {
-  .categorias-scroll-wrapper {
-    overflow-x: visible;
-  }
-
-  #categorias-menu {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-}
-
-/* Ajuste do modal de produto para mobile */
+/* Smartphones */
 @media (max-width: 576px) {
+  header h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 16px !important;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .table {
+    font-size: 0.875rem;
+  }
+
+  .table td,
+  .table th {
+    padding: 0.5rem;
+  }
+
+  .modal-fullscreen-sm-down {
+    max-width: 100%;
+    margin: 0;
+    height: 100%;
+  }
+
+  .modal-fullscreen-sm-down .modal-content {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  aside {
+    width: 80%;
+    max-width: 300px;
+  }
+
+  .p-5 {
+    padding: 1.5rem !important;
+  }
+
+  .p-4 {
+    padding: 1rem !important;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .dropdown-menu {
+    font-size: 0.875rem;
+    max-width: 90vw;
+  }
+
+  .dropdown-toggle {
+    font-size: 0.875rem;
+  }
+
+  .pagination {
+    font-size: 0.875rem;
+  }
+
+  .page-link {
+    padding: 0.375rem 0.75rem;
+  }
+
+  /* Ajustes específicos de componentes móveis */
+  .swiper-slide img {
+    height: 400px;
+  }
+
   #productModal .modal-dialog {
     max-width: 95vw;
     margin: 0.5rem auto;
@@ -767,40 +594,179 @@ aside {
   #productModal .modal-body {
     padding: 0.5rem 0.2rem;
   }
+
+  /* Avatar pequeno no mobile */
+  #avatar-img {
+    height: 120px !important;
+  }
 }
 
-/* =============================================================================
-   AJUSTES ADICIONAIS DE RESPONSIVIDADE
-   ============================================================================= */
+/* Tablets (até 768px) */
+@media (max-width: 768px) {
+  .carousel-container .swiper-button-next,
+  .carousel-container .swiper-button-prev {
+    display: none;
+  }
 
-/* Container de tabelas com scroll horizontal */
-.table-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-bottom: 1rem;
+  .modal-dialog {
+    max-width: 95%;
+    margin: 0.5rem auto;
+  }
+
+  body.bg-light {
+    padding: 0;
+  }
+
+  .login-container {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+
+  .form-container {
+    width: 100% !important;
+  }
+
+  .sign-in-container,
+  .sign-up-container {
+    width: 100%;
+  }
+
+  .overlay-container {
+    display: none;
+  }
+
+  .login-container.right-panel-active .sign-in-container {
+    transform: translateX(-100%);
+  }
+
+  .login-container.right-panel-active .sign-up-container {
+    transform: translateX(0);
+  }
+
+  .form-content {
+    padding: 3rem 2rem 5rem !important;
+    justify-content: flex-start !important;
+    padding-top: 4rem !important;
+  }
+
+  /* Utilitários móveis */
+  .w-mobile-100 {
+    width: 100% !important;
+  }
 }
 
-/* Melhorar aparência do scrollbar em tabelas */
-.table-container::-webkit-scrollbar {
-  height: 8px;
+/* Tablets grandes e desktops pequenos */
+@media (min-width: 768px) and (max-width: 1200px) {
+  aside {
+    width: 240px;
+  }
+
+  .main-with-sidebar {
+    margin-left: 240px;
+  }
+
+  .logo-large {
+    width: 7rem;
+  }
+
+  aside nav a {
+    font-size: 1.1rem;
+  }
+
+  .login-container {
+    width: 95%;
+  }
 }
 
-.table-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Cards responsivos */
+/* Tablets e desktops médios (até 992px) */
 @media (max-width: 992px) {
+  aside {
+    transform: translateX(-100%);
+  }
+
+  aside.show {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay.show {
+    display: block;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .main-with-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  main {
+    padding: 4rem 1rem 1rem !important;
+  }
+
+  .gap-6 {
+    gap: 3rem !important;
+  }
+
+  .logo-large {
+    width: 7rem !important;
+  }
+
+  aside nav ul {
+    gap: 1rem !important;
+  }
+
+  aside nav a {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  aside {
+    padding: 2rem 1.5rem !important;
+  }
+
+  .row > .col-lg-3 {
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .modal-dialog {
+    margin: 1rem;
+  }
+
+  .chart-container-bar,
+  .chart-container-doughnut {
+    min-height: 250px !important;
+  }
+
+  .btn-group-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-group-mobile .btn {
+    width: 100%;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  .show-mobile {
+    display: block;
+  }
+
   .card {
     margin-bottom: 1rem;
   }
@@ -809,12 +775,10 @@ aside {
     padding: 1rem;
   }
 
-  /* Ajustar header de cards */
   .card-header h5 {
     font-size: 1.1rem;
   }
 
-  /* Formulários em cards */
   .card .row {
     margin: 0;
   }
@@ -823,6 +787,85 @@ aside {
   .card .col-md-4,
   .card .col-md-3 {
     padding: 0.5rem;
+  }
+
+  .col-custom-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Touch devices */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .table tbody tr:hover {
+    background-color: transparent;
+  }
+}
+
+/* Desktop wide */
+@media (min-width: 992px) {
+  .categorias-scroll-wrapper {
+    overflow-x: visible;
+  }
+
+  #categorias-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .desktop-header {
+    display: block !important;
+  }
+
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Landscape (mobile) */
+@media (max-height: 600px) and (orientation: landscape) {
+  aside {
+    overflow-y: auto;
+  }
+
+  .gap-6 {
+    gap: 1rem !important;
+  }
+
+  aside nav ul {
+    gap: 0.5rem !important;
+  }
+}
+
+/* Impressão */
+@media print {
+  aside,
+  .mobile-menu-toggle,
+  .sidebar-overlay,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  .main-with-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .table {
+    font-size: 0.75rem;
+  }
+
+  .card {
+    break-inside: avoid;
   }
 }
 
